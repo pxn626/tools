@@ -1,0 +1,14 @@
+[home]
+other = "Home"
+
+[about]
+other = "About"
+
+[pdf_tool_title]
+other = "PDF to Word"
+
+[upload_btn]
+other = "Select PDF"
+
+[convert_btn]
+other = "Convert Now"

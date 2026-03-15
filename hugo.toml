@@ -1,0 +1,55 @@
+baseURL = 'https://webpenson.com/'
+defaultContentLanguage = 'zh'
+theme = "PaperMod"
+# 1. 修改版权显示的年份范围 (可选，不填则自动显示当前年份)
+# 格式："起始年份 - 结束年份" 或 "起始年份"
+copyright = "2024 - 2026 Tools大师. All rights reserved."
+
+
+[languages.zh]
+    languageCode = 'zh-CN'
+    languageName = '简体中文'
+    title = '在线工具'
+    weight = 1
+
+[languages.en]
+    languageCode = 'en-US'
+    languageName = 'English'
+    title = 'Online Tools'
+    weight = 2
+
+# 1. 开启主菜单显示
+[menu]
+    [[menu.main]]
+        name = "首页"
+        url = "/"
+        weight = 1
+
+    [[menu.main]]
+        name = "PDF转Word"
+        url = "/pdf-to-word/"
+        weight = 2
+
+    [[menu.main]]
+        name = "关于"
+        url = "/about/"
+        weight = 3
+
+[params]
+    ShowNav = true 
+    # 这里设置首页的大标题和副标题
+    # homeInfoParams = { Title = "🛠️ 我的在线工具箱", Content = "免费、快速、无需安装的在线格式转换工具。直接在浏览器处理，文件不上传，安全又隐私。" }
+  
+    # 这一行很重要，它告诉主题：首页不要显示“第一篇文章”，而是显示上面的欢迎语
+    disableSpecial1stPost = true
+
+    [env]
+        production = true
+
+    
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      # 这一行必须设为 true，否则 HTML 标签会被当成文本显示
+      unsafe = true

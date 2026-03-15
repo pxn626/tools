@@ -1,0 +1,14 @@
+[home]
+other = "首页"
+
+[about]
+other = "关于"
+
+[pdf_tool_title]
+other = "PDF 转 Word"
+
+[upload_btn]
+other = "选择 PDF 文件"
+
+[convert_btn]
+other = "开始转换"

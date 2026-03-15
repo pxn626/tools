@@ -1,0 +1,57 @@
+<!-- layouts/partials/footer_custom.html -->
+<footer class="site-footer" style="margin-top: 60px; padding: 40px 20px; border-top: 1px solid var(--border); background: var(--code-bg);">
+  <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;">
+    
+    <!-- 左侧：品牌介绍 -->
+    <div>
+      <h4 style="margin-top: 0; color: var(--primary);">Tools 大师</h4>
+      <p style="font-size: 0.9em; line-height: 1.6; color: var(--secondary);">
+        专注于提供安全、高效的在线文档转换服务。我们尊重您的隐私，致力于打造最纯净的工具网站。
+      </p>
+    </div>
+
+    <!-- 中间：快速链接 -->
+    <div>
+      <h4 style="margin-top: 0;">快速链接</h4>
+      <ul style="list-style: none; padding: 0; line-height: 2;">
+        <li><a href="/" style="color: var(--secondary); text-decoration: none;">首页</a></li>
+        <!-- <li><a href="#features" style="color: var(--secondary); text-decoration: none;">功能介绍</a></li>
+        <li><a href="#guide" style="color: var(--secondary); text-decoration: none;">使用指南</a></li>
+        <li><a href="#faq" style="color: var(--secondary); text-decoration: none;">常见问题</a></li> -->
+      </ul>
+    </div>
+
+    <!-- 右侧：法律信息 -->
+    <div>
+      <h4 style="margin-top: 0;">法律信息</h4>
+      <ul style="list-style: none; padding: 0; line-height: 2;">
+        <li><a href="/privacy-policy/" style="color: var(--secondary); text-decoration: none;">隐私政策</a></li>
+        <li><a href="/terms-of-service/" style="color: var(--secondary); text-decoration: none;">服务条款</a></li>
+        <!-- <li><a href="/ad-policy/" style="color: var(--secondary); text-decoration: none;">广告政策</a></li> -->
+        <li><a href="/contact/" style="color: var(--secondary); text-decoration: none;">联系我们</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- 注意：这里不再写版权信息，由主题自动生成 -->
+    {{- if not .Site.Params.hideFooter }}
+    {{- if or .Site.Copyright .Site.Params.footer.customCopyright }}
+    <div class="site-info">
+        <!-- 显示版权信息：优先使用 params.footer.customCopyright，否则使用全局 copyright  -->
+        <span>
+            {{- if .Site.Params.footer.customCopyright }}
+                {{ .Site.Params.footer.customCopyright | safeHTML }}
+            {{- else }}
+                {{ .Site.Copyright | safeHTML }}
+            {{- end }}
+        </span>
+        
+         <!-- 👇 下面这部分是原来的 "Powered by..."，我们已经直接删除了，所以不会显示 
+         如果你想保留分隔符 "·" 但不想显示 Powered by，可以把下面的 span 整个删掉 -->
+    </div>
+    {{- end }}
+    
+     <!-- 保留其他可能的 footer 扩展点（可选，通常不需要） -->
+     <!-- {{- partial "extend_footer.html" . }}  -->
+{{- end }}
+</footer>

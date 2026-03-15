@@ -1,0 +1,70 @@
+/* =========================================
+   方案：让页脚突破内容区限制，实现全屏或自定义宽
+   ========================================= */
+
+/* 1. 重置 footer 容器的基础样式 */
+footer.site-footer {
+    /* 关键：使用视口宽度 (100vw) 强制拉宽，突破父容器限制 */
+    width: 100vw;
+    
+    /* 关键：通过负 margin 抵消父容器的 padding，使元素贴到屏幕边缘 */
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    
+    /* 确保内边距和盒模型正确 */
+    padding: 40px 20px !important; /* 上下40px，左右20px (移动端) */
+    box-sizing: border-box;
+    margin-top: 60px !important;
+    
+    /* 背景色设置 (如果需要全屏背景色) */
+    background: var(--code-bg) !important; 
+    border-top: 1px solid var(--border) !important;
+}
+
+/* 2. 控制内部内容的宽度 (让文字不要贴边，保持美观) */
+footer.site-footer > div {
+    /* 这里设置你想要的最大宽度：
+       - 想要和导航栏一样宽？设为 1200px 或 900px (取决于你的导航栏设置)
+       - 想要稍微窄一点？设为 1000px
+       - 想要几乎全屏但留点边？设为 95%
+    */
+    max-width: 1200px; 
+    
+    /* 居中显示 */
+    margin: 0 auto;
+    
+    /* 确保网格布局正常 */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    width: 100%;
+}
+
+/* 3. 修复底部版权信息 (.site-info) 的宽度，使其与上方内容对齐 */
+footer.site-footer .site-info {
+    /* 让它也受限于上面的 max-width，或者单独设置 */
+    max-width: 1200px;
+    margin: 40px auto 0; /* 上方间距40px，自动左右居中，下方0 */
+    text-align: center;
+    border-top: 1px solid var(--border); /* 如果需要在版权信息上方加一条分割线 */
+    padding-top: 20px;
+    width: 100%;
+    
+    /* 注意：因为 .site-info 是 div 的子元素，上面的 grid 布局可能会影响它。
+       如果布局乱了，尝试给 .site-info 添加 grid-column: 1 / -1 让它占满整行 */
+    grid-column: 1 / -1; 
+}
+
+/* 4. 移动端适配：在小屏幕上取消一些强制样式，防止溢出 */
+@media (max-width: 768px) {
+    footer.site-footer {
+        padding: 30px 15px !important;
+    }
+    footer.site-footer > div {
+        grid-template-columns: 1fr; /* 单列显示 */
+        gap: 30px;
+    }
+}
