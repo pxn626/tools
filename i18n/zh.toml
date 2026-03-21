@@ -4,7 +4,7 @@ other = "首页"
 [about]
 other = "关于"
 
-[pdf_tool_title]
+[pdf-to-word]
 other = "PDF 转 Word"
 
 [upload_btn]

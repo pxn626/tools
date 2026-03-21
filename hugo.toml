@@ -21,16 +21,19 @@ copyright = "2024 - 2026 Tools大师. All rights reserved."
 # 1. 开启主菜单显示
 [menu]
     [[menu.main]]
+        identifier = "home"   
         name = "首页"
         url = "/"
         weight = 1
 
     [[menu.main]]
+        identifier = "pdf-to-word"
         name = "PDF转Word"
         url = "/pdf-to-word/"
         weight = 2
 
     [[menu.main]]
+        identifier = "about"
         name = "关于"
         url = "/about/"
         weight = 3
