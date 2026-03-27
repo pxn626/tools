@@ -3,7 +3,7 @@ defaultContentLanguage = 'zh'
 theme = "PaperMod"
 # 1. 修改版权显示的年份范围 (可选，不填则自动显示当前年份)
 # 格式："起始年份 - 结束年份" 或 "起始年份"
-copyright = "2026 - 2026 Tools. All rights reserved."
+# copyright = "2026 Tools. All rights reserved."
 
 
 [languages.zh]

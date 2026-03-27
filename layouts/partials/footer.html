@@ -1,57 +1,150 @@
-<!-- layouts/partials/footer_custom.html -->
-<footer class="site-footer" style="margin-top: 60px; padding: 40px 20px; border-top: 1px solid var(--border); background: var(--code-bg);">
-  <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px;">
-    
-    <!-- 左侧：品牌介绍 -->
-    <div>
-      <h4 style="margin-top: 0; color: var(--primary);">Tools</h4>
-      <p style="font-size: 0.9em; line-height: 1.6; color: var(--secondary);">
-        专注于提供安全、高效的在线工具服务。我们尊重您的隐私，致力于打造最纯净的工具网站。
-      </p>
-    </div>
-
-    <!-- 中间：快速链接 -->
-    <div>
-      <h4 style="margin-top: 0;">快速链接</h4>
-      <ul style="list-style: none; padding: 0; line-height: 2;">
-        <li><a href="/" style="color: var(--secondary); text-decoration: none;">首页</a></li>
-        <!-- <li><a href="#features" style="color: var(--secondary); text-decoration: none;">功能介绍</a></li>
-        <li><a href="#guide" style="color: var(--secondary); text-decoration: none;">使用指南</a></li>
-        <li><a href="#faq" style="color: var(--secondary); text-decoration: none;">常见问题</a></li> -->
-      </ul>
-    </div>
-
-    <!-- 右侧：法律信息 -->
-    <div>
-      <h4 style="margin-top: 0;">法律信息</h4>
-      <ul style="list-style: none; padding: 0; line-height: 2;">
-        <li><a href="/privacy-policy/" style="color: var(--secondary); text-decoration: none;">隐私政策</a></li>
-        <li><a href="/terms-of-service/" style="color: var(--secondary); text-decoration: none;">服务条款</a></li>
-        <!-- <li><a href="/ad-policy/" style="color: var(--secondary); text-decoration: none;">广告政策</a></li> -->
-        <li><a href="/contact/" style="color: var(--secondary); text-decoration: none;">联系我们</a></li>
-      </ul>
-    </div>
-  </div>
-  
-  <!-- 注意：这里不再写版权信息，由主题自动生成 -->
-    {{- if not .Site.Params.hideFooter }}
-    {{- if or .Site.Copyright .Site.Params.footer.customCopyright }}
-    <div class="site-info">
-        <!-- 显示版权信息：优先使用 params.footer.customCopyright，否则使用全局 copyright  -->
-        <span>
-            {{- if .Site.Params.footer.customCopyright }}
-                {{ .Site.Params.footer.customCopyright | safeHTML }}
-            {{- else }}
-                {{ .Site.Copyright | safeHTML }}
-            {{- end }}
-        </span>
-        
-         <!-- 👇 下面这部分是原来的 "Powered by..."，我们已经直接删除了，所以不会显示 
-         如果你想保留分隔符 "·" 但不想显示 Powered by，可以把下面的 span 整个删掉 -->
-    </div>
+{{- if not (.Param "hideFooter") }}
+  <footer class="footer">
+    {{- if not site.Params.footer.hideCopyright }}
+        {{- if site.Copyright }}
+        <span>{{ site.Copyright | markdownify }}</span>
+        {{- else }}
+        <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ site.Title }}</a></span>
+        {{- end }}
+        {{- print " · "}}
     {{- end }}
-    
-     <!-- 保留其他可能的 footer 扩展点（可选，通常不需要） -->
-     <!-- {{- partial "extend_footer.html" . }}  -->
-{{- end }}
+
+    {{- with site.Params.footer.text }}
+        {{ . | markdownify }}
+        {{- print " · "}}
+    {{- end }}
+
+    <span>
+        Powered by Tools
+        <!-- <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> & -->
+        <!-- <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a> -->
+    </span>
 </footer>
+{{- end }}
+
+{{- if (not site.Params.disableScrollToTop) }}
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+{{- end }}
+
+{{- partial "extend_footer.html" . }}
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        // Set the scroll position
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+
+{{- if (not site.Params.disableScrollToTop) }}
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+{{- end }}
+
+{{- if (not site.Params.disableThemeToggle) }}
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+{{- end }}
+
+{{- if (and (eq .Kind "page") (ne .Layout "archives") (ne .Layout "search") (.Param "ShowCodeCopyButtons")) }}
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
+
+        function copyingDone() {
+            copybutton.innerHTML = '{{- i18n "code_copied" | default "copied!" }}';
+            setTimeout(() => {
+                copybutton.innerHTML = '{{- i18n "code_copy" | default "copy" }}';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            // td containing LineNos
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            // table containing LineNos and code
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            // code blocks not having highlight as parent class
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+{{- end }}
