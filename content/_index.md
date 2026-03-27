@@ -1,10 +1,10 @@
 ---
 title: "首页"
-description: "在线工具箱 - PDF转换、图片处理"
+description: "工具集 - 在线工具，免费、快速、好用"
 ---
 
 <!-- 1. 欢迎区域 (由 hugo.toml 配置控制，这里不需要写，直接接下面的内容) -->
-
+<!-- 
 ### 🚀 热门工具
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 30px;">
@@ -25,14 +25,14 @@ description: "在线工具箱 - PDF转换、图片处理"
 </a>
 </div>
 
----
+--- -->
 
 ### ✨ 核心功能与优势
 
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px;">
   <div style="padding: 20px; background: var(--code-bg); border-radius: 8px;">
     <h3 style="margin-top: 0; color: var(--primary);">🔒 隐私绝对安全</h3>
-    <p style="line-height: 1.6;">这是一个纯前端工具。所有转换操作均在您的浏览器本地完成，文件绝不会上传到我们的服务器，确保数据不离开设备。</p>
+    <p style="line-height: 1.6;">这是一个纯前端工具。所有操作均在您的浏览器本地完成，文件绝不会上传到我们的服务器，确保数据不离开设备。</p>
   </div>
   
   <div style="padding: 20px; background: var(--code-bg); border-radius: 8px;">
