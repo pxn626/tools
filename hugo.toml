@@ -1,4 +1,4 @@
-baseURL = 'https://webpenson.com/'
+baseURL = 'https://www.webpenson.com/'
 defaultContentLanguage = 'zh'
 theme = "PaperMod"
 # 1. 修改版权显示的年份范围 (可选，不填则自动显示当前年份)
