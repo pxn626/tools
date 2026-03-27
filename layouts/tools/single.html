@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+    <meta name="description" content="{{ .Description }}">
+    
+    <!-- 引入简单的样式重置和基础样式 (实际项目中建议引入 Tailwind 或 Bootstrap) -->
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+        
+        /* 布局容器 */
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 30px; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+
+        /* 通用卡片样式 */
+        .card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; border: 1px solid var(--border-color); }
+        
+        /* 顶部区域 */
+        .tool-header { grid-column: 1 / -1; margin-bottom: 10px; }
+        .tool-title { font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
+        .tool-intro { font-size: 1.1rem; color: var(--text-muted); }
+        .tool-intro strong { color: var(--primary-color); }
+
+        /* 中部操作区 (核心) */
+        .tool-workspace { grid-column: 1 / 2; display: flex; flex-direction: column; gap: 20px; }
+        @media (max-width: 768px) { .tool-workspace { grid-column: 1 / -1; } }
+
+        /* 输入/上传区域统一样式 */
+        .input-zone { border: 2px dashed var(--border-color); border-radius: var(--radius); padding: 40px; text-align: center; transition: all 0.3s; background: #fafafa; }
+        .input-zone:hover, .input-zone.dragover { border-color: var(--primary-color); background: #eff6ff; }
+        .input-zone textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; resize: vertical; font-family: monospace; font-size: 14px; outline: none; }
+        .input-zone textarea:focus { border-color: var(--primary-color); ring: 2px solid var(--primary-color); }
+        
+        .upload-icon { font-size: 48px; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .file-input { display: none; }
+        .upload-label { cursor: pointer; color: var(--primary-color); font-weight: 600; text-decoration: underline; }
+
+        /* 按钮组 */
+        .action-bar { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+        .btn-secondary { background-color: white; border: 1px solid var(--border-color); color: var(--text-main); }
+        .btn-secondary:hover { background-color: #f1f5f9; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* 结果展示区 */
+        .result-zone { margin-top: 20px; display: none; /* 默认隐藏，有结果时显示 */ }
+        .result-zone.active { display: block; animation: fadeIn 0.5s; }
+        .result-content { background: #f1f5f9; padding: 20px; border-radius: 8px; overflow-x: auto; min-height: 100px; position: relative; }
+        .result-content img { max-width: 100%; height: auto; border-radius: 4px; }
+        .result-content pre { margin: 0; white-space: pre-wrap; word-break: break-all; font-family: monospace; }
+        
+        /* 加载状态 */
+        .loading-spinner { display: none; width: 24px; height: 24px; border: 3px solid #fff; border-bottom-color: transparent; border-radius: 50%; animation: rotation 1s linear infinite; }
+        .btn-primary.loading .loading-spinner { display: inline-block; }
+        .btn-primary.loading span { margin-left: 8px; }
+
+        /* 侧边栏 */
+        .sidebar { grid-column: 2 / 3; }
+        @media (max-width: 768px) { .sidebar { grid-column: 1 / -1; order: 3; } }
+        .sidebar-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
+        .related-list { list-style: none; }
+        .related-item { margin-bottom: 12px; }
+        .related-link { display: block; padding: 12px; background: #f8fafc; border-radius: 8px; text-decoration: none; color: var(--text-main); transition: 0.2s; border: 1px solid transparent; }
+        .related-link:hover { background: white; border-color: var(--border-color); color: var(--primary-color); transform: translateX(4px); }
+        .related-desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* 底部详细说明 */
+        .tool-details { grid-column: 1 / -1; margin-top: 40px; background: white; padding: 40px; border-radius: var(--radius); }
+        .tool-details h2 { font-size: 1.5rem; margin-top: 30px; margin-bottom: 15px; color: var(--text-main); }
+        .tool-details h3 { font-size: 1.25rem; margin-top: 20px; margin-bottom: 10px; }
+        .tool-details p { margin-bottom: 15px; color: #475569; }
+        .tool-details ul { margin-bottom: 15px; padding-left: 20px; color: #475569; }
+        .tool-details li { margin-bottom: 8px; }
+
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- 1. 顶部：标题 + 简介 -->
+    <header class="tool-header card">
+        <h1 class="tool-title">{{ .Title }}</h1>
+        
+        <!-- 新增：分类展示区 -->
+        <div style="margin-bottom: 15px;">
+            {{ if .Params.categories }}
+                <span style="font-size: 0.9rem; color: var(--text-muted); margin-right: 8px;">分类：</span>
+                {{ range .Params.categories }}
+                    <!-- 生成分类链接，假设分类页面路径为 /categories/{分类名} -->
+                    <a href="{{ "/categories/" | relURL }}{{ . | urlize }}/" 
+                    style="display: inline-block; background: #eff6ff; color: var(--primary-color); padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; text-decoration: none; margin-right: 8px; margin-bottom: 4px; border: 1px solid #bfdbfe;">
+                        {{ . }}
+                    </a>
+                {{ end }}
+            {{ end }}
+        </div>
+
+        <p class="tool-intro">
+            {{ .Description }}
+            <br>
+            <small style="color: var(--primary-color); font-weight: 500;">
+                👇 请在下方上传文件或输入内容，立即开始处理。
+            </small>
+        </p>
+    </header>
+
+    <!-- 4. 底部：详细介绍说明 -->  
+</div>
+</body>
+</html>
