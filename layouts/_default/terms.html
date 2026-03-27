@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }} - {{ .Site.Title }}</title>
+    <!-- 引入与 tool.html 相同的 CSS -->
+    <style>
+        /* ... 复用之前的 CSS 变量 ... */
+        :root { --primary-color: #2563eb; --bg-color: #f8fafc; --text-main: #1e293b; }
+        body { font-family: system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .category-header { text-align: center; margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); text-decoration: none; color: inherit; transition: transform 0.2s; border: 1px solid #e2e8f0; display: block; }
+        .card:hover { transform: translateY(-4px); border-color: var(--primary-color); }
+        .card h3 { margin: 0 0 10px 0; color: var(--primary-color); }
+        .card p { font-size: 0.9rem; color: #64748b; margin: 0; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary-color); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="back-link">← 返回首页</a>
+    
+    <div class="category-header">
+        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">{{ .Title }}</h1>
+        <p style="color: #64748b;">该分类下共有 {{ len .Pages }} 个工具</p>
+    </div>
+
+    <div class="grid">
+        {{ range .Pages }}
+        <a href="{{ .Permalink }}" class="card">
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Description }}</p>
+            <!-- 可选：显示该工具的其他分类 -->
+            <div style="margin-top: 10px;">
+                {{ range .Params.categories }}
+                    <span style="font-size: 0.75rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #64748b;">{{ . }}</span>
+                {{ end }}
+            </div>
+        </a>
+        {{ end }}
+    </div>
+</div>
+
+</body>
+</html>
