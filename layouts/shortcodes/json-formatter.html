@@ -1,0 +1,450 @@
+<!-- 文件位置：layouts/shortcodes/json-formatter.html -->
+<div class="json-formatter-tool">
+    <style>
+        .json-formatter-tool {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --error-color: #ef4444;
+            --success-color: #10b981;
+        }
+
+        /* 添加对暗色主题的响应 */
+        [data-theme="dark"] .json-formatter-tool, 
+        .dark .json-formatter-tool {
+            --bg-color: #0f172a;  
+            --card-bg: #1e293b;  
+            --text-main: #e2e8f0;  
+            --text-muted: #94a3b8;  
+            --border-color: #334155;  
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);  
+        }
+
+        [data-theme="dark"] .json-formatter-btn-secondary,
+        [data-theme="dark"] #formatted-json{
+            background-color: #1e293b;
+        }
+
+        .json-formatter-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .json-formatter-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .json-formatter-container {
+            max-width: 100%; /* 修改为100%以适应父容器 */
+            margin: 0;
+            padding: 0;
+            display: block; /* 修改为block以适应父容器 */
+        }
+
+        .json-formatter-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0; /* 添加上下边距 */
+        }
+
+        .json-formatter-header {
+            margin-bottom: 20px;
+        }
+
+        .json-formatter-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .json-formatter-intro {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .json-formatter-workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .json-formatter-input-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .json-formatter-input-zone:hover,
+        .json-formatter-input-zone.dragover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .json-formatter-textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 14px;
+            outline: none;
+            background-color: white;
+            color: var(--text-main); /* 添加这一行，使用文本颜色变量 */
+        }
+
+        [data-theme="dark"] .json-formatter-textarea,
+        .dark .json-formatter-textarea {
+            background-color: #1e293b; /* 设置暗色背景 */
+            color: #e2e8f0; /* 设置浅色文本 */
+        }
+
+        .json-formatter-textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .json-formatter-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .json-formatter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .json-formatter-action-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .json-formatter-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .json-formatter-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .json-formatter-btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .json-formatter-btn-secondary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .json-formatter-btn-secondary:hover {
+            background-color: #f1f5f9;
+        }
+
+        .json-formatter-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .json-formatter-result-zone {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .json-formatter-result-zone.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .json-formatter-result-content {
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .json-formatter-result-content pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-family: monospace;
+        }
+
+        .json-formatter-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .json-formatter-status.error {
+            background-color: #fef2f2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .json-formatter-status.success {
+            background-color: #f0fdf4;
+            color: var(--success-color);
+            border: 1px solid #bbf7d0;
+            display: block;
+        }
+
+        .json-formatter-loading-spinner {
+            display: none;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        .json-formatter-btn-primary.loading .json-formatter-loading-spinner {
+            display: inline-block;
+        }
+
+        .json-formatter-btn-primary.loading span {
+            margin-left: 8px;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+    <div class="json-formatter-container">
+        <div class="json-formatter-card">
+            <div class="json-formatter-header">
+                <h2 class="json-formatter-title">JSON 格式化/验证工具</h2>
+                <p class="json-formatter-intro">
+                    在线格式化和验证JSON数据，美化JSON结构，检测语法错误。
+                </p>
+            </div>
+
+            <div class="json-formatter-workspace">
+                <div class="json-formatter-input-zone">
+                    <textarea id="json-input" class="json-formatter-textarea" placeholder="请在此处输入或粘贴JSON数据..."></textarea>
+                </div>
+
+                <div class="json-formatter-options">
+                    <div class="json-formatter-option">
+                        <input type="checkbox" id="indent-size-2" name="indent-size" value="2" checked>
+                        <label for="indent-size-2">2空格缩进</label>
+                    </div>
+                    <div class="json-formatter-option">
+                        <input type="checkbox" id="indent-size-4" name="indent-size" value="4">
+                        <label for="indent-size-4">4空格缩进</label>
+                    </div>
+                    <div class="json-formatter-option">
+                        <input type="checkbox" id="sort-keys" name="sort-keys">
+                        <label for="sort-keys">排序键值</label>
+                    </div>
+                    <div class="json-formatter-option">
+                        <input type="checkbox" id="minify" name="minify">
+                        <label for="minify">压缩JSON</label>
+                    </div>
+                </div>
+
+                <div class="json-formatter-action-bar">
+                    <button id="format-json" class="json-formatter-btn json-formatter-btn-primary">
+                        <div class="json-formatter-loading-spinner"></div>
+                        <span>格式化JSON</span>
+                    </button>
+                    <button id="validate-json" class="json-formatter-btn json-formatter-btn-secondary">
+                        验证JSON
+                    </button>
+                    <button id="clear-json" class="json-formatter-btn json-formatter-btn-secondary">
+                        清空
+                    </button>
+                    <button id="copy-result" class="json-formatter-btn json-formatter-btn-secondary" disabled>
+                        复制结果
+                    </button>
+                </div>
+
+                <div id="json-status" class="json-formatter-status"></div>
+
+                <div id="json-result" class="json-formatter-result-zone">
+                    <div class="json-formatter-result-content">
+                        <pre id="formatted-json"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const jsonInput = document.getElementById('json-input');
+            const formatJsonBtn = document.getElementById('format-json');
+            const validateJsonBtn = document.getElementById('validate-json');
+            const clearJsonBtn = document.getElementById('clear-json');
+            const copyResultBtn = document.getElementById('copy-result');
+            const jsonStatus = document.getElementById('json-status');
+            const jsonResult = document.getElementById('json-result');
+            const formattedJson = document.getElementById('formatted-json');
+            
+            // 缩进选项
+            const indentSize2 = document.getElementById('indent-size-2');
+            const indentSize4 = document.getElementById('indent-size-4');
+            const sortKeys = document.getElementById('sort-keys');
+            const minify = document.getElementById('minify');
+
+            // 确保只有一个缩进选项被选中
+            indentSize2.addEventListener('change', function() {
+                if (this.checked) indentSize4.checked = false;
+            });
+
+            indentSize4.addEventListener('change', function() {
+                if (this.checked) indentSize2.checked = false;
+            });
+
+            // 显示状态信息
+            function showStatus(message, type) {
+                jsonStatus.textContent = message;
+                jsonStatus.className = `json-formatter-status ${type}`;
+            }
+
+            // 清除状态信息
+            function clearStatus() {
+                jsonStatus.textContent = '';
+                jsonStatus.className = 'json-formatter-status';
+            }
+
+            // 格式化JSON
+            formatJsonBtn.addEventListener('click', function() {
+                const input = jsonInput.value.trim();
+                if (!input) {
+                    showStatus('请输入JSON数据', 'error');
+                    return;
+                }
+
+                try {
+                    const jsonObj = JSON.parse(input);
+                    let indent = indentSize2.checked ? 2 : (indentSize4.checked ? 4 : 2);
+                    
+                    if (minify.checked) {
+                        formattedJson.textContent = JSON.stringify(jsonObj);
+                    } else {
+                        if (sortKeys.checked) {
+                            const sortedObj = sortObjectKeys(jsonObj);
+                            formattedJson.textContent = JSON.stringify(sortedObj, null, indent);
+                        } else {
+                            formattedJson.textContent = JSON.stringify(jsonObj, null, indent);
+                        }
+                    }
+                    
+                    jsonResult.classList.add('active');
+                    copyResultBtn.disabled = false;
+                    showStatus('JSON格式化成功', 'success');
+                } catch (e) {
+                    showStatus(`JSON格式错误: ${e.message}`, 'error');
+                    jsonResult.classList.remove('active');
+                    copyResultBtn.disabled = true;
+                }
+            });
+
+            // 验证JSON
+            validateJsonBtn.addEventListener('click', function() {
+                const input = jsonInput.value.trim();
+                if (!input) {
+                    showStatus('请输入JSON数据', 'error');
+                    return;
+                }
+
+                try {
+                    JSON.parse(input);
+                    showStatus('JSON格式验证通过', 'success');
+                } catch (e) {
+                    showStatus(`JSON格式错误: ${e.message}`, 'error');
+                }
+            });
+
+            // 清空输入和结果
+            clearJsonBtn.addEventListener('click', function() {
+                jsonInput.value = '';
+                formattedJson.textContent = '';
+                jsonResult.classList.remove('active');
+                copyResultBtn.disabled = true;
+                clearStatus();
+            });
+
+            // 复制结果
+            copyResultBtn.addEventListener('click', function() {
+                const text = formattedJson.textContent;
+                if (!text) return;
+
+                navigator.clipboard.writeText(text).then(function() {
+                    const originalText = copyResultBtn.textContent;
+                    copyResultBtn.textContent = '已复制!';
+                    setTimeout(function() {
+                        copyResultBtn.textContent = originalText;
+                    }, 2000);
+                }).catch(function(err) {
+                    showStatus('复制失败: ' + err, 'error');
+                });
+            });
+
+            // 递归排序对象键
+            function sortObjectKeys(obj) {
+                if (typeof obj !== 'object' || obj === null) {
+                    return obj;
+                }
+                
+                if (Array.isArray(obj)) {
+                    return obj.map(item => sortObjectKeys(item));
+                }
+                
+                return Object.keys(obj).sort().reduce((result, key) => {
+                    result[key] = sortObjectKeys(obj[key]);
+                    return result;
+                }, {});
+            }
+        });
+    </script>
+</div>

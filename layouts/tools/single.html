@@ -29,6 +29,11 @@
             </small>
         </p>
     </header>
+    {{- if .Content }}
+    <div class="post-content">
+        {{ .Content }}
+    </div>
+    {{- end }}
 
     <!-- 4. 底部：详细介绍说明 -->  
 </div>
