@@ -1,3 +1,6 @@
+[site_title]
+other = "在线工具"
+
 [home]
 other = "首页"
 
@@ -12,3 +15,91 @@ other = "选择 PDF 文件"
 
 [convert_btn]
 other = "开始转换"
+
+[browse_by_category]
+other = "按分类浏览"
+
+[json_tool_title]
+other = "JSON 格式化/验证工具"
+
+[json_tool_desc]
+other = "免费在线 JSON 格式化、压缩、验证和错误检测工具。"
+
+[Dev_Tools]
+other = "开发者工具1"
+
+[Data_Format]
+other = "数据格式"
+
+[Frontend]
+other = "前端必备"
+
+# 工具页面的提示语
+[tool_action_hint]
+other = "👇 请在下方上传文件或输入内容，立即开始处理。"
+
+# 分类标签
+[categories]
+other = "分类"
+
+[back_home]
+other = "← 返回首页"
+
+# 分类页统计工具数量
+[category_tool_count]
+one = "该分类下共有 {{ .Count }} 个工具"
+other = "该分类下共有 {{ .Count }} 个工具"
+
+[json_tool_intro]
+other = "在线格式化和验证JSON数据，美化JSON结构，检测语法错误。"
+
+[json_input_placeholder]
+other = "请在此处输入或粘贴JSON数据..."
+
+[json_indent_2]
+other = "2空格缩进"
+
+[json_indent_4]
+other = "4空格缩进"
+
+[json_sort_keys]
+other = "排序键值"
+
+[json_minify]
+other = "压缩JSON"
+
+[json_btn_format]
+other = "格式化JSON"
+
+[json_btn_validate]
+other = "验证JSON"
+
+[json_btn_clear]
+other = "清空"
+
+[json_btn_copy]
+other = "复制结果"
+
+[json_placeholder]
+other = "请输入JSON数据"
+
+[json_success]
+other = "JSON格式化成功"
+
+[json_error]
+other = "JSON格式错误"
+
+[json_valid]
+other = "JSON格式验证通过"
+
+[json_copied]
+other = "已复制"
+
+[json_copy_fail]
+other = "复制失败"
+
+[footer_privacy]
+other = "隐私政策"
+
+[footer_about]
+other = "关于"

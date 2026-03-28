@@ -1,3 +1,6 @@
+[site_title]
+other = "Online Tools"
+
 [home]
 other = "Home"
 
@@ -12,3 +15,91 @@ other = "Select PDF"
 
 [convert_btn]
 other = "Convert Now"
+
+[browse_by_category]
+other = "Browse by Category"
+
+[json_tool_title]
+other = "JSON Formatter & Validator"
+
+[json_tool_desc]
+other = "Free online tool to format, compress, validate, and detect errors in JSON data."
+
+[Dev_Tools]
+other = "Dev Tools"
+
+[Data_Format]
+other = "Data Format"
+
+[Frontend]
+other = "Frontend"
+
+# 工具页面的提示语
+[tool_action_hint]
+other = "👇 Please upload a file or enter content below to get started."
+
+# 分类标签
+[categories]
+other = "Categories"
+
+[back_home]
+other = "← Back Home"
+
+# 分类页统计工具数量
+[category_tool_count]
+one = "There is {{ .Count }} tool in this category"
+other = "There are {{ .Count }} tools in this category"
+
+[json_tool_intro]
+other = "Format and validate JSON data online, beautify JSON structure, and detect syntax errors."
+
+[json_input_placeholder]
+other = "Please enter or paste JSON data here..."
+
+[json_indent_2]
+other = "2 Spaces"
+
+[json_indent_4]
+other = "4 Spaces"
+
+[json_sort_keys]
+other = "Sort Keys"
+
+[json_minify]
+other = "Minify JSON"
+
+[json_btn_format]
+other = "Format JSON"
+
+[json_btn_validate]
+other = "Validate JSON"
+
+[json_btn_clear]
+other = "Clear"
+
+[json_btn_copy]
+other = "Copy Result"
+
+[json_placeholder]
+other = "Please enter JSON data"
+
+[json_success]
+other = "JSON formatted successfully"
+
+[json_error]
+other = "JSON syntax error"
+
+[json_valid]
+other = "JSON is valid"
+
+[json_copied]
+other = "Copied!"
+
+[json_copy_fail]
+other = "Copy failed"
+
+[footer_privacy]
+other = "Privacy Policy"
+
+[footer_about]
+other = "About"
