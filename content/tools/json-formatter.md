@@ -5,5 +5,7 @@ categories:
   - 开发者工具
   - 数据格式
   - 前端必备
+layout: "page"
+translationKey: "json_formatter"
 ---
 {{< json-formatter >}}
