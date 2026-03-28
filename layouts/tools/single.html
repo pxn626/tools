@@ -6,11 +6,22 @@
     <!-- 1. 顶部：标题 + 简介 -->
     <header class="tool-header card">
         <h1 class="tool-title">{{ .Title }}</h1>
-        
+        <!-- 语言切换按钮 (完整复刻主题样式) -->
+        {{- if .IsTranslated }}
+        <div class="canonical-link">
+            <h4 style="margin: 0; font-size: 14px; color: var(--secondary);">
+                {{- range .Translations }}
+                <a href="{{ .Permalink }}" style="display: inline-block; margin-left: 5px; text-decoration: underline;">
+                    {{- .Lang }}
+                </a>
+                {{- end }}
+            </h4>
+        </div>
+        {{- end }}
         <!-- 新增：分类展示区 -->
         <div style="margin-bottom: 15px;">
             {{ if .Params.categories }}
-                <span style="font-size: 0.9rem; color: var(--text-muted); margin-right: 8px;">分类：</span>
+                <span style="font-size: 0.9rem; color: var(--text-muted); margin-right: 8px;">{{ i18n "categories" }}：</span>
                 {{ range .Params.categories }}
                     <!-- 生成分类链接，假设分类页面路径为 /categories/{分类名} -->
                     <a href="{{ "/categories/" | relURL }}{{ . | urlize }}/" 
@@ -25,7 +36,7 @@
             {{ .Description }}
             <br>
             <small style="color: var(--primary-color); font-weight: 500;">
-                👇 请在下方上传文件或输入内容，立即开始处理。
+                {{ i18n "tool_action_hint" }}
             </small>
         </p>
     </header>
