@@ -21,11 +21,11 @@
 <body>
 
 <div class="container">
-    <a href="/" class="back-link">← 返回首页</a>
+    <a href="/" class="back-link">{{ i18n "back_home" }}</a>
     
     <div class="category-header">
         <h1 style="font-size: 2.5rem; margin-bottom: 10px;">{{ .Title }}</h1>
-        <p style="color: #64748b;">该分类下共有 {{ len .Pages }} 个工具</p>
+        <p style="color: #64748b;">{{ T "category_tool_count" (len .Pages) }}</p>
     </div>
 
     <div class="grid">
