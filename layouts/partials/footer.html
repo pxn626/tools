@@ -1,10 +1,22 @@
+<!-- 1. 自动处理语言前缀的链接 -->
+{{ $privacyUrl := relLangURL "privacy" }}
+{{ $aboutUrl := relLangURL "about" }}
+
+<!-- 2. 自动获取翻译后的站点标题 -->
+<!-- T 函数会自动根据当前语言去 i18n 文件里找 "site_title" 这个 key -->
+{{ $siteName := T "site_title" | default .Site.Title }}
+
+<!-- 3. 获取其他翻译文本 -->
+{{ $privacyText := T "footer_privacy" }}
+{{ $aboutText := T "footer_about" }}
+
 {{- if not (.Param "hideFooter") }}
   <footer class="footer">
     {{- if not site.Params.footer.hideCopyright }}
         {{- if site.Copyright }}
         <span>{{ site.Copyright | markdownify }}</span>
         {{- else }}
-        <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ site.Title }}</a></span>
+        <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ $siteName }}</a></span>
         {{- end }}
         {{- print " · "}}
     {{- end }}
@@ -13,9 +25,11 @@
         {{ . | markdownify }}
         {{- print " · "}}
     {{- end }}
-
+    
     <span>
-        Powered by Tools
+        <a href="{{ $privacyUrl }}">{{ $privacyText }}</a> · 
+        <a href="{{ $aboutUrl }}">{{ $aboutText }}</a> · 
+        Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a>
         <!-- <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> & -->
         <!-- <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a> -->
     </span>
