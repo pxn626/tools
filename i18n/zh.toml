@@ -103,3 +103,84 @@ other = "隐私政策"
 
 [footer_about]
 other = "关于"
+
+# 通用标签
+[label_input]
+other = "输入内容"
+
+[label_result]
+other = "结果"
+
+# 通用按钮
+[btn_encode]
+other = "编码 (Encode)"
+
+[btn_decode]
+other = "解码 (Decode)"
+
+[btn_convert]
+other = "转换"
+
+[btn_clear]
+other = "清空"
+
+[btn_decode_jwt]
+other = "解码 Token"
+
+# 通用提示信息
+[msg_input_required]
+other = "请输入内容"
+
+[msg_success]
+other = "转换成功"
+
+[msg_error_format]
+other = "格式错误，请检查输入"
+
+[msg_error_decode]
+other = "解码失败，请检查编码格式"
+
+[msg_error_parse]
+other = "解析失败"
+
+# Base64 工具
+[base64_title]
+other = "Base64 编解码"
+
+[base64_desc]
+other = "快速将文本或文件转换为 Base64 格式，或进行解码还原。"
+
+[base64_input_ph]
+other = "在此输入文本或 Base64 字符串..."
+
+# URL 工具
+[url_title]
+other = "URL 编解码"
+
+[url_desc]
+other = "处理网址中的特殊字符，支持中文 URL 转码与还原。"
+
+[url_input_ph]
+other = "在此输入 URL 或编码字符串..."
+
+# JWT 工具
+[jwt_title]
+other = "JWT 解码器"
+
+[jwt_desc]
+other = "解析 JSON Web Token，查看 Header 和 Payload 信息。"
+
+[jwt_label_input]
+other = "JWT Token"
+
+[jwt_input_ph]
+other = "在此粘贴 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+[jwt_header]
+other = "Header (头部)"
+
+[jwt_payload]
+other = "Payload (负载)"
+
+[jwt_waiting]
+other = "等待解码..."

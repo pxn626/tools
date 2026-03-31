@@ -1,0 +1,121 @@
+{{ $id := .Get "id" | default "jwt" }}
+<div class="tool-container" id="{{ $id }}-tool">
+    <div class="tool-header">
+        <h3>{{ i18n "jwt_title" }}</h3>
+        <p class="tool-desc">{{ i18n "jwt_desc" }}</p>
+    </div>
+
+    <div class="tool-workspace">
+        <div class="tool-input-group">
+            <label for="{{ $id }}-input">{{ i18n "jwt_label_input" }}</label>
+            <textarea id="{{ $id }}-input" placeholder="{{ i18n "jwt_input_ph" }}"></textarea>
+        </div>
+
+        <div class="tool-actions">
+            <button id="{{ $id }}-decode" class="btn-primary">{{ i18n "btn_decode_jwt" }}</button>
+            <button id="{{ $id }}-clear" class="btn-secondary">{{ i18n "btn_clear" }}</button>
+        </div>
+
+        <div id="{{ $id }}-status" class="tool-status"></div>
+
+        <div class="jwt-result-grid">
+            <div class="jwt-result-item">
+                <h4>{{ i18n "jwt_header" }}</h4>
+                <pre id="{{ $id }}-header">{{ i18n "jwt_waiting" }}</pre>
+            </div>
+            <div class="jwt-result-item">
+                <h4>{{ i18n "jwt_payload" }}</h4>
+                <pre id="{{ $id }}-payload">{{ i18n "jwt_waiting" }}</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tool-container { background: var(--code-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; }
+.tool-header { margin-bottom: 1rem; }
+.tool-header h3 { margin: 0 0 0.5rem 0; color: var(--primary); }
+.tool-desc { margin: 0; font-size: 0.9rem; color: var(--secondary); }
+.tool-workspace { display: flex; flex-direction: column; gap: 1rem; }
+.tool-input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.tool-input-group label { font-weight: bold; font-size: 0.9rem; }
+textarea { width: 100%; min-height: 100px; padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: monospace; resize: vertical; box-sizing: border-box; }
+textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+.tool-actions { display: flex; gap: 0.5rem; }
+.btn-primary, .btn-secondary { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+.btn-primary { background: var(--primary); color: var(--code-bg); }
+.btn-secondary { background: var(--border); color: var(--primary); }
+.btn-primary:hover, .btn-secondary:hover { opacity: 0.8; }
+.tool-status { font-size: 0.85rem; min-height: 1.2em; }
+.status-error { color: #ff4d4f; }
+.status-success { color: #52c41a; }
+.jwt-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.jwt-result-item { background: var(--entry); padding: 1rem; border-radius: 4px; border: 1px solid var(--border); }
+.jwt-result-item h4 { margin: 0 0 0.5rem 0; color: var(--primary); font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+.jwt-result-item pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85rem; color: var(--secondary); }
+@media (max-width: 768px) { .jwt-result-grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+(function() {
+    const input = document.getElementById('{{ $id }}-input');
+    const decodeBtn = document.getElementById('{{ $id }}-decode');
+    const clearBtn = document.getElementById('{{ $id }}-clear');
+    const headerOut = document.getElementById('{{ $id }}-header');
+    const payloadOut = document.getElementById('{{ $id }}-payload');
+    const status = document.getElementById('{{ $id }}-status');
+
+    function parseJwt(token) {
+        const base64Url = token.split('.')[1];
+        if (!base64Url) throw new Error('Invalid Token Format');
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+
+    function parseHeader(token) {
+        const base64Url = token.split('.')[0];
+        if (!base64Url) throw new Error('Invalid Token Format');
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+
+    decodeBtn.addEventListener('click', () => {
+        const val = input.value.trim();
+        if (!val) {
+            status.textContent = '{{ i18n "msg_input_required" }}';
+            status.className = 'tool-status status-error';
+            return;
+        }
+
+        try {
+            const header = parseHeader(val);
+            const payload = parseJwt(val);
+            
+            headerOut.textContent = JSON.stringify(header, null, 2);
+            payloadOut.textContent = JSON.stringify(payload, null, 2);
+            
+            status.textContent = '{{ i18n "msg_success" }}';
+            status.className = 'tool-status status-success';
+        } catch (e) {
+            headerOut.textContent = '{{ i18n "msg_error_parse" }}';
+            payloadOut.textContent = '{{ i18n "msg_error_parse" }}';
+            status.textContent = '{{ i18n "msg_error_format" }}：' + e.message;
+            status.className = 'tool-status status-error';
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        headerOut.textContent = '{{ i18n "jwt_waiting" }}';
+        payloadOut.textContent = '{{ i18n "jwt_waiting" }}';
+        status.textContent = '';
+        status.className = 'tool-status';
+    });
+})();
+</script>

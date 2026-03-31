@@ -103,3 +103,84 @@ other = "Privacy Policy"
 
 [footer_about]
 other = "About"
+
+# Common Labels
+[label_input]
+other = "Input Content"
+
+[label_result]
+other = "Result"
+
+# Common Buttons
+[btn_encode]
+other = "Encode"
+
+[btn_decode]
+other = "Decode"
+
+[btn_convert]
+other = "Convert"
+
+[btn_clear]
+other = "Clear"
+
+[btn_decode_jwt]
+other = "Decode Token"
+
+# Common Messages
+[msg_input_required]
+other = "Please enter content"
+
+[msg_success]
+other = "Success"
+
+[msg_error_format]
+other = "Format error, please check input"
+
+[msg_error_decode]
+other = "Decode failed, check format"
+
+[msg_error_parse]
+other = "Parse failed"
+
+# Base64 Tool
+[base64_title]
+other = "Base64 Encoder & Decoder"
+
+[base64_desc]
+other = "Quickly convert text or files to Base64 format or decode back."
+
+[base64_input_ph]
+other = "Enter text or Base64 string here..."
+
+# URL Tool
+[url_title]
+other = "URL Encoder & Decoder"
+
+[url_desc]
+other = "Handle special characters in URLs, support Chinese URL encoding."
+
+[url_input_ph]
+other = "Enter URL or encoded string here..."
+
+# JWT Tool
+[jwt_title]
+other = "JWT Decoder"
+
+[jwt_desc]
+other = "Parse JSON Web Token to view Header and Payload info."
+
+[jwt_label_input]
+other = "JWT Token"
+
+[jwt_input_ph]
+other = "Paste eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... here"
+
+[jwt_header]
+other = "Header"
+
+[jwt_payload]
+other = "Payload"
+
+[jwt_waiting]
+other = "Waiting for decode..."

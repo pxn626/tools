@@ -1,0 +1,103 @@
+{{ $id := .Get "id" | default "url" }}
+<div class="tool-container" id="{{ $id }}-tool">
+    <div class="tool-header">
+        <h3>{{ i18n "url_title" }}</h3>
+        <p class="tool-desc">{{ i18n "url_desc" }}</p>
+    </div>
+
+    <div class="tool-workspace">
+        <div class="tool-input-group">
+            <label for="{{ $id }}-input">{{ i18n "label_input" }}</label>
+            <textarea id="{{ $id }}-input" placeholder="{{ i18n "url_input_ph" }}"></textarea>
+        </div>
+
+        <div class="tool-options">
+            <div class="option-item">
+                <input type="radio" id="{{ $id }}-encode" name="{{ $id }}-mode" value="encode" checked>
+                <label for="{{ $id }}-encode">{{ i18n "btn_encode" }}</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" id="{{ $id }}-decode" name="{{ $id }}-mode" value="decode">
+                <label for="{{ $id }}-decode">{{ i18n "btn_decode" }}</label>
+            </div>
+        </div>
+
+        <div class="tool-actions">
+            <button id="{{ $id }}-convert" class="btn-primary">{{ i18n "btn_convert" }}</button>
+            <button id="{{ $id }}-clear" class="btn-secondary">{{ i18n "btn_clear" }}</button>
+        </div>
+
+        <div class="tool-output-group">
+            <label for="{{ $id }}-output">{{ i18n "label_result" }}</label>
+            <textarea id="{{ $id }}-output" readonly placeholder="{{ i18n "result_ph" }}"></textarea>
+        </div>
+        
+        <div id="{{ $id }}-status" class="tool-status"></div>
+    </div>
+</div>
+
+<style>
+/* 样式复用 Base64 的样式，这里为了独立文件完整性再次包含，实际使用可提取到公共 CSS */
+.tool-container { background: var(--code-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; }
+.tool-header { margin-bottom: 1rem; }
+.tool-header h3 { margin: 0 0 0.5rem 0; color: var(--primary); }
+.tool-desc { margin: 0; font-size: 0.9rem; color: var(--secondary); }
+.tool-workspace { display: flex; flex-direction: column; gap: 1rem; }
+.tool-input-group, .tool-output-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.tool-input-group label, .tool-output-group label { font-weight: bold; font-size: 0.9rem; }
+textarea { width: 100%; min-height: 120px; padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: monospace; resize: vertical; box-sizing: border-box; }
+textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+.tool-options { display: flex; gap: 1rem; background: var(--entry); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border); }
+.option-item { display: flex; align-items: center; gap: 0.3rem; }
+.tool-actions { display: flex; gap: 0.5rem; }
+.btn-primary, .btn-secondary { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+.btn-primary { background: var(--primary); color: var(--code-bg); }
+.btn-secondary { background: var(--border); color: var(--primary); }
+.btn-primary:hover, .btn-secondary:hover { opacity: 0.8; }
+.tool-status { font-size: 0.85rem; min-height: 1.2em; }
+.status-error { color: #ff4d4f; }
+.status-success { color: #52c41a; }
+</style>
+
+<script>
+(function() {
+    const container = document.getElementById('{{ $id }}-tool');
+    const input = document.getElementById('{{ $id }}-input');
+    const output = document.getElementById('{{ $id }}-output');
+    const convertBtn = document.getElementById('{{ $id }}-convert');
+    const clearBtn = document.getElementById('{{ $id }}-clear');
+    const status = document.getElementById('{{ $id }}-status');
+    
+    convertBtn.addEventListener('click', () => {
+        const mode = container.querySelector(`input[name="{{ $id }}-mode"]:checked`).value;
+        const val = input.value.trim();
+        
+        if (!val) {
+            status.textContent = '{{ i18n "msg_input_required" }}';
+            status.className = 'tool-status status-error';
+            return;
+        }
+
+        try {
+            if (mode === 'encode') {
+                output.value = encodeURIComponent(val);
+            } else {
+                output.value = decodeURIComponent(val);
+            }
+            status.textContent = '{{ i18n "msg_success" }}';
+            status.className = 'tool-status status-success';
+        } catch (e) {
+            output.value = '';
+            status.textContent = '{{ i18n "msg_error_decode" }}';
+            status.className = 'tool-status status-error';
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        input.value = '';
+        output.value = '';
+        status.textContent = '';
+        status.className = 'tool-status';
+    });
+})();
+</script>
