@@ -64,9 +64,9 @@
 - [ ] STL Repair/Convert	3D 打印文件修复
 - [ ] GLTF Optimizer	3D 模型压缩
 - [ ] Diff Checker	文本/代码对比
-- [ ] Markdown Table Gen	表格生成器
+- [ ] Markdown Table Gen	表格生成器X
 - [ ] Lorem Ipsum Gen	假文生成器
-- [ ] Text Case Converter	大小写/格式转换
+- [X] Text Case Converter	大小写/格式转换
 - [ ] Ascii Art Generator	图片转字符画
 - [ ] Pixel Art Maker	像素画编辑器
 - [ ] Chromatic Aberration	故障风图片生成
@@ -229,9 +229,7 @@ Level 4 (硬核 WASM/AI 级)：需要编译大型 C++/Rust 库为 WASM（如 FFm
 Level 5 (地狱级/系统级)：涉及浏览器底层限制、P2P 网络、AR 硬件调用或极度复杂的解析逻辑，可能需要数周或作为独立项目开发。
 🟢 Level 1: 入门级 (纯原生 JS / 简单逻辑)
 特点：无需重型依赖，主要是字符串处理、数学计算、正则匹配。适合练手和快速上线。
-Base64 / URL / JWT 编解码工具箱
 Unix Timestamp 时间戳转换
-Text Case Converter 大小写/格式转换
 Lorem Ipsum Gen 假文生成器
 Lorem Ipsum (Specialized) 特殊风格假文
 Password Strength Visualizer 密码强度可视化

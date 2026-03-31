@@ -184,3 +184,53 @@ other = "Payload (负载)"
 
 [jwt_waiting]
 other = "等待解码..."
+
+# --- Unix Timestamp Tool ---
+[timestamp_title]
+other = "Unix 时间戳转换"
+
+[timestamp_desc]
+other = "将当前时间转换为时间戳，或将时间戳转换为可读日期。"
+
+[timestamp_input_ph]
+other = "输入日期 (如 2026-03-31) 或 时间戳..."
+
+[timestamp_to_ts]
+other = "转时间戳"
+
+[timestamp_to_date]
+other = "转日期时间"
+
+[btn_now]
+other = "当前时间"
+
+[timestamp_current_loaded]
+other = "已加载当前时间戳"
+
+# --- Text Case Tool ---
+[case_title]
+other = "文本大小写转换"
+
+[case_desc]
+other = "快速转换文本格式，支持驼峰、下划线、全大写等。"
+
+[case_input_ph]
+other = "在此输入文本..."
+
+[case_upper]
+other = "全大写"
+
+[case_lower]
+other = "全小写"
+
+[case_title_case]
+other = "首字母大写"
+
+[case_camel]
+other = "小驼峰"
+
+[case_snake]
+other = "下划线"
+
+[case_kebab]
+other = "短横线"

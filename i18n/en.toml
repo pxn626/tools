@@ -184,3 +184,53 @@ other = "Payload"
 
 [jwt_waiting]
 other = "Waiting for decode..."
+
+# --- Unix Timestamp Tool ---
+[timestamp_title]
+other = "Unix Timestamp Converter"
+
+[timestamp_desc]
+other = "Convert current time to timestamp or timestamp to readable date."
+
+[timestamp_input_ph]
+other = "Enter date (e.g. 2026-03-31) or Timestamp..."
+
+[timestamp_to_ts]
+other = "To Timestamp"
+
+[timestamp_to_date]
+other = "To Date Time"
+
+[btn_now]
+other = "Current Time"
+
+[timestamp_current_loaded]
+other = "Current timestamp loaded"
+
+# --- Text Case Tool ---
+[case_title]
+other = "Text Case Converter"
+
+[case_desc]
+other = "Quickly convert text format, supports camelCase, snake_case, etc."
+
+[case_input_ph]
+other = "Enter text here..."
+
+[case_upper]
+other = "UPPERCASE"
+
+[case_lower]
+other = "lowercase"
+
+[case_title_case]
+other = "Title Case"
+
+[case_camel]
+other = "camelCase"
+
+[case_snake]
+other = "snake_case"
+
+[case_kebab]
+other = "kebab-case"
