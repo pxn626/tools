@@ -35,6 +35,7 @@
 - [ ] SQL Formatter	        SQL 格式化/转换
 - [ ] Cron Parser	        Cron 表达式生成/解析
 - [ ] JSON Crack	        JSON 转 流程图/图片
+- [X] JSON 格式化	        JSON 格式化/验证
 - [ ] Base64 / URL / JWT	编解码工具箱
 - [ ] Color Converter	    颜色格式互转
 - [ ] QR Code Generator	    生成二维码
