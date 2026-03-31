@@ -234,3 +234,31 @@ other = "snake_case"
 
 [case_kebab]
 other = "kebab-case"
+
+# --- Lorem Ipsum Tool ---
+[lorem_title]
+other = "Lorem Ipsum Generator"
+
+[lorem_desc]
+other = "Generate standard dummy text for layout testing."
+
+[lorem_paragraphs]
+other = "Paragraphs"
+
+[lorem_sentences]
+other = "Sentences"
+
+[lorem_words]
+other = "Words"
+
+[lorem_quantity]
+other = "Quantity"
+
+[btn_generate]
+other = "Generate"
+
+[lorem_output_ph]
+other = "Generated text will appear here..."
+
+[msg_copied]
+other = "Copied to clipboard"
