@@ -284,3 +284,28 @@ other = "科技 (Tech)"
 
 [theme_hipster]
 other = "潮人 (Hipster)"
+
+# --- Ultimate Dummy Text Tool ---
+[ultimate_dummy_title]
+other = "全能假文生成器"
+
+[ultimate_dummy_desc]
+other = "集成英文主题、中文（古典/现代）及功能测试文本的一站式工具。"
+
+[dummy_category]
+other = "选择大类"
+
+[dummy_style]
+other = "选择具体风格"
+
+[cat_en_theme]
+other = "英文主题 (English Themes)"
+
+[cat_zh_classical]
+other = "中文古典 (Chinese Classical)"
+
+[cat_zh_modern]
+other = "中文现代 (Chinese Modern)"
+
+[cat_functional]
+other = "功能测试 (Functional)"

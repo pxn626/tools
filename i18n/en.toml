@@ -284,3 +284,28 @@ other = "Tech"
 
 [theme_hipster]
 other = "Hipster"
+
+# --- Ultimate Dummy Text Tool ---
+[ultimate_dummy_title]
+other = "Ultimate Dummy Text Generator"
+
+[ultimate_dummy_desc]
+other = "All-in-one tool for English themes, Chinese (Classical/Modern), and functional test text."
+
+[dummy_category]
+other = "Select Category"
+
+[dummy_style]
+other = "Select Style"
+
+[cat_en_theme]
+other = "English Themes"
+
+[cat_zh_classical]
+other = "Chinese Classical"
+
+[cat_zh_modern]
+other = "Chinese Modern"
+
+[cat_functional]
+other = "Functional"

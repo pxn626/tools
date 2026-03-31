@@ -1,0 +1,295 @@
+{{ $id := .Get "id" | default "ultimatedummy" }}
+<div class="tool-container" id="{{ $id }}-tool">
+    <div class="tool-header">
+        <h3>{{ i18n "ultimate_dummy_title" }}</h3>
+        <p class="tool-desc">{{ i18n "ultimate_dummy_desc" }}</p>
+    </div>
+
+    <div class="tool-workspace">
+        <!-- 第一级：大类选择 -->
+        <div class="tool-select-group">
+            <label for="{{ $id }}-category">{{ i18n "dummy_category" }}</label>
+            <select id="{{ $id }}-category" class="tool-select">
+                <option value="en_theme">{{ i18n "cat_en_theme" }}</option>
+                <option value="zh_classical">{{ i18n "cat_zh_classical" }}</option>
+                <option value="zh_modern">{{ i18n "cat_zh_modern" }}</option>
+                <option value="functional">{{ i18n "cat_functional" }}</option>
+            </select>
+        </div>
+
+        <!-- 第二级：具体风格选择 -->
+        <div class="tool-select-group">
+            <label for="{{ $id }}-style">{{ i18n "dummy_style" }}</label>
+            <select id="{{ $id }}-style" class="tool-select">
+                <!-- 动态填充 -->
+            </select>
+        </div>
+
+        <div class="tool-options">
+            <div class="option-item">
+                <input type="radio" id="{{ $id }}-para" name="{{ $id }}-mode" value="para" checked>
+                <label for="{{ $id }}-para">{{ i18n "lorem_paragraphs" }}</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" id="{{ $id }}-sent" name="{{ $id }}-mode" value="sent">
+                <label for="{{ $id }}-sent">{{ i18n "lorem_sentences" }}</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" id="{{ $id }}-word" name="{{ $id }}-mode" value="word">
+                <label for="{{ $id }}-word">{{ i18n "lorem_words" }}</label>
+            </div>
+        </div>
+
+        <div class="tool-input-group">
+            <label for="{{ $id }}-count">{{ i18n "lorem_quantity" }}</label>
+            <input type="number" id="{{ $id }}-count" value="3" min="1" max="100" class="tool-number-input">
+        </div>
+
+        <div class="tool-actions">
+            <button id="{{ $id }}-generate" class="btn-primary">{{ i18n "btn_generate" }}</button>
+            <button id="{{ $id }}-copy" class="btn-secondary">{{ i18n "btn_copy" }}</button>
+            <button id="{{ $id }}-clear" class="btn-secondary">{{ i18n "btn_clear" }}</button>
+        </div>
+
+        <div class="tool-output-group">
+            <label for="{{ $id }}-output">{{ i18n "label_result" }}</label>
+            <textarea id="{{ $id }}-output" readonly placeholder="{{ i18n "lorem_output_ph" }}"></textarea>
+        </div>
+        
+        <div id="{{ $id }}-status" class="tool-status"></div>
+    </div>
+</div>
+
+<style>
+.tool-container { background: var(--code-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border); margin: 1rem 0; }
+.tool-header { margin-bottom: 1rem; }
+.tool-header h3 { margin: 0 0 0.5rem 0; color: var(--primary); }
+.tool-desc { margin: 0; font-size: 0.9rem; color: var(--secondary); }
+.tool-workspace { display: flex; flex-direction: column; gap: 1rem; }
+.tool-select-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.tool-select-group label { font-weight: bold; font-size: 0.9rem; }
+.tool-select { padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: inherit; box-sizing: border-box; }
+.tool-select:focus { outline: 2px solid var(--primary); border-color: transparent; }
+.tool-options { display: flex; flex-wrap: wrap; gap: 1rem; background: var(--entry); padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border); }
+.option-item { display: flex; align-items: center; gap: 0.3rem; }
+.tool-input-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.tool-input-group label { font-weight: bold; font-size: 0.9rem; }
+.tool-number-input { width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: monospace; box-sizing: border-box; }
+.tool-number-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+.tool-actions { display: flex; gap: 0.5rem; }
+.btn-primary, .btn-secondary { padding: 0.6rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+.btn-primary { background: var(--primary); color: var(--code-bg); }
+.btn-secondary { background: var(--border); color: var(--primary); }
+.btn-primary:hover, .btn-secondary:hover { opacity: 0.8; }
+.tool-output-group { display: flex; flex-direction: column; gap: 0.5rem; }
+.tool-output-group label { font-weight: bold; font-size: 0.9rem; }
+textarea { width: 100%; min-height: 150px; padding: 0.8rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: monospace; resize: vertical; box-sizing: border-box; }
+textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+.tool-status { font-size: 0.85rem; min-height: 1.2em; }
+.status-error { color: #ff4d4f; }
+.status-success { color: #52c41a; }
+</style>
+
+<script>
+(function() {
+    const container = document.getElementById('{{ $id }}-tool');
+    const output = document.getElementById('{{ $id }}-output');
+    const countInput = document.getElementById('{{ $id }}-count');
+    const categorySelect = document.getElementById('{{ $id }}-category');
+    const styleSelect = document.getElementById('{{ $id }}-style');
+    const generateBtn = document.getElementById('{{ $id }}-generate');
+    const copyBtn = document.getElementById('{{ $id }}-copy');
+    const clearBtn = document.getElementById('{{ $id }}-clear');
+    const status = document.getElementById('{{ $id }}-status');
+
+    // --- 词库定义 ---
+    
+    // 1. 英文主题词库
+    const enThemes = {
+        food: ['bacon', 'ipsum', 'dolor', 'meatball', 'sirloin', 'pancetta', 'salami', 'brisket', 'cupcake', 'jelly', 'sweet', 'roll', 'chocolate', 'candy', 'cotton', 'cake', 'pie', 'fruit', 'danish', 'muffin', 'donut'],
+        corporate: ['synergy', 'ipsum', 'dolor', 'leverage', 'agile', 'paradigm', 'scalable', 'bandwidth', 'strategic', 'initiative', 'holistic', 'empower', 'visionary', 'collaboration', 'backend', 'solution', 'disruptive', 'innovative', 'streamline', 'proactive'],
+        tech: ['lorem', 'ipsum', 'dolor', 'algorithm', 'api', 'array', 'binary', 'bit', 'byte', 'cache', 'cloud', 'compile', 'cpu', 'cyber', 'data', 'database', 'debug', 'digital', 'dns', 'encryption', 'ethernet', 'firewall', 'framework', 'git', 'github', 'gpu', 'hacker', 'html', 'javascript', 'json'],
+        hipster: ['artisan', 'ipsum', 'dolor', 'brooklyn', 'vaporware', 'etsy', 'pabst', 'authentic', 'next', 'level', 'seitan', 'locavore', 'cornhole', 'selvage', 'neutra', 'forage', 'ethical', 'food', 'truck', 'pbr&b', 'tote', 'bag', 'portland', 'shabby', 'chic']
+    };
+
+    // 2. 中文古典词库 (句子库)
+    const zhClassicalSentences = [
+        "子曰学而时习之不亦说乎", "有朋自远方来不亦乐乎", "人不知而不愠不亦君子乎",
+        "关关雎鸠在河之洲", "窈窕淑女君子好逑", "参差荇菜左右流之",
+        "昔我往矣杨柳依依", "今我来思雨雪霏霏", "行道迟迟载渴载饥",
+        "大学之道在明明德", "在亲民在止于至善", "知止而后有定",
+        "天行健君子以自强不息", "地势坤君子以厚德载物",
+        "道可道非常道", "名可名非常名", "无名天地之始", "有名万物之母",
+        "故常无欲以观其妙", "常有欲以观其徼"
+    ];
+
+    // 3. 中文现代废话词库 (句子库 - 职场/学术/新闻风)
+    const zhModernSentences = [
+        "我们需要从多个维度对这一现象进行深度的剖析和解读",
+        "在当前的宏观环境下，如何把握底层逻辑是解决问题的关键",
+        "通过拉通对齐颗粒度，我们能够更好地赋能业务场景",
+        "这一举措旨在打通端到端的流程，实现价值闭环",
+        "关于这个问题，我们需要形成一套组合拳，打出差异化",
+        "我们要坚持长期主义，在不确定的环境中寻找确定性",
+        "通过复盘和迭代，不断优化我们的方法论",
+        "这是一个典型的通过技术手段解决业务痛点的案例",
+        "我们要充分利用现有的资源禀赋，实现降本增效",
+        "最终我们要达到的效果是用户心智的占领和市场份额的扩张"
+    ];
+
+    // 4. 功能型词库
+    const functionalThemes = {
+        long_words: ["Pneumonoultramicroscopicsilicovolcanoconiosis", "Supercalifragilisticexpialidocious", "Hippopotomonstrosesquippedaliophobia", "Floccinaucinihilipilification", "Antidisestablishmentarianism", "Honorable", "Incomprehensibilities"],
+        emoji: ["🍔🍟🍕🌭🍿🥓🥚🥞🧇🥐🥨🥯🥪", "😀😃😄😁😆😅😂🤣🥲🥹☺️😊😇🙂🙃😉😌😍🥰😘😗😙😚😋😛", "🚗🚕🚙🚌🚎🏎️🚓🚑🚒🚐🚚🚛🚜🛴🚲🛵🏍️", "🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷🐽🐸🐵🙈🙉🙊🐒"],
+        ecommerce: ["爆款推荐", "限时抢购", "全网最低", "正品保证", "极速发货", "七天无理由退换", "买一送一", "年终大促", "亏本冲量", "最后三天", "手慢无", "好评返现", "满减优惠", "券后价更低"]
+    };
+
+    // --- 辅助函数 ---
+
+    // 更新二级菜单
+    function updateStyleOptions() {
+        const category = categorySelect.value;
+        styleSelect.innerHTML = ''; // 清空
+
+        let options = [];
+        if (category === 'en_theme') {
+            options = [
+                {val: 'food', text: '美食 (Food)'},
+                {val: 'corporate', text: '商务 (Corporate)'},
+                {val: 'tech', text: '科技 (Tech)'},
+                {val: 'hipster', text: '潮人 (Hipster)'}
+            ];
+        } else if (category === 'zh_classical') {
+            options = [{val: 'classical', text: '古典诗词 (Classical)'}];
+        } else if (category === 'zh_modern') {
+            options = [{val: 'modern', text: '现代废话 (Modern Nonsense)'}];
+        } else if (category === 'functional') {
+            options = [
+                {val: 'long_words', text: '长单词测试 (Long Words)'},
+                {val: 'emoji', text: 'Emoji 表情 (Emoji)'},
+                {val: 'ecommerce', text: '电商文案 (E-commerce)'}
+            ];
+        }
+
+        options.forEach(opt => {
+            const el = document.createElement('option');
+            el.value = opt.val;
+            el.textContent = opt.text;
+            styleSelect.appendChild(el);
+        });
+    }
+
+    // 获取当前选中的词库
+    function getCurrentWordList() {
+        const category = categorySelect.value;
+        const style = styleSelect.value;
+
+        if (category === 'en_theme') return enThemes[style];
+        if (category === 'functional') return functionalThemes[style];
+        return []; // 中文走句子逻辑
+    }
+
+    // 获取中文句子
+    function getChineseSentencePool() {
+        const category = categorySelect.value;
+        if (category === 'zh_classical') return zhClassicalSentences;
+        if (category === 'zh_modern') return zhModernSentences;
+        return [];
+    }
+
+    // 生成句子 (通用)
+    function generateSentence(wordList, isChinese) {
+        if (isChinese) {
+            // 中文逻辑：直接从句子库随机取一句
+            const pool = getChineseSentencePool();
+            return pool[Math.floor(Math.random() * pool.length)] + "。";
+        } else {
+            // 英文/功能逻辑：单词拼接
+            const len = Math.floor(Math.random() * 8) + 4; // 4-12个单词
+            let sentence = [];
+            for (let i = 0; i < len; i++) {
+                sentence.push(wordList[Math.floor(Math.random() * wordList.length)]);
+            }
+            // 首字母大写 (仅英文)
+            let text = sentence.join(' ');
+            return text.charAt(0).toUpperCase() + text.slice(1) + '.';
+        }
+    }
+
+    // 生成段落 (通用)
+    function generateParagraph(wordList, isChinese) {
+        const sentCount = Math.floor(Math.random() * 3) + 2; // 2-4个句子
+        let para = [];
+        for (let i = 0; i < sentCount; i++) {
+            para.push(generateSentence(wordList, isChinese));
+        }
+        return para.join(isChinese ? "" : " "); // 中文句子间不需要空格
+    }
+
+    // 生成单词/短语流
+    function generateWords(wordList, count, isChinese) {
+        let result = [];
+        for (let i = 0; i < count; i++) {
+            result.push(wordList[Math.floor(Math.random() * wordList.length)]);
+        }
+        // 中文用空格隔开方便阅读，英文自带空格
+        return result.join(isChinese ? " " : " ");
+    }
+
+    // --- 事件监听 ---
+
+    generateBtn.addEventListener('click', () => {
+        const category = categorySelect.value;
+        const mode = container.querySelector(`input[name="{{ $id }}-mode"]:checked`).value;
+        const count = parseInt(countInput.value) || 1;
+        
+        // 判断是否为中文模式
+        const isChinese = (category === 'zh_classical' || category === 'zh_modern');
+        // 获取词库 (中文模式下此变量仅用于占位，实际走句子库逻辑)
+        const wordList = getCurrentWordList();
+
+        let result = '';
+
+        if (mode === 'para') {
+            for (let i = 0; i < count; i++) {
+                result += generateParagraph(wordList, isChinese);
+                if (i < count - 1) result += '\n\n';
+            }
+        } else if (mode === 'sent') {
+            for (let i = 0; i < count; i++) {
+                result += generateSentence(wordList, isChinese);
+                if (i < count - 1) result += (isChinese ? "" : " ");
+            }
+        } else if (mode === 'word') {
+            result = generateWords(wordList, count, isChinese);
+        }
+
+        output.value = result;
+        status.textContent = '{{ i18n "msg_success" }}';
+        status.className = 'tool-status status-success';
+    });
+
+    copyBtn.addEventListener('click', () => {
+        if (!output.value) {
+            status.textContent = '{{ i18n "msg_input_required" }}';
+            status.className = 'tool-status status-error';
+            return;
+        }
+        output.select();
+        document.execCommand('copy');
+        status.textContent = '{{ i18n "msg_copied" }}';
+        status.className = 'tool-status status-success';
+    });
+
+    clearBtn.addEventListener('click', () => {
+        output.value = '';
+        status.textContent = '';
+        status.className = 'tool-status';
+    });
+
+    // 初始化菜单
+    updateStyleOptions();
+    categorySelect.addEventListener('change', updateStyleOptions);
+
+})();
+</script>
