@@ -262,3 +262,25 @@ other = "生成的假文将显示在这里..."
 
 [msg_copied]
 other = "已复制到剪贴板"
+
+# --- Specialized Lorem Ipsum Tool ---
+[spec_lorem_title]
+other = "特殊风格假文生成器"
+
+[spec_lorem_desc]
+other = "生成带有特定主题的有趣占位文本。"
+
+[spec_lorem_theme]
+other = "选择主题"
+
+[theme_food]
+other = "美食 (Food)"
+
+[theme_corporate]
+other = "商务 (Corporate)"
+
+[theme_tech]
+other = "科技 (Tech)"
+
+[theme_hipster]
+other = "潮人 (Hipster)"

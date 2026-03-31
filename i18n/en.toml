@@ -262,3 +262,25 @@ other = "Generated text will appear here..."
 
 [msg_copied]
 other = "Copied to clipboard"
+
+# --- Specialized Lorem Ipsum Tool ---
+[spec_lorem_title]
+other = "Specialized Lorem Ipsum Generator"
+
+[spec_lorem_desc]
+other = "Generate fun placeholder text with specific themes."
+
+[spec_lorem_theme]
+other = "Select Theme"
+
+[theme_food]
+other = "Food"
+
+[theme_corporate]
+other = "Corporate"
+
+[theme_tech]
+other = "Tech"
+
+[theme_hipster]
+other = "Hipster"
