@@ -118,30 +118,5 @@
             {{- end }}
         </ul>
     </nav>
-    <section style="padding: 40px 0; text-align: center;">
-    <h2 style="margin-bottom: 20px;">{{ i18n "browse_by_category" }}</h2>
-    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-        {{ range site.Taxonomies.categories }}
-            {{/* 
-            核心修改在这里：
-            使用 where 函数过滤页面，只保留与当前网站语言 (.Site.Language.Lang) 一致的文章 
-            */}}
-            {{ $filteredPages := where .Pages "Language.Lang" $.Site.Language.Lang }}
-            
-            {{/* 
-            只有当该分类下存在当前语言的文章时，才显示这个分类按钮 
-            (可选：如果你希望显示空分类，可以去掉这个 if 判断)
-            */}}
-            {{ if gt (len $filteredPages) 0 }}
-                <a href="{{ .Page.Permalink }}" 
-                style="padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; color: #475569; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s;">
-                    {{ .Page.Title }} 
-                    <span style="background: #eff6ff; color: var(--primary-color); padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 5px;">
-                        {{ len $filteredPages }}
-                    </span>
-                </a>
-            {{ end }}
-        {{ end }}
-    </div>
-</section>
+    
 </header>
