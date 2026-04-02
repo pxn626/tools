@@ -37,6 +37,18 @@ theme = "PaperMod"
         name = "关于"
         url = "/about/"
         weight = 3
+    
+    [[menu.main]]
+        identifier = "contact"
+        name = "联系我们"
+        url = "/contact/"
+        weight = 4
+
+        [[menu.main]]
+        identifier = "terms"
+        name = "服务条款"
+        url = "/terms/"
+        weight = 5
 
 [params]
     ShowNav = true 

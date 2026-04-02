@@ -309,3 +309,20 @@ other = "Chinese Modern"
 
 [cat_functional]
 other = "Functional"
+
+# --- 导航栏菜单 ---
+[contact]
+other = "Contact Us"
+
+[terms]
+other = "Terms of Service"
+
+# --- Cookie 弹窗 ---
+[cookie_text]
+other = "We use cookies to optimize your browsing experience."
+
+[cookie_btn]
+other = "I Agree"
+
+[cookie_link]
+other = "Learn More"
