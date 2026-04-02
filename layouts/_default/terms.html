@@ -1,48 +1,43 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ .Title }} - {{ .Site.Title }}</title>
-    <!-- 引入与 tool.html 相同的 CSS -->
-    <style>
-        /* ... 复用之前的 CSS 变量 ... */
-        :root { --primary-color: #2563eb; --bg-color: #f8fafc; --text-main: #1e293b; }
-        body { font-family: system-ui, sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        .category-header { text-align: center; margin-bottom: 40px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); text-decoration: none; color: inherit; transition: transform 0.2s; border: 1px solid #e2e8f0; display: block; }
-        .card:hover { transform: translateY(-4px); border-color: var(--primary-color); }
-        .card h3 { margin: 0 0 10px 0; color: var(--primary-color); }
-        .card p { font-size: 0.9rem; color: #64748b; margin: 0; }
-        .back-link { display: inline-block; margin-bottom: 20px; color: var(--primary-color); text-decoration: none; }
-    </style>
-</head>
-<body>
+{{ define "main" }}
+  <header>
+    <h1>所有工具</h1>
+    <p>这里列出了本站收录的所有实用工具，方便你快速查找。</p>
+  </header>
 
-<div class="container">
-    <a href="/" class="back-link">{{ i18n "back_home" }}</a>
-    
-    <div class="category-header">
-        <h1 style="font-size: 2.5rem; margin-bottom: 10px;">{{ .Title }}</h1>
-        <p style="color: #64748b;">{{ T "category_tool_count" (len .Pages) }}</p>
-    </div>
-
-    <div class="grid">
-        {{ range .Pages }}
-        <a href="{{ .Permalink }}" class="card">
-            <h3>{{ .Title }}</h3>
-            <p>{{ .Description }}</p>
-            <!-- 可选：显示该工具的其他分类 -->
-            <div style="margin-top: 10px;">
-                {{ range .Params.categories }}
-                    <span style="font-size: 0.75rem; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #64748b;">{{ . }}</span>
+  <section style="padding: 40px 0; text-align: center;">
+        <h2 style="margin-bottom: 20px;">{{ i18n "browse_by_category" }}</h2>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+            {{ range site.Taxonomies.categories }}
+                {{/* 
+                核心修改在这里：
+                使用 where 函数过滤页面，只保留与当前网站语言 (.Site.Language.Lang) 一致的文章 
+                */}}
+                {{ $filteredPages := where .Pages "Language.Lang" $.Site.Language.Lang }}
+                
+                {{/* 
+                只有当该分类下存在当前语言的文章时，才显示这个分类按钮 
+                (可选：如果你希望显示空分类，可以去掉这个 if 判断)
+                */}}
+                {{ if gt (len $filteredPages) 0 }}
+                    <a href="{{ .Page.Permalink }}" 
+                    style="padding: 10px 20px; background: white; border: 1px solid #e2e8f0; border-radius: 30px; text-decoration: none; color: #475569; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s;">
+                        {{ .Page.Title }} 
+                        <span style="background: #eff6ff; color: var(--primary-color); padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 5px;">
+                            {{ len $filteredPages }}
+                        </span>
+                    </a>
                 {{ end }}
-            </div>
-        </a>
-        {{ end }}
-    </div>
-</div>
+            {{ end }}
+        </div>
+    </section>
 
-</body>
-</html>
+  <div class="tools-grid">
+    {{/* 这里假设你的工具内容在 content/tools 目录下，如果不是，请修改下面的 "tools" */}}
+    {{ range where .Site.RegularPages "Section" "tools" }}
+      <div class="tool-card">
+        <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        <p>{{ .Summary | plainify | truncate 100 }}</p>
+      </div>
+    {{ end }}
+  </div>
+{{ end }}
