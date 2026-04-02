@@ -4,6 +4,8 @@ description: "Learn about our mission, tech stack, and why we are dedicated to p
 layout: "page"
 ---
 
+**Last Updated: April 2, 2026**
+
 ###  Our Mission
 
 In a data-driven era, **privacy** has become more precious than ever.

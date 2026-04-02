@@ -4,7 +4,7 @@ description: "We value your privacy. This page explains how we collect, use, and
 layout: "page"
 ---
 
-Last Updated: March 28, 2026
+**Last Updated: April 2, 2026**
 
 ###  Introduction
 
