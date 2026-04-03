@@ -1,0 +1,62 @@
+{{ define "main" }}
+
+<!-- 1. 纯 HTML 搜索区域 (不再包含任何 JS 逻辑) -->
+<div class="home-search-section" style="background: var(--code-bg); text-align: center; padding: 40px 20px;">
+    <h1>{{ i18n "search_title" | default "🛠️ 欢迎使用在线工具箱" }}</h1>
+    <p style="color: var(--secondary); margin: 20px 0;">{{ i18n "search_desc" | default "直接在浏览器中处理数据，无需上传，安全高效。" }}</p>
+    
+    <!-- 搜索输入框 -->
+    <div style="max-width: 600px; margin: 30px auto; position: relative;">
+        <input 
+            type="text" 
+            id="home-search-input" 
+            placeholder="{{ i18n "search_placeholder" | default "搜索工具名称，如 JSON、时间戳..." }}" 
+            style="width: 100%; padding: 15px 20px; border: 2px solid #ddd; border-radius: 30px; font-size: 16px; outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05);"
+        >
+        <!-- 搜索结果将显示在这里 -->
+        <div id="home-search-results" style="margin-top: 20px; text-align: left; display: none;"></div>
+    </div>
+</div>
+
+<!-- 1. 加载 Fuse.js (本地化，不再依赖 CDN) -->
+{{ $fuseJS := resources.Get "js/fuse.min.js" }}
+{{ if $fuseJS }}
+  {{ $secureFuse := $fuseJS | resources.Minify | resources.Fingerprint }}
+  <script type="text/javascript" src="{{ $secureFuse.Permalink }}" defer></script>
+{{ else }}
+  <!-- 只有当本地文件真的找不到时，才作为备选加载 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.min.js" defer></script>
+{{ end }}
+
+<!-- 2. 加载你的搜索逻辑 -->
+{{ $searchJS := resources.Get "js/home-search.js" }}
+{{ if $searchJS }}
+  {{ $secureJS := $searchJS | resources.Minify | resources.Fingerprint }}
+  <script type="text/javascript" src="{{ $secureJS.Permalink }}" defer></script>
+{{ end }}
+
+<!-- 3. 保留原有的文章列表 (PaperMod 默认内容) -->
+{{ if .Content }}
+  <div class="post-content">
+    {{ partial "anchored_headings.html" .Content }}
+  </div>
+{{ end }}
+
+<!-- {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
+{{ $paginator := .Paginate $pages }}
+
+{{ if $paginator.Pages }}
+  <div class="post-list">
+    {{ range $paginator.Pages }}
+      <article class="post-entry">
+        <h2 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        <div class="entry-meta">
+          <time>{{ .Date.Format "2006-01-02" }}</time>
+        </div>
+      </article>
+    {{ end }}
+  </div>
+  {{ partial "pagination.html" . }}
+{{ end }}-->
+
+{{ end }} 

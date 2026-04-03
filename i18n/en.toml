@@ -1,5 +1,5 @@
 [site_title]
-other = "Online Tools"
+other = "Online Tool Box"
 
 [home]
 other = "Home"
@@ -326,3 +326,12 @@ other = "I Agree"
 
 [cookie_link]
 other = "Learn More"
+
+[search_title]
+other = "🛠️ Online Tool Box"
+
+[search_desc]
+other = "Process data directly in your browser, no upload required, safe and efficient."
+
+[search_placeholder]
+other = "Search for tools, e.g., JSON, Timestamp..."

@@ -4,18 +4,25 @@ theme = "PaperMod"
 # 1. 修改版权显示的年份范围 (可选，不填则自动显示当前年份)
 # 格式："起始年份 - 结束年份" 或 "起始年份"
 # copyright = "2026 Tools. All rights reserved."
-
+# 关键：生成搜索索引文件 searchindex.json
+[outputs]
+    home = ["HTML", "RSS", "JSON"]  # 必须包含 JSON
+[outputFormats]
+        [outputFormats.JSON]
+            baseName = "searchindex"
+            isPlainText = true
+            mediaType = "application/json"
 
 [languages.zh]
     languageCode = 'zh-CN'
     languageName = '简体中文'
-    title = '在线工具'
+    title = '在线工具箱'
     weight = 1
 
 [languages.en]
     languageCode = 'en-US'
     languageName = 'English'
-    title = 'Online Tools'
+    title = 'Online Tool Box'
     weight = 2
 
 # 1. 开启主菜单显示
@@ -51,6 +58,12 @@ theme = "PaperMod"
         weight = 5
 
 [params]
+    search = true
+    showSearch = true # 强制显示搜索
+    # Fuse.js 的具体参数 (防止 JS 里读取 undefined)
+    [params.searchConfig]
+        fuseOpts = { isCaseSensitive = false, includeScore = true, shouldSort = true, threshold = 0.3, location = 0, distance = 100, maxPatternLength = 32, minMatchCharLength = 1, keys = ["title", "content"] }
+
     ShowNav = true 
     # 这里设置首页的大标题和副标题
     # homeInfoParams = { Title = "🛠️ 我的在线工具箱", Content = "免费、快速、无需安装的在线格式转换工具。直接在浏览器处理，文件不上传，安全又隐私。" }

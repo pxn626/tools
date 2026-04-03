@@ -1,5 +1,5 @@
 [site_title]
-other = "在线工具"
+other = "在线工具箱"
 
 [home]
 other = "首页"
@@ -326,3 +326,12 @@ other = "我同意了"
 
 [cookie_link]
 other = "了解更多"
+
+[search_title]
+other = "🛠️ 欢迎使用在线工具箱"
+
+[search_desc]
+other = "直接在浏览器中处理数据，无需上传，安全高效。"
+
+[search_placeholder]
+other = "搜索工具名称，如 JSON、时间戳..."
