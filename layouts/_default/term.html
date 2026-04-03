@@ -1,0 +1,38 @@
+{{ define "main" }}
+  <header class="page-header">
+    <h1>{{ .Title }}</h1>
+    <p>该分类下共有 {{ len .Pages }} 个工具</p>
+  </header>
+
+  <!-- 第一部分：分类导航（保持和你 terms.html 一样的风格） -->
+  <section style="padding: 20px 0; text-align: center; border-bottom: 1px solid #eee; margin-bottom: 30px;">
+    <h3 style="margin-bottom: 15px; font-size: 1.2rem;">{{ i18n "browse_by_category" }}</h3>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+        {{ range site.Taxonomies.categories }}
+            {{ $filteredPages := where .Pages "Language.Lang" $.Site.Language.Lang }}
+            {{ if gt (len $filteredPages) 0 }}
+                <a href="{{ .Page.Permalink }}" 
+                style="padding: 8px 16px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 20px; text-decoration: none; color: #495057; font-size: 0.9rem;">
+                    {{ .Page.Title }} 
+                    <span style="background: #e9ecef; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 4px;">
+                        {{ len $filteredPages }}
+                    </span>
+                </a>
+            {{ end }}
+        {{ end }}
+    </div>
+  </section>
+
+  <!-- 第二部分：当前分类下的工具列表 -->
+  <section class="tools-list">
+    <h3>🛠️ {{ .Title }} 工具列表</h3>
+    <div class="tools-grid">
+      {{ range .Pages }}
+      <div class="tool-card">
+        <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+        <p>{{ .Summary | plainify | truncate 100 }}</p>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+{{ end }}

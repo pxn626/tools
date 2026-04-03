@@ -1,0 +1,58 @@
+/* 卡片容器布局 */
+.tools-grid {
+    display: grid;
+    /* 响应式布局：自动适应宽度，最小宽度 300px */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* 单个卡片样式 */
+.tool-card {
+    background: #fff;
+    border: 1px solid #e2e8f0; /* 边框颜色 */
+    border-radius: 8px;        /* 圆角 */
+    padding: 20px;
+    transition: all 0.3s ease; /* 鼠标悬停动画 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 轻微阴影 */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 鼠标悬停效果 */
+.tool-card:hover {
+    transform: translateY(-5px); /* 向上浮动 */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* 阴影加深 */
+    border-color: #cbd5e1;
+}
+
+/* 标题样式 */
+.tool-card h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+    line-height: 1.4;
+}
+
+.tool-card h2 a {
+    color: #1a202c; /* 标题颜色 */
+    text-decoration: none;
+}
+
+.tool-card h2 a:hover {
+    color: #3182ce; /* 标题悬停颜色 */
+}
+
+/* 描述文字样式 */
+.tool-card p {
+    color: #4a5568; /* 文字颜色 */
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    /* 限制行数，超出显示省略号 (可选) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
