@@ -402,3 +402,24 @@ other = "数字"
 
 [pwd_config_symbol]
 other = "特殊符号"
+
+[color_title]
+other = "颜色格式互转工具"
+
+[color_desc]
+other = "在 Hex、RGB、HSL 之间实时转换颜色代码，并提供视觉预览。"
+
+[color_input_title]
+other = "输入颜色"
+
+[color_input_label]
+other = "请输入 Hex, RGB 或 HSL 值:"
+
+[color_input_placeholder]
+other = "#ff0000 或 rgb(255, 0, 0)"
+
+[color_btn_convert]
+other = "随机生成颜色"
+
+[color_error_invalid]
+other = "无法解析颜色格式，请输入如 #ff0000, rgb(255, 0, 0) 或 hsl(0, 100%, 50%)"

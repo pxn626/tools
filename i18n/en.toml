@@ -407,3 +407,24 @@ other = "Numbers"
 
 [pwd_config_symbol]
 other = "Symbols"
+
+[color_title]
+other = "Color Format Converter"
+
+[color_desc]
+other = "Real-time convert color codes between Hex, RGB, and HSL with visual preview."
+
+[color_input_title]
+other = "Input Color"
+
+[color_input_label]
+other = "Enter Hex, RGB or HSL value:"
+
+[color_input_placeholder]
+other = "#ff0000 or rgb(255, 0, 0)"
+
+[color_btn_convert]
+other = "Generate Random Color"
+
+[color_error_invalid]
+other = "Invalid color format. Please enter like #ff0000, rgb(255, 0, 0) or hsl(0, 100%, 50%)"
