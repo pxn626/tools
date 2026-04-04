@@ -428,3 +428,27 @@ other = "Generate Random Color"
 
 [color_error_invalid]
 other = "Invalid color format. Please enter like #ff0000, rgb(255, 0, 0) or hsl(0, 100%, 50%)"
+
+[sql_formatter_input_label]
+other = "Enter SQL Code"
+
+[sql_formatter_input_placeholder]
+other = "Paste or type your SQL statement here..."
+
+[sql_formatter_button_format]
+other = "Format SQL"
+
+[sql_formatter_button_copy]
+other = "Copy Result"
+
+[sql_formatter_output_label]
+other = "Formatted Result"
+
+[sql_formatter_no_input]
+other = "Please enter some SQL code."
+
+[sql_formatter_error]
+other = "Formatting Error"
+
+[sql_formatter_copied]
+other = "Copied to clipboard!"

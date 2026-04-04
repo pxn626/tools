@@ -1,0 +1,96 @@
+<!-- layouts/shortcodes/sql-formatter.html -->
+
+<!-- 引入本地库 (路径相对于 /static 目录) -->
+<script src="/js/sql-formatter.min.js"></script>
+
+<div class="tool-container sql-formatter">
+  <div class="input-group">
+    <label for="sql-input">{{ i18n "sql_formatter_input_label" }}</label>
+    <textarea id="sql-input" placeholder="{{ i18n "sql_formatter_input_placeholder" }}"></textarea>
+    <div class="buttons">
+      <button type="button" onclick="formatSQL()">{{ i18n "sql_formatter_button_format" }}</button>
+      <button type="button" onclick="copyResult()">{{ i18n "sql_formatter_button_copy" }}</button>
+    </div>
+  </div>
+
+  <div class="output-group">
+    <label for="sql-output">{{ i18n "sql_formatter_output_label" }}</label>
+    <textarea id="sql-output" readonly></textarea>
+  </div>
+</div>
+
+<script>
+  function formatSQL() {
+    const input = document.getElementById('sql-input').value;
+    const outputArea = document.getElementById('sql-output');
+    
+    if (!input.trim()) {
+      outputArea.value = '{{ i18n "sql_formatter_no_input" }}';
+      return;
+    }
+
+    try {
+      // 使用 sql-formatter 进行美化 (注意：新版本 API 可能略有不同)
+      const formatted = window.sqlFormatter.format(input, {
+        language: 'sql',
+        indent: '  '
+      });
+      outputArea.value = formatted;
+    } catch (error) {
+      outputArea.value = '{{ i18n "sql_formatter_error" }}: ' + error.message;
+    }
+  }
+
+  function copyResult() {
+    const output = document.getElementById('sql-output');
+    output.select();
+    // 注意：现代浏览器推荐使用 navigator.clipboard.writeText
+    // 这里为了兼容性保留旧写法，你也可以升级它
+    document.execCommand('copy');
+    alert('{{ i18n "sql_formatter_copied" }}');
+  }
+</script>
+
+<style>
+  .sql-formatter { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  .input-group, .output-group { 
+    margin-bottom: 1rem; 
+    width: 100%;
+  }
+  textarea { 
+    width: 100%; 
+    min-height: 200px; 
+    padding: 0.75rem; 
+    border: 1px solid #ddd; 
+    border-radius: 6px; 
+    font-family: 'Courier New', monospace; 
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  .buttons { 
+    margin-top: 0.75rem; 
+    text-align: right;
+  }
+  .buttons button { 
+    padding: 0.5rem 1.25rem; 
+    margin-left: 0.5rem;
+    background: #007cba; 
+    color: white; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 1rem;
+  }
+  .buttons button:hover { 
+    background: #005a87; 
+  }
+  /* 防止在极小屏幕上按钮换行 */
+  @media (max-width: 480px) {
+    .buttons button { margin-bottom: 0.5rem; }
+  }
+</style>

@@ -423,3 +423,27 @@ other = "随机生成颜色"
 
 [color_error_invalid]
 other = "无法解析颜色格式，请输入如 #ff0000, rgb(255, 0, 0) 或 hsl(0, 100%, 50%)"
+
+[sql_formatter_input_label]
+other = "请输入 SQL 代码"
+
+[sql_formatter_input_placeholder]
+other = "在此粘贴或输入您的 SQL 语句..."
+
+[sql_formatter_button_format]
+other = "格式化 SQL"
+
+[sql_formatter_button_copy]
+other = "复制结果"
+
+[sql_formatter_output_label]
+other = "格式化结果"
+
+[sql_formatter_no_input]
+other = "请输入一些 SQL 代码。"
+
+[sql_formatter_error]
+other = "格式化错误"
+
+[sql_formatter_copied]
+other = "已复制到剪贴板！"
