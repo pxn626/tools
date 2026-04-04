@@ -37,7 +37,7 @@
 - [ ] JSON Crack	        JSON 转 流程图/图片
 - [X] JSON 格式化	        JSON 格式化/验证
 - [X] Base64 / URL / JWT	编解码工具箱
-- [ ] Color Converter	    颜色格式互转
+- [x] Color Converter	    颜色格式互转
 - [ ] QR Code Generator	    生成二维码
 - [ ] Squoosh	            图片压缩与对比
 - [ ] WasmImage	            图片格式互转
@@ -230,7 +230,6 @@ Level 4 (硬核 WASM/AI 级)：需要编译大型 C++/Rust 库为 WASM（如 FFm
 Level 5 (地狱级/系统级)：涉及浏览器底层限制、P2P 网络、AR 硬件调用或极度复杂的解析逻辑，可能需要数周或作为独立项目开发。
 🟢 Level 1: 入门级 (纯原生 JS / 简单逻辑)
 特点：无需重型依赖，主要是字符串处理、数学计算、正则匹配。适合练手和快速上线。
-Color Converter 颜色格式互转
 SQL Formatter SQL 格式化/转换 (可用开源小库)
 Cron Parser Cron 表达式生成/解析
 JSON to TypeScript JSON 转 类型定义
