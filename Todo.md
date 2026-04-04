@@ -125,7 +125,7 @@
 - [ ] Splash Screen Gen	启动屏生成器
 - [ ] Meta Tag Generator	SEO 标签生成器
 - [ ] Steganography Tool	隐写术 (隐藏信息)
-- [ ] Password Strength Visualizer	密码强度可视化
+- [X] Password Strength Visualizer	密码强度可视化  
 - [ ] Certificate Decoder	SSL 证书解析
 - [ ] Data Sanitizer	敏感数据清洗
 - [ ] Recipe Scaler	食谱份量缩放
@@ -230,7 +230,6 @@ Level 4 (硬核 WASM/AI 级)：需要编译大型 C++/Rust 库为 WASM（如 FFm
 Level 5 (地狱级/系统级)：涉及浏览器底层限制、P2P 网络、AR 硬件调用或极度复杂的解析逻辑，可能需要数周或作为独立项目开发。
 🟢 Level 1: 入门级 (纯原生 JS / 简单逻辑)
 特点：无需重型依赖，主要是字符串处理、数学计算、正则匹配。适合练手和快速上线。
-Password Strength Visualizer 密码强度可视化
 Color Converter 颜色格式互转
 SQL Formatter SQL 格式化/转换 (可用开源小库)
 Cron Parser Cron 表达式生成/解析
