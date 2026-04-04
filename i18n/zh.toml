@@ -335,3 +335,70 @@ other = "直接在浏览器中处理数据，无需上传，安全高效。"
 
 [search_placeholder]
 other = "搜索工具名称，如 JSON、时间戳..."
+
+[pwd_stat_entropy]
+other = "熵值"
+
+[pwd_stat_bits]
+other = "比特"
+
+[pwd_check_len]
+other = "长度"
+
+[pwd_check_lower]
+other = "小写字母"
+
+[pwd_check_upper]
+other = "大写字母"
+
+[pwd_check_num]
+other = "数字"
+
+[pwd_check_sym]
+other = "符号"
+
+[pwd_status_weak]
+other = "太弱"
+
+[pwd_status_medium]
+other = "一般"
+
+[pwd_status_strong]
+other = "强壮"
+
+[pwd_status_secure]
+other = "非常强壮"
+
+[pwd_btn_generate]
+other = "生成符合规则的密码"
+
+[pwd_config_title]
+other = "生成规则配置"
+
+[pwd_config_length]
+other = "密码总长度"
+
+[pwd_error_config]
+other = "错误：最小要求超过了总长度！"
+
+# --- 界面通用 ---
+[pwd_input_placeholder]
+other = "点击生成或输入密码"
+
+[btn_copy]
+other = "复制"
+
+[pwd_status_waiting]
+other = "等待生成..."
+
+[pwd_config_lower]
+other = "小写字母"
+
+[pwd_config_upper]
+other = "大写字母"
+
+[pwd_config_number]
+other = "数字"
+
+[pwd_config_symbol]
+other = "特殊符号"

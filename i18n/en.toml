@@ -335,3 +335,75 @@ other = "Process data directly in your browser, no upload required, safe and eff
 
 [search_placeholder]
 other = "Search for tools, e.g., JSON, Timestamp..."
+
+[pwd_tool_title]
+other = "Password Strength & Generator"
+
+[pwd_tool_desc]
+other = "Customize password rules and check security in real-time."
+
+[pwd_input_placeholder]
+other = "Click generate or type password"
+
+[btn_copy]
+other = "Copy"
+
+[pwd_status_waiting]
+other = "Waiting..."
+
+[pwd_stat_entropy]
+other = "Entropy"
+
+[pwd_stat_bits]
+other = "bits"
+
+[pwd_check_len]
+other = "Length"
+
+[pwd_check_lower]
+other = "Lowercase"
+
+[pwd_check_upper]
+other = "Uppercase"
+
+[pwd_check_num]
+other = "Numbers"
+
+[pwd_check_sym]
+other = "Symbols"
+
+[pwd_status_weak]
+other = "Weak"
+
+[pwd_status_medium]
+other = "Medium"
+
+[pwd_status_strong]
+other = "Strong"
+
+[pwd_status_secure]
+other = "Very Strong"
+
+[pwd_btn_generate]
+other = "Generate Password"
+
+[pwd_config_title]
+other = "Rules"
+
+[pwd_config_length]
+other = "Total Length"
+
+[pwd_error_config]
+other = "Error: Min requirements exceed total length!"
+
+[pwd_config_lower]
+other = "Lowercase"
+
+[pwd_config_upper]
+other = "Uppercase"
+
+[pwd_config_number]
+other = "Numbers"
+
+[pwd_config_symbol]
+other = "Symbols"
