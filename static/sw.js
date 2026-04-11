@@ -66,6 +66,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // 不缓存 POST、PUT、DELETE 等非 GET 请求
+  if (request.method !== 'GET') {
+    return;
+  }
+
   // 导航请求 (HTML 页面) - 网络优先，缓存回退
   if (request.mode === 'navigate') {
     event.respondWith(
