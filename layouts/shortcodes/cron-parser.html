@@ -1,0 +1,775 @@
+<!-- Cron Parser - Cron 表达式生成/解析工具 -->
+<div class="cron-parser-tool">
+    <style>
+        .cron-parser-tool {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="dark"] .cron-parser-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+        }
+
+        .cron-parser-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cron-parser-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .cron-parser-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cron-parser-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .cron-parser-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .cron-parser-intro {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* 输入区域 */
+        .cron-parser-input-section {
+            margin-bottom: 20px;
+        }
+
+        .cron-parser-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text-main);
+        }
+
+        .cron-parser-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cron-parser-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+            background: var(--card-bg);
+            color: var(--text-main);
+        }
+
+        .cron-parser-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .cron-parser-input.error {
+            border-color: var(--error-color);
+        }
+
+        .cron-parser-input.success {
+            border-color: var(--success-color);
+        }
+
+        /* 快速预设 */
+        .cron-parser-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .cron-parser-preset {
+            padding: 6px 12px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .cron-parser-preset {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .cron-parser-preset:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 可视化网格 */
+        .cron-parser-visual {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        [data-theme="dark"] .cron-parser-visual {
+            background: #0f172a;
+        }
+
+        .cron-parser-day-label {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 4px;
+        }
+
+        .cron-parser-day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            background: #e2e8f0;
+            color: var(--text-muted);
+        }
+
+        [data-theme="dark"] .cron-parser-day-cell {
+            background: #334155;
+            color: #94a3b8;
+        }
+
+        .cron-parser-day-cell.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 结果区域 */
+        .cron-parser-result {
+            margin-top: 20px;
+        }
+
+        .cron-parser-result-card {
+            padding: 15px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        [data-theme="dark"] .cron-parser-result-card {
+            background: #064e3b;
+            border-color: #065f46;
+        }
+
+        .cron-parser-result-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .cron-parser-result-content {
+            font-family: 'Consolas', monospace;
+            word-break: break-all;
+            color: #166534;
+        }
+
+        [data-theme="dark"] .cron-parser-result-content {
+            color: #d1fae5;
+        }
+
+        /* 下次执行时间 */
+        .cron-parser-next-runs {
+            margin-top: 15px;
+        }
+
+        .cron-parser-next-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .cron-parser-next-list {
+            list-style: none;
+        }
+
+        .cron-parser-next-item {
+            padding: 8px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cron-parser-next-time {
+            font-family: 'Consolas', monospace;
+            font-weight: 500;
+        }
+
+        .cron-parser-next-countdown {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* 按钮 */
+        .cron-parser-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .cron-parser-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .cron-parser-btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .cron-parser-btn-secondary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        [data-theme="dark"] .cron-parser-btn-secondary {
+            background-color: #1e293b;
+        }
+
+        .cron-parser-btn-secondary:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* 错误提示 */
+        .cron-parser-error {
+            padding: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: var(--error-color);
+            margin-top: 10px;
+            display: none;
+        }
+
+        .cron-parser-error.show {
+            display: block;
+        }
+
+        /* 字段说明 */
+        .cron-parser-fields {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 8px;
+        }
+
+        [data-theme="dark"] .cron-parser-fields {
+            background: #78350f;
+        }
+
+        .cron-parser-field {
+            text-align: center;
+        }
+
+        .cron-parser-field-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        [data-theme="dark"] .cron-parser-field-name {
+            color: #fde68a;
+        }
+
+        .cron-parser-field-range {
+            font-size: 0.8rem;
+            color: #b45309;
+        }
+
+        [data-theme="dark"] .cron-parser-field-range {
+            color: #fcd34d;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .cron-parser-visual {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .cron-parser-presets {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <div class="cron-parser-container">
+        <div class="cron-parser-card">
+            <h2 class="cron-parser-title">{{ T "cron_title" }}</h2>
+            <p class="cron-parser-intro">{{ T "cron_desc" }}</p>
+
+            <!-- 字段说明 -->
+            <div class="cron-parser-fields">
+                <div class="cron-parser-field">
+                    <div class="cron-parser-field-name">{{ T "cron_field_minute" }}</div>
+                    <div class="cron-parser-field-range">0-59</div>
+                </div>
+                <div class="cron-parser-field">
+                    <div class="cron-parser-field-name">{{ T "cron_field_hour" }}</div>
+                    <div class="cron-parser-field-range">0-23</div>
+                </div>
+                <div class="cron-parser-field">
+                    <div class="cron-parser-field-name">{{ T "cron_field_day" }}</div>
+                    <div class="cron-parser-field-range">1-31</div>
+                </div>
+                <div class="cron-parser-field">
+                    <div class="cron-parser-field-name">{{ T "cron_field_month" }}</div>
+                    <div class="cron-parser-field-range">1-12</div>
+                </div>
+                <div class="cron-parser-field">
+                    <div class="cron-parser-field-name">{{ T "cron_field_weekday" }}</div>
+                    <div class="cron-parser-field-range">0-6</div>
+                </div>
+            </div>
+
+            <!-- 快速预设 -->
+            <div class="cron-parser-presets">
+                <button class="cron-parser-preset" data-cron="* * * * *">{{ T "cron_preset_every_minute" }}</button>
+                <button class="cron-parser-preset" data-cron="0 * * * *">{{ T "cron_preset_hourly" }}</button>
+                <button class="cron-parser-preset" data-cron="0 0 * * *">{{ T "cron_preset_daily" }}</button>
+                <button class="cron-parser-preset" data-cron="0 0 * * 0">{{ T "cron_preset_weekly" }}</button>
+                <button class="cron-parser-preset" data-cron="0 0 1 * *">{{ T "cron_preset_monthly" }}</button>
+                <button class="cron-parser-preset" data-cron="0 0 1 1 *">{{ T "cron_preset_yearly" }}</button>
+            </div>
+
+<!-- 输入区域 -->
+            <div class="cron-parser-input-section">
+                <label class="cron-parser-label" for="cron-input">{{ T "cron_input_label" }}</label>
+                <div class="cron-parser-input-group">
+                    <input type="text" id="cron-input" class="cron-parser-input" 
+                           placeholder="{{ T "cron_input_placeholder" }}" value="0 9 * * 1-5">
+                    <button id="cron-parse-btn" class="cron-parser-btn cron-parser-btn-primary">
+                        {{ T "cron_btn_parse" }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- 错误提示 -->
+            <div id="cron-error" class="cron-parser-error"></div>
+
+            <!-- 结果区域 -->
+            <div id="cron-result" class="cron-parser-result" style="display: none;">
+                <!-- 人类可读描述 -->
+                <div class="cron-parser-result-card">
+                    <div class="cron-parser-result-title">{{ T "cron_result_description" }}</div>
+                    <div id="cron-description" class="cron-parser-result-content"></div>
+                </div>
+
+                <!-- 可视化 -->
+                <div id="cron-visual-section" style="display: none;">
+                    <div class="cron-parser-result-title">{{ T "cron_result_visual" }}</div>
+                    <div class="cron-parser-visual" id="cron-visual"></div>
+                </div>
+
+                <!-- 下次执行时间 -->
+                <div class="cron-parser-next-runs">
+                    <div class="cron-parser-next-title">{{ T "cron_result_next_runs" }}</div>
+                    <ul class="cron-parser-next-list" id="cron-next-list"></ul>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button id="cron-copy-btn" class="cron-parser-btn cron-parser-btn-secondary" disabled>
+                    {{ T "cron_btn_copy" }}
+                </button>
+                <button id="cron-clear-btn" class="cron-parser-btn cron-parser-btn-secondary">
+                    {{ T "cron_btn_clear" }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // 国际化文本
+            const i18n = {
+                weekday: ['{{ T "cron_sunday" }}', '{{ T "cron_monday" }}', '{{ T "cron_tuesday" }}', 
+                         '{{ T "cron_wednesday" }}', '{{ T "cron_thursday" }}', '{{ T "cron_friday" }}', '{{ T "cron_saturday" }}'],
+                month: ['{{ T "cron_jan" }}', '{{ T "cron_feb" }}', '{{ T "cron_mar" }}', '{{ T "cron_apr" }}',
+                       '{{ T "cron_may" }}', '{{ T "cron_jun" }}', '{{ T "cron_jul" }}', '{{ T "cron_aug" }}',
+                       '{{ T "cron_sep" }}', '{{ T "cron_oct" }}', '{{ T "cron_nov" }}', '{{ T "cron_dec" }}'],
+                invalidCron: '{{ T "cron_error_invalid" }}',
+                everyMinute: '{{ T "cron_desc_every_minute" }}',
+                everyHour: '{{ T "cron_desc_every_hour" }}',
+                everyDay: '{{ T "cron_desc_every_day" }}',
+                everyWeek: '{{ T "cron_desc_every_week" }}',
+                everyMonth: '{{ T "cron_desc_every_month" }}',
+                everyYear: '{{ T "cron_desc_every_year" }}'
+            };
+
+            // DOM 元素
+            const cronInput = document.getElementById('cron-input');
+            const parseBtn = document.getElementById('cron-parse-btn');
+            const copyBtn = document.getElementById('cron-copy-btn');
+            const clearBtn = document.getElementById('cron-clear-btn');
+            const resultDiv = document.getElementById('cron-result');
+            const errorDiv = document.getElementById('cron-error');
+            const descriptionDiv = document.getElementById('cron-description');
+            const visualSection = document.getElementById('cron-visual-section');
+            const visualDiv = document.getElementById('cron-visual');
+            const nextList = document.getElementById('cron-next-list');
+            const presets = document.querySelectorAll('.cron-parser-preset');
+
+            // 解析 cron 字段
+            function parseField(field, min, max) {
+                if (field === '*') {
+                    return Array.from({length: max - min + 1}, (_, i) => min + i);
+                }
+                
+                const result = new Set();
+                const parts = field.split(',');
+                
+                for (const part of parts) {
+                    if (part.includes('/')) {
+                        const [range, step] = part.split('/');
+                        let start = min, end = max;
+                        if (range !== '*') {
+                            if (range.includes('-')) {
+                                [start, end] = range.split('-').map(Number);
+                            } else {
+                                start = end = parseInt(range);
+                            }
+                        }
+                        for (let i = start; i <= end; i += parseInt(step)) {
+                            if (i >= min && i <= max) result.add(i);
+                        }
+                    } else if (part.includes('-')) {
+                        const [start, end] = part.split('-').map(Number);
+                        for (let i = start; i <= end; i++) {
+                            if (i >= min && i <= max) result.add(i);
+                        }
+                    } else {
+                        const val = parseInt(part);
+                        if (!isNaN(val) && val >= min && val <= max) {
+                            result.add(val);
+                        }
+                    }
+                }
+                
+                return Array.from(result).sort((a, b) => a - b);
+            }
+
+            // 验证 cron 表达式
+            function validateCron(cron) {
+                const parts = cron.trim().split(/\s+/);
+                if (parts.length !== 5) {
+                    return { valid: false, error: '{{ T "cron_error_fields" }}' };
+                }
+                
+                const ranges = [
+                    [0, 59],  // minute
+                    [0, 23],  // hour
+                    [1, 31],  // day
+                    [1, 12],  // month
+                    [0, 6]    // weekday
+                ];
+                
+                try {
+                    for (let i = 0; i < 5; i++) {
+                        parseField(parts[i], ranges[i][0], ranges[i][1]);
+                    }
+                    return { valid: true };
+                } catch (e) {
+                    return { valid: false, error: '{{ T "cron_error_invalid" }}' };
+                }
+            }
+
+            // 生成人类可读描述
+            function describeCron(cron) {
+                const parts = cron.trim().split(/\s+/);
+                const [minute, hour, day, month, weekday] = parts;
+                
+                let desc = '';
+                
+                // 特殊模式
+                if (cron === '* * * * *') return i18n.everyMinute;
+                if (cron === '0 * * * *') return i18n.everyHour;
+                if (cron === '0 0 * * *') return i18n.everyDay;
+                if (cron === '0 0 * * 0') return i18n.everyWeek;
+                if (cron === '0 0 1 * *') return i18n.everyMonth;
+                if (cron === '0 0 1 1 *') return i18n.everyYear;
+                
+                // 分钟
+                if (minute === '*') {
+                    desc += '{{ T "cron_desc_every" }}';
+                } else if (minute.includes('/')) {
+                    const step = minute.split('/')[1];
+                    desc += '{{ T "cron_desc_every" }}' + step + '{{ T "cron_desc_minute" }}';
+                } else {
+                    desc += '{{ T "cron_desc_at" }}' + minute + '{{ T "cron_desc_minute" }}';
+                }
+                
+                // 小时
+                if (hour !== '*') {
+                    if (hour.includes('/')) {
+                        const step = hour.split('/')[1];
+                        desc += ', {{ T "cron_desc_every" }}' + step + '{{ T "cron_desc_hour" }}';
+                    } else {
+                        desc += ' {{ T "cron_desc_at_hour" }}' + hour;
+                    }
+                }
+                
+                // 星期
+                if (weekday !== '*') {
+                    const days = parseField(weekday, 0, 6);
+                    const dayNames = days.map(d => i18n.weekday[d]).join(', ');
+                    desc += ', {{ T "cron_desc_on" }}' + dayNames;
+                }
+                
+                // 月份
+                if (month !== '*') {
+                    const months = parseField(month, 1, 12);
+                    const monthNames = months.map(m => i18n.month[m - 1]).join(', ');
+                    desc += ', {{ T "cron_desc_in_month" }}' + monthNames;
+                }
+                
+                // 日期
+                if (day !== '*' && !day.match(/^[\d]+$/)) {
+                    const days = parseField(day, 1, 31);
+                    desc += ', {{ T "cron_desc_on_day" }}' + days.join(', ');
+                } else if (day !== '*') {
+                    desc += ', {{ T "cron_desc_on_day" }}' + day;
+                }
+                
+                return desc;
+            }
+
+            // 计算下次执行时间
+            function getNextRuns(cron, count = 5) {
+                const parts = cron.trim().split(/\s+/);
+                const minutes = parseField(parts[0], 0, 59);
+                const hours = parseField(parts[1], 0, 23);
+                const days = parseField(parts[2], 1, 31);
+                const months = parseField(parts[3], 1, 12);
+                const weekdays = parseField(parts[4], 0, 6);
+                
+                const runs = [];
+                let date = new Date();
+                date.setSeconds(0, 0);
+                date.setMinutes(date.getMinutes() + 1);
+                
+                while (runs.length < count && runs.length < 100) {
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    const weekday = date.getDay();
+                    const hour = date.getHours();
+                    const minute = date.getMinutes();
+                    
+                    if (months.includes(month) && 
+                        (weekdays.includes(weekday) || parts[4] === '*') &&
+                        (days.includes(day) || parts[2] === '*') &&
+                        hours.includes(hour) &&
+                        minutes.includes(minute)) {
+                        runs.push(new Date(date));
+                    }
+                    
+                    date.setMinutes(date.getMinutes() + 1);
+                }
+                
+                return runs;
+            }
+
+            // 格式化日期
+            function formatDate(date) {
+                const options = { 
+                    weekday: 'short', 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                };
+                // 获取当前语言环境，默认为中文
+                const lang = document.documentElement.lang || 'zh';
+                return date.toLocaleString(lang, options);
+            }
+
+            // 计算相对时间
+            function getRelativeTime(date) {
+                const now = new Date();
+                const diff = date - now;
+                const seconds = Math.floor(diff / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+                
+                if (days > 0) return days + '{{ T "cron_days_later" }}';
+                if (hours > 0) return hours + '{{ T "cron_hours_later" }}';
+                if (minutes > 0) return minutes + '{{ T "cron_minutes_later" }}';
+                return '{{ T "cron_soon" }}';
+            }
+
+            // 更新可视化
+            function updateVisual(cron) {
+                const parts = cron.trim().split(/\s+/);
+                const weekdays = parseField(parts[4], 0, 6);
+                const hours = parseField(parts[1], 0, 23);
+                
+                visualDiv.innerHTML = '';
+                
+                // 星期标签
+                const dayLabels = ['{{ T "cron_sun" }}', '{{ T "cron_mon" }}', '{{ T "cron_tue" }}', 
+                                  '{{ T "cron_wed" }}', '{{ T "cron_thu" }}', '{{ T "cron_fri" }}', '{{ T "cron_sat" }}'];
+                
+                // 只显示当前活跃的星期
+                const activeWeekdays = weekdays.filter(w => w >= 0 && w <= 6);
+                
+                if (activeWeekdays.length > 0 && activeWeekdays.length < 7) {
+                    activeWeekdays.forEach(w => {
+                        const cell = document.createElement('div');
+                        cell.className = 'cron-parser-day-cell' + (hours.length < 24 ? ' active' : '');
+                        cell.textContent = dayLabels[w];
+                        visualDiv.appendChild(cell);
+                    });
+                    visualSection.style.display = 'block';
+                } else {
+                    visualSection.style.display = 'none';
+                }
+            }
+
+            // 主解析函数
+            function parseCron() {
+                const cron = cronInput.value.trim();
+                
+                // 清除之前的错误
+                errorDiv.classList.remove('show');
+                cronInput.classList.remove('error', 'success');
+                
+                if (!cron) {
+                    resultDiv.style.display = 'none';
+                    copyBtn.disabled = true;
+                    return;
+                }
+                
+                // 验证
+                const validation = validateCron(cron);
+                if (!validation.valid) {
+                    errorDiv.textContent = validation.error;
+                    errorDiv.classList.add('show');
+                    cronInput.classList.add('error');
+                    resultDiv.style.display = 'none';
+                    copyBtn.disabled = true;
+                    return;
+                }
+                
+                // 成功
+                cronInput.classList.add('success');
+                
+                // 描述
+                descriptionDiv.textContent = describeCron(cron);
+                
+                // 下次执行
+                const nextRuns = getNextRuns(cron);
+                nextList.innerHTML = nextRuns.map(date => 
+                    `<li class="cron-parser-next-item">
+                        <span class="cron-parser-next-time">${formatDate(date)}</span>
+                        <span class="cron-parser-next-countdown">${getRelativeTime(date)}</span>
+                    </li>`
+                ).join('');
+                
+                // 可视化
+                updateVisual(cron);
+                
+                // 显示结果
+                resultDiv.style.display = 'block';
+                copyBtn.disabled = false;
+            }
+
+            // 事件绑定
+            parseBtn.addEventListener('click', parseCron);
+            
+            cronInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') parseCron();
+            });
+            
+            copyBtn.addEventListener('click', () => {
+                const cron = cronInput.value.trim();
+                navigator.clipboard.writeText(cron).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = '{{ T "cron_copied" }}';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                });
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                cronInput.value = '0 9 * * 1-5';
+                cronInput.classList.remove('error', 'success');
+                errorDiv.classList.remove('show');
+                resultDiv.style.display = 'none';
+                copyBtn.disabled = true;
+            });
+            
+            // 预设按钮
+            presets.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    cronInput.value = btn.dataset.cron;
+                    parseCron();
+                });
+            });
+            
+            // 初始化时解析默认值
+            parseCron();
+        })();
+    </script>
+</div>

@@ -451,4 +451,186 @@ other = "Please enter some SQL code."
 other = "Formatting Error"
 
 [sql_formatter_copied]
-other = "Copied to clipboard!"
+other = "Copied to clipboard!"# Cron Parser Tool
+[cron_title]
+other = "Cron Expression Parser"
+
+[cron_desc]
+other = "Parse and validate Cron expressions, visualize execution times, with quick presets."
+
+[cron_field_minute]
+other = "Minute"
+
+[cron_field_hour]
+other = "Hour"
+
+[cron_field_day]
+other = "Day"
+
+[cron_field_month]
+other = "Month"
+
+[cron_field_weekday]
+other = "Weekday"
+
+[cron_preset_every_minute]
+other = "Every Minute"
+
+[cron_preset_hourly]
+other = "Hourly"
+
+[cron_preset_daily]
+other = "Daily"
+
+[cron_preset_weekly]
+other = "Weekly"
+
+[cron_preset_monthly]
+other = "Monthly"
+
+[cron_preset_yearly]
+other = "Yearly"
+
+[cron_input_label]
+other = "Enter Cron Expression"
+
+[cron_input_placeholder]
+other = "e.g., 0 9 * * 1-5"
+
+[cron_btn_parse]
+other = "Parse"
+
+[cron_btn_copy]
+other = "Copy Expression"
+
+[cron_btn_clear]
+other = "Reset"
+
+[cron_result_description]
+other = "Execution Description"
+
+[cron_result_visual]
+other = "Execution Cycle"
+
+[cron_result_next_runs]
+other = "Next Executions"
+
+[cron_error_invalid]
+other = "Invalid Cron expression"
+
+[cron_error_fields]
+other = "Cron expression must have 5 fields: min hour day month weekday"
+
+[cron_desc_every]
+other = "Every"
+
+[cron_desc_minute]
+other = " minutes"
+
+[cron_desc_hour]
+other = " hours"
+
+[cron_desc_at]
+other = "at minute "
+
+[cron_desc_at_hour]
+other = " at hour "
+
+[cron_desc_on]
+other = " on "
+
+[cron_desc_in_month]
+other = " in "
+
+[cron_desc_on_day]
+other = " on day "
+
+[cron_desc_every_minute]
+other = "Every minute"
+
+[cron_desc_every_hour]
+other = "Every hour on the hour"
+
+[cron_desc_every_day]
+other = "Every day at midnight"
+
+[cron_desc_every_week]
+other = "Every Monday at midnight"
+
+[cron_desc_every_month]
+other = "On the 1st of every month at midnight"
+
+[cron_desc_every_year]
+other = "On January 1st at midnight"
+
+[cron_days_later]
+other = " days"
+
+[cron_hours_later]
+other = " hours"
+
+[cron_minutes_later]
+other = " minutes"
+
+[cron_soon]
+other = "Soon"
+
+[cron_copied]
+other = "Copied"
+
+[cron_sun]
+other = "Sun"
+
+[cron_mon]
+other = "Mon"
+
+[cron_tue]
+other = "Tue"
+
+[cron_wed]
+other = "Wed"
+
+[cron_thu]
+other = "Thu"
+
+[cron_fri]
+other = "Fri"
+
+[cron_sat]
+other = "Sat"
+
+[cron_jan]
+other = "Jan"
+
+[cron_feb]
+other = "Feb"
+
+[cron_mar]
+other = "Mar"
+
+[cron_apr]
+other = "Apr"
+
+[cron_may]
+other = "May"
+
+[cron_jun]
+other = "Jun"
+
+[cron_jul]
+other = "Jul"
+
+[cron_aug]
+other = "Aug"
+
+[cron_sep]
+other = "Sep"
+
+[cron_oct]
+other = "Oct"
+
+[cron_nov]
+other = "Nov"
+
+[cron_dec]
+other = "Dec"

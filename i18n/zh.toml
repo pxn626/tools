@@ -447,3 +447,187 @@ other = "格式化错误"
 
 [sql_formatter_copied]
 other = "已复制到剪贴板！"
+
+# Cron Parser 工具
+[cron_title]
+other = "Cron 表达式解析器"
+
+[cron_desc]
+other = "解析和生成 Cron 表达式，可视化查看执行时间，支持快速预设。"
+
+[cron_field_minute]
+other = "分钟"
+
+[cron_field_hour]
+other = "小时"
+
+[cron_field_day]
+other = "日期"
+
+[cron_field_month]
+other = "月份"
+
+[cron_field_weekday]
+other = "星期"
+
+[cron_preset_every_minute]
+other = "每分钟"
+
+[cron_preset_hourly]
+other = "每小时"
+
+[cron_preset_daily]
+other = "每天"
+
+[cron_preset_weekly]
+other = "每周"
+
+[cron_preset_monthly]
+other = "每月"
+
+[cron_preset_yearly]
+other = "每年"
+
+[cron_input_label]
+other = "输入 Cron 表达式"
+
+[cron_input_placeholder]
+other = "例如: 0 9 * * 1-5"
+
+[cron_btn_parse]
+other = "解析"
+
+[cron_btn_copy]
+other = "复制表达式"
+
+[cron_btn_clear]
+other = "重置"
+
+[cron_result_description]
+other = "执行描述"
+
+[cron_result_visual]
+other = "执行周期可视化"
+
+[cron_result_next_runs]
+other = "下次执行时间"
+
+[cron_error_invalid]
+other = "无效的 Cron 表达式"
+
+[cron_error_fields]
+other = "Cron 表达式必须包含5个字段：分 时 日 月 周"
+
+[cron_desc_every]
+other = "每"
+
+[cron_desc_minute]
+other = "分钟"
+
+[cron_desc_hour]
+other = "小时"
+
+[cron_desc_at]
+other = "在第"
+
+[cron_desc_at_hour]
+other = "点"
+
+[cron_desc_on]
+other = "在"
+
+[cron_desc_in_month]
+other = "月"
+
+[cron_desc_on_day]
+other = "号"
+
+[cron_desc_every_minute]
+other = "每分钟执行一次"
+
+[cron_desc_every_hour]
+other = "每小时整点执行一次"
+
+[cron_desc_every_day]
+other = "每天午夜执行一次"
+
+[cron_desc_every_week]
+other = "每周一午夜执行一次"
+
+[cron_desc_every_month]
+other = "每月1号午夜执行一次"
+
+[cron_desc_every_year]
+other = "每年1月1号午夜执行一次"
+
+[cron_days_later]
+other = "天后"
+
+[cron_hours_later]
+other = "小时后"
+
+[cron_minutes_later]
+other = "分钟后"
+
+[cron_soon]
+other = "即将执行"
+
+[cron_copied]
+other = "已复制"
+
+[cron_sun]
+other = "日"
+
+[cron_mon]
+other = "一"
+
+[cron_tue]
+other = "二"
+
+[cron_wed]
+other = "三"
+
+[cron_thu]
+other = "四"
+
+[cron_fri]
+other = "五"
+
+[cron_sat]
+other = "六"
+
+[cron_jan]
+other = "1月"
+
+[cron_feb]
+other = "2月"
+
+[cron_mar]
+other = "3月"
+
+[cron_apr]
+other = "4月"
+
+[cron_may]
+other = "5月"
+
+[cron_jun]
+other = "6月"
+
+[cron_jul]
+other = "7月"
+
+[cron_aug]
+other = "8月"
+
+[cron_sep]
+other = "9月"
+
+[cron_oct]
+other = "10月"
+
+[cron_nov]
+other = "11月"
+
+[cron_dec]
+other = "12月"
