@@ -1,451 +1,899 @@
 [site_title]
+
 other = "在线工具箱"
 
+
+
 [home]
+
 other = "首页"
 
+
+
 [about]
+
 other = "关于"
+
+
 
 [pdf-to-word]
+
 other = "PDF 转 Word"
 
+
+
 [upload_btn]
+
 other = "选择 PDF 文件"
 
+
+
 [convert_btn]
+
 other = "开始转换"
 
+
+
 [browse_by_category]
+
 other = "按分类浏览"
 
+
+
 [json_tool_title]
+
 other = "JSON 格式化/验证工具"
 
+
+
 [json_tool_desc]
+
 other = "免费在线 JSON 格式化、压缩、验证和错误检测工具。"
 
+
+
 [Dev_Tools]
+
 other = "开发者工具1"
 
+
+
 [Data_Format]
+
 other = "数据格式"
 
+
+
 [Frontend]
+
 other = "前端必备"
 
+
+
 # 工具页面的提示语
+
 [tool_action_hint]
+
 other = "👇 请在下方上传文件或输入内容，立即开始处理。"
 
+
+
 # 分类标签
+
 [categories]
+
 other = "分类"
 
+
+
 [back_home]
+
 other = "← 返回首页"
 
+
+
 # 分类页统计工具数量
+
 [category_tool_count]
+
 one = "该分类下共有 {{ .Count }} 个工具"
+
 other = "该分类下共有 {{ .Count }} 个工具"
 
+
+
 [json_tool_intro]
+
 other = "在线格式化和验证JSON数据，美化JSON结构，检测语法错误。"
 
+
+
 [json_input_placeholder]
+
 other = "请在此处输入或粘贴JSON数据..."
 
+
+
 [json_indent_2]
+
 other = "2空格缩进"
 
+
+
 [json_indent_4]
+
 other = "4空格缩进"
 
+
+
 [json_sort_keys]
+
 other = "排序键值"
 
+
+
 [json_minify]
+
 other = "压缩JSON"
 
+
+
 [json_btn_format]
+
 other = "格式化JSON"
 
+
+
 [json_btn_validate]
+
 other = "验证JSON"
 
+
+
 [json_btn_clear]
+
 other = "清空"
+
+
 
 [json_btn_copy]
+
 other = "复制结果"
+
+
 
 [json_placeholder]
+
 other = "请输入JSON数据"
 
+
+
 [json_success]
+
 other = "JSON格式化成功"
 
+
+
 [json_error]
+
 other = "JSON格式错误"
 
+
+
 [json_valid]
+
 other = "JSON格式验证通过"
 
+
+
 [json_copied]
+
 other = "已复制"
 
+
+
 [json_copy_fail]
+
 other = "复制失败"
 
+
+
 [footer_privacy]
+
 other = "隐私政策"
 
+
+
 [footer_about]
+
 other = "关于"
 
+
+
 # 通用标签
+
 [label_input]
+
 other = "输入内容"
 
+
+
 [label_result]
+
 other = "结果"
 
+
+
 # 通用按钮
+
 [btn_encode]
+
 other = "编码 (Encode)"
 
+
+
 [btn_decode]
+
 other = "解码 (Decode)"
 
+
+
 [btn_convert]
+
 other = "转换"
 
+
+
 [btn_clear]
+
 other = "清空"
 
+
+
 [btn_decode_jwt]
+
 other = "解码 Token"
 
+
+
 # 通用提示信息
+
 [msg_input_required]
+
 other = "请输入内容"
 
+
+
 [msg_success]
+
 other = "转换成功"
 
+
+
 [msg_error_format]
+
 other = "格式错误，请检查输入"
 
+
+
 [msg_error_decode]
+
 other = "解码失败，请检查编码格式"
 
+
+
 [msg_error_parse]
+
 other = "解析失败"
 
+
+
 # Base64 工具
+
 [base64_title]
+
 other = "Base64 编解码"
 
+
+
 [base64_desc]
+
 other = "快速将文本或文件转换为 Base64 格式，或进行解码还原。"
 
+
+
 [base64_input_ph]
+
 other = "在此输入文本或 Base64 字符串..."
 
+
+
 # URL 工具
+
 [url_title]
+
 other = "URL 编解码"
 
+
+
 [url_desc]
+
 other = "处理网址中的特殊字符，支持中文 URL 转码与还原。"
 
+
+
 [url_input_ph]
+
 other = "在此输入 URL 或编码字符串..."
 
+
+
 # JWT 工具
+
 [jwt_title]
+
 other = "JWT 解码器"
 
+
+
 [jwt_desc]
+
 other = "解析 JSON Web Token，查看 Header 和 Payload 信息。"
 
+
+
 [jwt_label_input]
+
 other = "JWT Token"
 
+
+
 [jwt_input_ph]
+
 other = "在此粘贴 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
+
+
 [jwt_header]
+
 other = "Header (头部)"
 
+
+
 [jwt_payload]
+
 other = "Payload (负载)"
 
+
+
 [jwt_waiting]
+
 other = "等待解码..."
 
+
+
 # --- Unix Timestamp Tool ---
+
 [timestamp_title]
+
 other = "Unix 时间戳转换"
 
+
+
 [timestamp_desc]
+
 other = "将当前时间转换为时间戳，或将时间戳转换为可读日期。"
 
+
+
 [timestamp_input_ph]
+
 other = "输入日期 (如 2026-03-31) 或 时间戳..."
 
+
+
 [timestamp_to_ts]
+
 other = "转时间戳"
 
+
+
 [timestamp_to_date]
+
 other = "转日期时间"
 
+
+
 [btn_now]
+
 other = "当前时间"
 
+
+
 [timestamp_current_loaded]
+
 other = "已加载当前时间戳"
 
+
+
 # --- Text Case Tool ---
+
 [case_title]
+
 other = "文本大小写转换"
 
+
+
 [case_desc]
+
 other = "快速转换文本格式，支持驼峰、下划线、全大写等。"
 
+
+
 [case_input_ph]
+
 other = "在此输入文本..."
 
+
+
 [case_upper]
+
 other = "全大写"
 
+
+
 [case_lower]
+
 other = "全小写"
 
+
+
 [case_title_case]
+
 other = "首字母大写"
 
+
+
 [case_camel]
+
 other = "小驼峰"
 
+
+
 [case_snake]
+
 other = "下划线"
 
+
+
 [case_kebab]
+
 other = "短横线"
 
+
+
 # --- Lorem Ipsum Tool ---
+
 [lorem_title]
+
 other = "Lorem Ipsum 假文生成器"
 
+
+
 [lorem_desc]
+
 other = "生成用于排版测试的标准占位文本。"
 
+
+
 [lorem_paragraphs]
+
 other = "段落"
 
+
+
 [lorem_sentences]
+
 other = "句子"
 
+
+
 [lorem_words]
+
 other = "单词"
 
+
+
 [lorem_quantity]
+
 other = "数量"
 
+
+
 [btn_generate]
+
 other = "生成"
 
+
+
 [lorem_output_ph]
+
 other = "生成的假文将显示在这里..."
 
+
+
 [msg_copied]
+
 other = "已复制到剪贴板"
 
+
+
 # --- Specialized Lorem Ipsum Tool ---
+
 [spec_lorem_title]
+
 other = "特殊风格假文生成器"
 
+
+
 [spec_lorem_desc]
+
 other = "生成带有特定主题的有趣占位文本。"
 
+
+
 [spec_lorem_theme]
+
 other = "选择主题"
 
+
+
 [theme_food]
+
 other = "美食 (Food)"
 
+
+
 [theme_corporate]
+
 other = "商务 (Corporate)"
 
+
+
 [theme_tech]
+
 other = "科技 (Tech)"
 
+
+
 [theme_hipster]
+
 other = "潮人 (Hipster)"
 
+
+
 # --- Ultimate Dummy Text Tool ---
+
 [ultimate_dummy_title]
+
 other = "全能假文生成器"
 
+
+
 [ultimate_dummy_desc]
+
 other = "集成英文主题、中文（古典/现代）及功能测试文本的一站式工具。"
 
+
+
 [dummy_category]
+
 other = "选择大类"
 
+
+
 [dummy_style]
+
 other = "选择具体风格"
 
+
+
 [cat_en_theme]
+
 other = "英文主题 (English Themes)"
 
+
+
 [cat_zh_classical]
+
 other = "中文古典 (Chinese Classical)"
 
+
+
 [cat_zh_modern]
+
 other = "中文现代 (Chinese Modern)"
 
+
+
 [cat_functional]
+
 other = "功能测试 (Functional)"
 
+
+
 # --- 导航栏菜单 ---
+
 [contact]
+
 other = "联系我们"
 
+
+
 [terms]
+
 other = "服务条款"
 
+
+
 # --- Cookie 弹窗 ---
+
 [cookie_text]
+
 other = "我们使用 Cookie 来优化您的浏览体验。"
 
+
+
 [cookie_btn]
+
 other = "我同意了"
 
+
+
 [cookie_link]
+
 other = "了解更多"
 
+
+
 [search_title]
+
 other = "🛠️ 欢迎使用在线工具箱"
 
+
+
 [search_desc]
+
 other = "直接在浏览器中处理数据，无需上传，安全高效。"
 
+
+
 [search_placeholder]
+
 other = "搜索工具名称，如 JSON、时间戳..."
 
+
+
 [pwd_stat_entropy]
+
 other = "熵值"
 
+
+
 [pwd_stat_bits]
+
 other = "比特"
 
+
+
 [pwd_check_len]
+
 other = "长度"
 
+
+
 [pwd_check_lower]
+
 other = "小写字母"
+
+
 
 [pwd_check_upper]
+
 other = "大写字母"
+
+
 
 [pwd_check_num]
+
 other = "数字"
+
+
 
 [pwd_check_sym]
+
 other = "符号"
 
+
+
 [pwd_status_weak]
+
 other = "太弱"
 
+
+
 [pwd_status_medium]
+
 other = "一般"
 
+
+
 [pwd_status_strong]
+
 other = "强壮"
 
+
+
 [pwd_status_secure]
+
 other = "非常强壮"
 
+
+
 [pwd_btn_generate]
+
 other = "生成符合规则的密码"
 
+
+
 [pwd_config_title]
+
 other = "生成规则配置"
 
+
+
 [pwd_config_length]
+
 other = "密码总长度"
 
+
+
 [pwd_error_config]
+
 other = "错误：最小要求超过了总长度！"
 
+
+
 # --- 界面通用 ---
+
 [pwd_input_placeholder]
+
 other = "点击生成或输入密码"
 
+
+
 [btn_copy]
+
 other = "复制"
 
+
+
 [pwd_status_waiting]
+
 other = "等待生成..."
 
+
+
 [pwd_config_lower]
+
 other = "小写字母"
 
+
+
 [pwd_config_upper]
+
 other = "大写字母"
 
+
+
 [pwd_config_number]
+
 other = "数字"
 
+
+
 [pwd_config_symbol]
+
 other = "特殊符号"
 
+
+
 [color_title]
+
 other = "颜色格式互转工具"
 
+
+
 [color_desc]
+
 other = "在 Hex、RGB、HSL 之间实时转换颜色代码，并提供视觉预览。"
 
+
+
 [color_input_title]
+
 other = "输入颜色"
 
+
+
 [color_input_label]
+
 other = "请输入 Hex, RGB 或 HSL 值:"
 
+
+
 [color_input_placeholder]
+
 other = "#ff0000 或 rgb(255, 0, 0)"
 
+
+
 [color_btn_convert]
+
 other = "随机生成颜色"
 
+
+
 [color_error_invalid]
+
 other = "无法解析颜色格式，请输入如 #ff0000, rgb(255, 0, 0) 或 hsl(0, 100%, 50%)"
 
+
+
 [sql_formatter_input_label]
+
 other = "请输入 SQL 代码"
 
+
+
 [sql_formatter_input_placeholder]
+
 other = "在此粘贴或输入您的 SQL 语句..."
 
+
+
 [sql_formatter_button_format]
+
 other = "格式化 SQL"
 
+
+
 [sql_formatter_button_copy]
+
 other = "复制结果"
 
+
+
 [sql_formatter_output_label]
+
 other = "格式化结果"
 
+
+
 [sql_formatter_no_input]
+
 other = "请输入一些 SQL 代码。"
 
+
+
 [sql_formatter_error]
+
 other = "格式化错误"
 
+
+
 [sql_formatter_copied]
+
 other = "已复制到剪贴板！"
 
 # Cron Parser 工具
@@ -631,3 +1079,132 @@ other = "11月"
 
 [cron_dec]
 other = "12月"
+# Regex Tester Tool
+[regex_title]
+other = "正则表达式测试器"
+
+[regex_desc]
+other = "在线测试和验证正则表达式，实时高亮匹配结果，解释正则语法。"
+
+[regex_preset_email]
+other = "邮箱"
+
+[regex_preset_phone]
+other = "电话"
+
+[regex_preset_url]
+other = "网址"
+
+[regex_preset_date]
+other = "日期"
+
+[regex_preset_hex]
+other = "颜色"
+
+[regex_preset_ip]
+other = "IP地址"
+
+[regex_pattern_label]
+other = "正则表达式"
+
+[regex_pattern_placeholder]
+other = "输入正则表达式，如 \\d+ 或 [a-z]+"
+
+[regex_btn_test]
+other = "测试"
+
+[regex_opt_global]
+other = "全局匹配"
+
+[regex_opt_case]
+other = "忽略大小写"
+
+[regex_opt_multiline]
+other = "多行模式"
+
+[regex_test_text_label]
+other = "测试文本"
+
+[regex_test_text_placeholder]
+other = "输入要测试的文本..."
+
+[regex_stat_matches]
+other = "匹配数"
+
+[regex_stat_groups]
+other = "分组数"
+
+[regex_result_highlight]
+other = "匹配高亮"
+
+[regex_result_explain]
+other = "语法解释"
+
+[regex_result_details]
+other = "匹配详情"
+
+[regex_btn_copy]
+other = "复制文本"
+
+[regex_btn_clear]
+other = "清空"
+
+[regex_error_invalid]
+other = "无效的正则表达式"
+
+[regex_copied]
+other = "已复制"
+
+[regex_exp_digit]
+other = "任意数字 (0-9)"
+
+[regex_exp_word]
+other = "任意单词字符 (a-z, A-Z, 0-9, _)"
+
+[regex_exp_space]
+other = "任意空白字符"
+
+[regex_exp_boundary]
+other = "单词边界"
+
+[regex_exp_any]
+other = "任意字符（换行除外）"
+
+[regex_exp_zero]
+other = "零个或多个"
+
+[regex_exp_one]
+other = "一个或多个"
+
+[regex_exp_optional]
+other = "零个或一个"
+
+[regex_exp_start]
+other = "字符串开始"
+
+[regex_exp_end]
+other = "字符串结束"
+
+[regex_exp_class]
+other = "字符类"
+
+[regex_exp_group_start]
+other = "捕获组开始"
+
+[regex_exp_group_end]
+other = "捕获组结束"
+
+[regex_exp_no_match]
+other = "未识别语法"
+
+[regex_match]
+other = "匹配"
+
+[regex_position]
+other = "位置"
+
+[regex_groups]
+other = "分组"
+
+[regex_no_match]
+other = "无匹配结果"

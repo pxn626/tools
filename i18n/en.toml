@@ -634,3 +634,133 @@ other = "Nov"
 
 [cron_dec]
 other = "Dec"
+
+# Regex Tester Tool
+[regex_title]
+other = "Regex Tester & Explainer"
+
+[regex_desc]
+other = "Test and validate regex expressions online with real-time match highlighting and syntax explanation."
+
+[regex_preset_email]
+other = "Email"
+
+[regex_preset_phone]
+other = "Phone"
+
+[regex_preset_url]
+other = "URL"
+
+[regex_preset_date]
+other = "Date"
+
+[regex_preset_hex]
+other = "Color"
+
+[regex_preset_ip]
+other = "IP Address"
+
+[regex_pattern_label]
+other = "Regex Pattern"
+
+[regex_pattern_placeholder]
+other = "Enter regex pattern, e.g. \\d+ or [a-z]+"
+
+[regex_btn_test]
+other = "Test"
+
+[regex_opt_global]
+other = "Global"
+
+[regex_opt_case]
+other = "Ignore Case"
+
+[regex_opt_multiline]
+other = "Multiline"
+
+[regex_test_text_label]
+other = "Test Text"
+
+[regex_test_text_placeholder]
+other = "Enter text to test..."
+
+[regex_stat_matches]
+other = "Matches"
+
+[regex_stat_groups]
+other = "Groups"
+
+[regex_result_highlight]
+other = "Match Highlight"
+
+[regex_result_explain]
+other = "Syntax Explanation"
+
+[regex_result_details]
+other = "Match Details"
+
+[regex_btn_copy]
+other = "Copy Text"
+
+[regex_btn_clear]
+other = "Clear"
+
+[regex_error_invalid]
+other = "Invalid regex pattern"
+
+[regex_copied]
+other = "Copied"
+
+[regex_exp_digit]
+other = "Any digit (0-9)"
+
+[regex_exp_word]
+other = "Any word character (a-z, A-Z, 0-9, _)"
+
+[regex_exp_space]
+other = "Any whitespace"
+
+[regex_exp_boundary]
+other = "Word boundary"
+
+[regex_exp_any]
+other = "Any character (except newline)"
+
+[regex_exp_zero]
+other = "Zero or more"
+
+[regex_exp_one]
+other = "One or more"
+
+[regex_exp_optional]
+other = "Zero or one"
+
+[regex_exp_start]
+other = "String start"
+
+[regex_exp_end]
+other = "String end"
+
+[regex_exp_class]
+other = "Character class"
+
+[regex_exp_group_start]
+other = "Capture group start"
+
+[regex_exp_group_end]
+other = "Capture group end"
+
+[regex_exp_no_match]
+other = "Unrecognized syntax"
+
+[regex_match]
+other = "Match"
+
+[regex_position]
+other = "Position"
+
+[regex_groups]
+other = "Groups"
+
+[regex_no_match]
+other = "No matches found"

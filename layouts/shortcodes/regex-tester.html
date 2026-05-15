@@ -1,0 +1,692 @@
+<!-- Regex Tester & Explainer -->
+<div class="regex-tester-tool">
+    <style>
+        .regex-tester-tool {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --match-bg: #fef3c7;
+            --group1-bg: #dbeafe;
+            --group2-bg: #dcfce7;
+            --group3-bg: #fae2e2;
+        }
+
+        [data-theme="dark"] .regex-tester-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --match-bg: #78350f;
+            --group1-bg: #1e3a5f;
+            --group2-bg: #14532d;
+            --group3-bg: #7f1d1d;
+        }
+
+        .regex-tester-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .regex-tester-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .regex-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .regex-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .regex-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .regex-intro {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* 预设区域 */
+        .regex-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .regex-preset {
+            padding: 6px 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .regex-preset {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .regex-preset:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* 输入区域 */
+        .regex-input-section {
+            margin-bottom: 20px;
+        }
+
+        .regex-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: var(--text-main);
+        }
+
+        .regex-input-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .regex-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+            background: var(--card-bg);
+            color: var(--text-main);
+        }
+
+        .regex-input:focus{
+            border-color: var(--primary-color);
+        }
+
+        .regex-input.error {
+            border-color: var(--error-color);
+        }
+
+        .regex-input.success {
+            border-color: var(--success-color);
+        }
+
+        /* 选项 */
+        .regex-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        [data-theme="dark"] .regex-options {
+            background: #0f172a;
+        }
+
+        .regex-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .regex-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .regex-option label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* 文本区域 */
+        .regex-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            background: var(--card-bg);
+            color: var(--text-main);
+        }
+
+        .regex-textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        /* 结果区域 */
+        .regex-result {
+            margin-top: 20px;
+        }
+
+        .regex-result-card {
+            padding: 15px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        [data-theme="dark"] .regex-result-card {
+            background: #064e3b;
+            border-color: #065f46;
+        }
+
+        .regex-result-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        /* 匹配高亮显示 */
+        .regex-highlight-box {
+            padding: 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            word-break: break-all;
+            white-space: pre-wrap;
+            line-height: 1.8;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .regex-match {
+            background: var(--match-bg);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .regex-group-1 {
+            background: var(--group1-bg);
+        }
+
+        .regex-group-2 {
+            background: var(--group2-bg);
+        }
+
+        .regex-group-3 {
+            background: var(--group3-bg);
+        }
+
+        /* 解释区域 */
+        .regex-explain {
+            padding: 15px;
+            background: #fef9c3;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .regex-explain {
+            background: #78350f;
+        }
+
+        .regex-explain-item {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .regex-explain-item code {
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* 按钮 */
+        .regex-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .regex-btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .regex-btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .regex-btn-secondary {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        [data-theme="dark"] .regex-btn-secondary {
+            background-color: #1e293b;
+        }
+
+        .regex-btn-secondary:hover {
+            background-color: #f1f5f9;
+        }
+
+        /* 错误提示 */
+        .regex-error {
+            padding: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: var(--error-color);
+            margin-top: 10px;
+            display: none;
+        }
+
+        .regex-error.show {
+            display: block;
+        }
+
+        /* 统计 */
+        .regex-stats {
+            display: flex;
+            gap: 20px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .regex-stat {
+            padding: 8px 16px;
+            background: #eff6ff;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        [data-theme="dark"] .regex-stat {
+            background: #1e293b;
+        }
+
+        .regex-stat strong {
+            color: var(--primary-color);
+        }
+    </style>
+
+    <div class="regex-container">
+        <div class="regex-card">
+            <h2 class="regex-title">{{ T "regex_title" }}</h2>
+            <p class="regex-intro">{{ T "regex_desc" }}</p>
+
+            <!-- 快速预设 -->
+            <div class="regex-presets">
+                <button class="regex-preset" data-pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" data-desc="email">{{ T "regex_preset_email" }}</button>
+                <button class="regex-preset" data-pattern="\d{3,4}-?\d{7,8}" data-desc="phone">{{ T "regex_preset_phone" }}</button>
+                <button class="regex-preset" data-pattern="https?://[^\s]+" data-desc="url">{{ T "regex_preset_url" }}</button>
+                <button class="regex-preset" data-pattern="\d{4}-\d{2}-\d{2}" data-desc="date">{{ T "regex_preset_date" }}</button>
+                <button class="regex-preset" data-pattern="#[0-9A-Fa-f]{6}" data-desc="hex">{{ T "regex_preset_hex" }}</button>
+                <button class="regex-preset" data-pattern="\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" data-desc="ip">{{ T "regex_preset_ip" }}</button>
+            </div>
+
+            <!-- 正则输入 -->
+            <div class="regex-input-section">
+                <label class="regex-label" for="regex-pattern">{{ T "regex_pattern_label" }}</label>
+                <div class="regex-input-group">
+                    <input type="text" id="regex-pattern" class="regex-input" 
+                           placeholder="{{ T "regex_pattern_placeholder" }}" value="\d+">
+                    <button id="regex-test-btn" class="regex-btn regex-btn-primary">
+                        {{ T "regex_btn_test" }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- 选项 -->
+            <div class="regex-options">
+                <div class="regex-option">
+                    <input type="checkbox" id="regex-global" checked>
+                    <label for="regex-global">{{ T "regex_opt_global" }}</label>
+                </div>
+                <div class="regex-option">
+                    <input type="checkbox" id="regex-case">
+                    <label for="regex-case">{{ T "regex_opt_case" }}</label>
+                </div>
+                <div class="regex-option">
+                    <input type="checkbox" id="regex-multiline">
+                    <label for="regex-multiline">{{ T "regex_opt_multiline" }}</label>
+                </div>
+            </div>
+
+            <!-- 测试文本 -->
+            <div class="regex-input-section">
+                <label class="regex-label" for="regex-text">{{ T "regex_test_text_label" }}</label>
+                <textarea id="regex-text" class="regex-textarea" 
+                          placeholder="{{ T "regex_test_text_placeholder" }}">示例文本:
+联系邮箱: test@example.com
+联系电话: 010-12345678
+网站: https://www.example.com
+日期: 2026-05-15
+颜色: #FF5733
+IP地址: 192.168.1.100</textarea>
+            </div>
+
+            <!-- 错误提示 -->
+            <div id="regex-error" class="regex-error"></div>
+
+            <!-- 结果区域 -->
+            <div id="regex-result" class="regex-result" style="display: none;">
+                <!-- 统计 -->
+                <div class="regex-stats">
+                    <div class="regex-stat">{{ T "regex_stat_matches" }}: <strong id="match-count">0</strong></div>
+                    <div class="regex-stat">{{ T "regex_stat_groups" }}: <strong id="group-count">0</strong></div>
+                </div>
+
+                <!-- 高亮结果 -->
+                <div class="regex-result-card">
+                    <div class="regex-result-title">{{ T "regex_result_highlight" }}</div>
+                    <div id="regex-highlight" class="regex-highlight-box"></div>
+                </div>
+
+                <!-- 解释 -->
+                <div class="regex-result-card">
+                    <div class="regex-result-title">{{ T "regex_result_explain" }}</div>
+                    <div id="regex-explain" class="regex-explain"></div>
+                </div>
+
+                <!-- 匹配详情 -->
+                <div class="regex-result-card">
+                    <div class="regex-result-title">{{ T "regex_result_details" }}</div>
+                    <div id="regex-matches" class="regex-highlight-box"></div>
+                </div>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button id="regex-copy-btn" class="regex-btn regex-btn-secondary" disabled>
+                    {{ T "regex_btn_copy" }}
+                </button>
+                <button id="regex-clear-btn" class="regex-btn regex-btn-secondary">
+                    {{ T "regex_btn_clear" }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // DOM 元素
+            const patternInput = document.getElementById('regex-pattern');
+            const textInput = document.getElementById('regex-text');
+            const testBtn = document.getElementById('regex-test-btn');
+            const copyBtn = document.getElementById('regex-copy-btn');
+            const clearBtn = document.getElementById('regex-clear-btn');
+            const globalCheck = document.getElementById('regex-global');
+            const caseCheck = document.getElementById('regex-case');
+            const multilineCheck = document.getElementById('regex-multiline');
+            const resultDiv = document.getElementById('regex-result');
+            const errorDiv = document.getElementById('regex-error');
+            const highlightDiv = document.getElementById('regex-highlight');
+            const explainDiv = document.getElementById('regex-explain');
+            const matchesDiv = document.getElementById('regex-matches');
+            const matchCount = document.getElementById('match-count');
+            const groupCount = document.getElementById('group-count');
+            const presets = document.querySelectorAll('.regex-preset');
+
+            // 正则解释字典
+            const regexExplain = {
+                '\\d': '{{ T "regex_exp_digit" }}',
+                '\\w': '{{ T "regex_exp_word" }}',
+                '\\s': '{{ T "regex_exp_space" }}',
+                '\\b': '{{ T "regex_exp_boundary" }}',
+                '.': '{{ T "regex_exp_any" }}',
+                '*': '{{ T "regex_exp_zero" }}',
+                '+': '{{ T "regex_exp_one" }}',
+                '?': '{{ T "regex_exp_optional" }}',
+                '^': '{{ T "regex_exp_start" }}',
+                '$': '{{ T "regex_exp_end" }}'
+            };
+
+            // 转义 HTML
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            // 解释正则表达式
+            function explainPattern(pattern) {
+                let explanations = [];
+                let i = 0;
+                
+                while (i < pattern.length) {
+                    let explained = false;
+                    
+                    // 检查特殊序列
+                    if (pattern[i] === '\\' && i + 1 < pattern.length) {
+                        const seq = pattern.slice(i, i + 2);
+                        if (regexExplain[seq]) {
+                            explanations.push('<div class="regex-explain-item"><code>' + 
+                                escapeHtml(seq) + '</code> ' + regexExplain[seq] + '</div>');
+                            i += 2;
+                            explained = true;
+                        } else if (pattern[i + 1] === 'd') {
+                            explanations.push('<div class="regex-explain-item"><code>\\d</code> {{ T "regex_exp_digit" }}</div>');
+                            i += 2;
+                            explained = true;
+                        } else if (pattern[i + 1] === 'w') {
+                            explanations.push('<div class="regex-explain-item"><code>\\w</code> {{ T "regex_exp_word" }}</div>');
+                            i += 2;
+                            explained = true;
+                        } else if (pattern[i + 1] === 's') {
+                            explanations.push('<div class="regex-explain-item"><code>\\s</code> {{ T "regex_exp_space" }}</div>');
+                            i += 2;
+                            explained = true;
+                        }
+                    }
+                    
+                    if (!explained) {
+                        const char = pattern[i];
+                        if (regexExplain[char]) {
+                            explanations.push('<div class="regex-explain-item"><code>' + 
+                                escapeHtml(char) + '</code> ' + regexExplain[char] + '</div>');
+                        } else if (char === '[') {
+                            const closeBracket = pattern.indexOf(']', i);
+                            if (closeBracket > i) {
+                                const charClass = pattern.slice(i, closeBracket + 1);
+                                explanations.push('<div class="regex-explain-item"><code>' + 
+                                    escapeHtml(charClass) + '</code> {{ T "regex_exp_class" }}</div>');
+                                i = closeBracket + 1;
+                                continue;
+                            }
+                        } else if (char === '(') {
+                            explanations.push('<div class="regex-explain-item"><code>(</code> {{ T "regex_exp_group_start" }}</div>');
+                        } else if (char === ')') {
+                            explanations.push('<div class="regex-explain-item"><code>)</code> {{ T "regex_exp_group_end" }}</div>');
+                        }
+                        i++;
+                    }
+                }
+                
+                return explanations.length > 0 ? explanations.join('') : 
+                    '<div class="regex-explain-item">{{ T "regex_exp_no_match" }}</div>';
+            }
+
+            // 测试正则
+            function testRegex() {
+                const pattern = patternInput.value;
+                const text = textInput.value;
+                
+                errorDiv.classList.remove('show');
+                patternInput.classList.remove('error', 'success');
+                
+                if (!pattern) {
+                    resultDiv.style.display = 'none';
+                    copyBtn.disabled = true;
+                    return;
+                }
+                
+                // 构建正则
+                let flags = 'g';
+                if (caseCheck.checked) flags += 'i';
+                if (multilineCheck.checked) flags += 'm';
+                
+                let regex;
+                try {
+                    regex = new RegExp(pattern, flags);
+                } catch (e) {
+                    errorDiv.textContent = '{{ T "regex_error_invalid" }}: ' + e.message;
+                    errorDiv.classList.add('show');
+                    patternInput.classList.add('error');
+                    resultDiv.style.display = 'none';
+                    copyBtn.disabled = true;
+                    return;
+                }
+                
+                patternInput.classList.add('success');
+                
+                // 执行匹配
+                const matches = [];
+                let match;
+                
+                if (globalCheck.checked) {
+                    while ((match = regex.exec(text)) !== null) {
+                        matches.push({
+                            text: match[0],
+                            index: match.index,
+                            groups: match.slice(1)
+                        });
+                        if (match[0].length === 0) {
+                            regex.lastIndex++;
+                        }
+                    }
+                } else {
+                    match = regex.exec(text);
+                    if (match) {
+                        matches.push({
+                            text: match[0],
+                            index: match.index,
+                            groups: match.slice(1)
+                        });
+                    }
+                }
+                
+                // 更新统计
+                matchCount.textContent = matches.length;
+                groupCount.textContent = matches.length > 0 ? (matches[0].groups.length || 0) : 0;
+                
+                // 高亮文本
+                let highlighted = text;
+                if (matches.length > 0) {
+                    let offset = 0;
+                    const sortedMatches = [...matches].sort((a, b) => a.index - b.index);
+                    
+                    for (const m of sortedMatches) {
+                        const before = highlighted.slice(0, m.index + offset);
+                        const matchText = highlighted.slice(m.index + offset, m.index + offset + m.text.length);
+                        const after = highlighted.slice(m.index + offset + m.text.length);
+                        
+                        highlighted = before + '<span class="regex-match">' + escapeHtml(matchText) + '</span>' + after;
+                        offset += '<span class="regex-match">'.length + '</span>'.length;
+                    }
+                }
+                highlightDiv.innerHTML = highlighted || escapeHtml(text);
+                
+                // 解释
+                explainDiv.innerHTML = explainPattern(pattern);
+                
+                // 匹配详情
+                if (matches.length > 0) {
+                    const details = matches.map((m, i) => {
+                        let detail = '{{ T "regex_match" }} ' + (i + 1) + ': <code>' + escapeHtml(m.text) + '</code> ({{ T "regex_position" }}: ' + m.index + ')';
+                        if (m.groups.length > 0) {
+                            detail += '<br>&nbsp;&nbsp;{{ T "regex_groups" }}: ' + m.groups.map((g, gi) => 
+                                '<span class="regex-group-' + ((gi % 3) + 1) + '">' + escapeHtml(g || '') + '</span>').join(', ');
+                        }
+                        return detail;
+                    }).join('<br><br>');
+                    matchesDiv.innerHTML = '<div style="line-height:2;">' + details + '</div>';
+                } else {
+                    matchesDiv.innerHTML = '<span style="color: var(--text-muted);">{{ T "regex_no_match" }}</span>';
+                }
+                
+                resultDiv.style.display = 'block';
+                copyBtn.disabled = false;
+            }
+
+            // 事件绑定
+            testBtn.addEventListener('click', testRegex);
+            
+            patternInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') testRegex();
+            });
+            
+            copyBtn.addEventListener('click', () => {
+                const text = textInput.value;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = copyBtn.textContent;
+                    copyBtn.textContent = '{{ T "regex_copied" }}';
+                    setTimeout(() => {
+                        copyBtn.textContent = originalText;
+                    }, 2000);
+                });
+            });
+            
+            clearBtn.addEventListener('click', () => {
+                patternInput.value = '\\d+';
+                textInput.value = '';
+                patternInput.classList.remove('error', 'success');
+                errorDiv.classList.remove('show');
+                resultDiv.style.display = 'none';
+                copyBtn.disabled = true;
+            });
+            
+            // 预设按钮
+            presets.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    patternInput.value = btn.dataset.pattern;
+                    testRegex();
+                });
+            });
+            
+            // 初始测试
+            testRegex();
+        })();
+    </script>
+</div>
