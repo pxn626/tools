@@ -764,3 +764,67 @@ other = "Groups"
 
 [regex_no_match]
 other = "No matches found"
+
+# Diff Checker Tool
+[diff_tool_title]
+other = "Text Diff Tool"
+
+[diff_tool_desc]
+other = "Online text comparison tool. Compare two texts and highlight differences. Perfect for code review and text comparison."
+
+[diff_title]
+other = "Text Diff Tool"
+
+[diff_added]
+other = "added"
+
+[diff_removed]
+other = "removed"
+
+[diff_original_text]
+other = "Original Text"
+
+[diff_modified_text]
+other = "Modified Text"
+
+[diff_original_placeholder]
+other = "Paste original text here..."
+
+[diff_modified_placeholder]
+other = "Paste modified text here..."
+
+[diff_ignore_case]
+other = "Ignore Case"
+
+[diff_ignore_whitespace]
+other = "Ignore Whitespace"
+
+[diff_inline]
+other = "Show Line Numbers"
+
+[diff_compare]
+other = "Compare"
+
+[diff_swap]
+other = "Swap"
+
+[diff_clear]
+other = "Clear"
+
+[diff_result]
+other = "Comparison Result"
+
+[diff_enter_text]
+other = "Enter two texts to compare"
+
+[diff_legend_add]
+other = "Added"
+
+[diff_legend_del]
+other = "Removed"
+
+[diff_no_changes]
+other = "Texts are identical"
+
+[diff_lines]
+other = "lines"

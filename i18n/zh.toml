@@ -1208,3 +1208,67 @@ other = "分组"
 
 [regex_no_match]
 other = "无匹配结果"
+
+# Diff Checker Tool
+[diff_tool_title]
+other = "文本对比工具"
+
+[diff_tool_desc]
+other = "在线文本对比工具，支持比较两段文本的差异，高亮显示增加和删除的行，方便代码审查和文本比对。"
+
+[diff_title]
+other = "文本对比工具"
+
+[diff_added]
+other = "行增加"
+
+[diff_removed]
+other = "行删除"
+
+[diff_original_text]
+other = "原始文本"
+
+[diff_modified_text]
+other = "修改后文本"
+
+[diff_original_placeholder]
+other = "在此粘贴原始文本..."
+
+[diff_modified_placeholder]
+other = "在此粘贴修改后文本..."
+
+[diff_ignore_case]
+other = "忽略大小写"
+
+[diff_ignore_whitespace]
+other = "忽略空白符"
+
+[diff_inline]
+other = "显示行号"
+
+[diff_compare]
+other = "对比"
+
+[diff_swap]
+other = "交换"
+
+[diff_clear]
+other = "清空"
+
+[diff_result]
+other = "对比结果"
+
+[diff_enter_text]
+other = "请输入两段文本进行对比"
+
+[diff_legend_add]
+other = "增加"
+
+[diff_legend_del]
+other = "删除"
+
+[diff_no_changes]
+other = "两段文本完全相同"
+
+[diff_lines]
+other = "行"

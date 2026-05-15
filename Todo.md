@@ -65,7 +65,7 @@
 - [ ] Three.js Viewer	3D 模型预览
 - [ ] STL Repair/Convert	3D 打印文件修复
 - [ ] GLTF Optimizer	3D 模型压缩
-- [ ] Diff Checker	文本/代码对比
+- [x] Diff Checker	文本/代码对比
 - [ ] Markdown Table Gen	表格生成器X
 - [X] Lorem Ipsum Gen	假文生成器
 - [X] Ultimate Dummy Text Gen 全能假文生成器
@@ -263,7 +263,6 @@ JSON Crack JSON 转 流程图/图片 (mermaid 或 d3)
 Mermaid Live 流程图转图片/SVG (mermaid-js)
 Mermaid Editor 流程图实时渲染
 CSV to Chart CSV 转 交互式图表 (chart.js / echarts)
-Diff Checker 文本/代码对比 (jsdiff)
 JSZip / Fflate 在线压缩/解压 ZIP
 Exif Viewer 查看/清除照片信息 (exif-js)
 EXIF GPS Viewer 照片地图定位 (leaflet + exif-js)

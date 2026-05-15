@@ -1,0 +1,595 @@
+<!-- Diff Checker Tool -->
+<div class="diff-checker-tool">
+    <style>
+        .diff-checker-tool {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --add-bg: #dcfce7;
+            --add-text: #166534;
+            --add-line-bg: #f0fdf4;
+            --del-bg: #fee2e2;
+            --del-text: #991b1b;
+            --del-line-bg: #fef2f2;
+            --diff-line-bg: #f1f5f9;
+            --diff-line-text: #475569;
+        }
+
+        [data-theme="dark"] .diff-checker-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --add-bg: #14532d;
+            --add-text: #86efac;
+            --add-line-bg: #052e16;
+            --del-bg: #7f1d1d;
+            --del-text: #fca5a5;
+            --del-line-bg: #1c0b0b;
+            --diff-line-bg: #1e293b;
+            --diff-line-text: #94a3b8;
+        }
+
+        .diff-checker-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .diff-checker-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .diff-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .diff-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .diff-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .diff-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+        }
+
+        .diff-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .diff-stat-add {
+            color: var(--add-text);
+        }
+
+        .diff-stat-del {
+            color: var(--del-text);
+        }
+
+        .diff-stat-chg {
+            color: var(--text-muted);
+        }
+
+        .diff-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .diff-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .diff-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .diff-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .diff-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .diff-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .diff-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .diff-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .diff-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .diff-btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .diff-btn-secondary {
+            background: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .diff-btn-secondary:hover {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        .diff-options {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .diff-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .diff-option input {
+            cursor: pointer;
+        }
+
+        .diff-output {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .diff-output-header {
+            padding: 12px 16px;
+            background: var(--diff-line-bg);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+            color: var(--diff-line-text);
+            font-weight: 500;
+        }
+
+        .diff-output-content {
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .diff-line {
+            display: flex;
+            padding: 2px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .diff-line:last-child {
+            border-bottom: none;
+        }
+
+        .diff-line-add {
+            background: var(--add-line-bg);
+        }
+
+        .diff-line-del {
+            background: var(--del-line-bg);
+        }
+
+        .diff-line-num {
+            min-width: 40px;
+            padding-right: 12px;
+            color: var(--text-muted);
+            user-select: none;
+            text-align: right;
+        }
+
+        .diff-line-marker {
+            min-width: 24px;
+            padding-right: 8px;
+            font-weight: 600;
+        }
+
+        .diff-line-add .diff-line-marker {
+            color: var(--add-text);
+        }
+
+        .diff-line-del .diff-line-marker {
+            color: var(--del-text);
+        }
+
+        .diff-line-content {
+            flex: 1;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .diff-empty {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .diff-legend {
+            display: flex;
+            gap: 24px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .diff-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .diff-legend-add {
+            width: 16px;
+            height: 16px;
+            background: var(--add-bg);
+            border-radius: 4px;
+        }
+
+        .diff-legend-del {
+            width: 16px;
+            height: 16px;
+            background: var(--del-bg);
+            border-radius: 4px;
+        }
+    </style>
+
+    <div class="diff-container">
+        <div class="diff-header">
+            <span class="diff-title" data-i18n="diff_title">文本对比工具</span>
+            <div class="diff-stats">
+                <span class="diff-stat diff-stat-add">
+                    <span id="diff-add-count">0</span> <span data-i18n="diff_added">行增加</span>
+                </span>
+                <span class="diff-stat diff-stat-del">
+                    <span id="diff-del-count">0</span> <span data-i18n="diff_removed">行删除</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="diff-inputs">
+            <div class="diff-input-group">
+                <label class="diff-label" data-i18n="diff_original_text">原始文本</label>
+                <textarea id="diff-original" class="diff-textarea" 
+                    placeholder="在此粘贴原始文本..."
+                    data-i18n-placeholder="diff_original_placeholder"></textarea>
+            </div>
+            <div class="diff-input-group">
+                <label class="diff-label" data-i18n="diff_modified_text">修改后文本</label>
+                <textarea id="diff-modified" class="diff-textarea"
+                    placeholder="在此粘贴修改后文本..."
+                    data-i18n-placeholder="diff_modified_placeholder"></textarea>
+            </div>
+        </div>
+
+        <div class="diff-options">
+            <label class="diff-option">
+                <input type="checkbox" id="diff-ignore-case" />
+                <span data-i18n="diff_ignore_case">忽略大小写</span>
+            </label>
+            <label class="diff-option">
+                <input type="checkbox" id="diff-ignore-whitespace" />
+                <span data-i18n="diff_ignore_whitespace">忽略空白符</span>
+            </label>
+            <label class="diff-option">
+                <input type="checkbox" id="diff-show-inline" checked />
+                <span data-i18n="diff_inline">显示行号</span>
+            </label>
+        </div>
+
+        <div class="diff-buttons">
+            <button class="diff-btn diff-btn-primary" id="diff-compare-btn" data-i18n="diff_compare">对比</button>
+            <button class="diff-btn diff-btn-secondary" id="diff-swap-btn" data-i18n="diff_swap">交换</button>
+            <button class="diff-btn diff-btn-secondary" id="diff-clear-btn" data-i18n="diff_clear">清空</button>
+        </div>
+
+        <div class="diff-output">
+            <div class="diff-output-header" data-i18n="diff_result">对比结果</div>
+            <div class="diff-output-content" id="diff-result">
+                <div class="diff-empty" data-i18n="diff_enter_text">请输入两段文本进行对比</div>
+            </div>
+        </div>
+
+        <div class="diff-legend">
+            <div class="diff-legend-item">
+                <div class="diff-legend-add"></div>
+                <span data-i18n="diff_legend_add">增加</span>
+            </div>
+            <div class="diff-legend-item">
+                <div class="diff-legend-del"></div>
+                <span data-i18n="diff_legend_del">删除</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // i18n translations
+            const translations = {
+                zh: {
+                    diff_title: '文本对比工具',
+                    diff_added: '行增加',
+                    diff_removed: '行删除',
+                    diff_original_text: '原始文本',
+                    diff_modified_text: '修改后文本',
+                    diff_original_placeholder: '在此粘贴原始文本...',
+                    diff_modified_placeholder: '在此粘贴修改后文本...',
+                    diff_ignore_case: '忽略大小写',
+                    diff_ignore_whitespace: '忽略空白符',
+                    diff_inline: '显示行号',
+                    diff_compare: '对比',
+                    diff_swap: '交换',
+                    diff_clear: '清空',
+                    diff_result: '对比结果',
+                    diff_enter_text: '请输入两段文本进行对比',
+                    diff_legend_add: '增加',
+                    diff_legend_del: '删除',
+                    diff_no_changes: '两段文本完全相同',
+                    diff_lines: '行'
+                },
+                en: {
+                    diff_title: 'Text Diff Tool',
+                    diff_added: 'added',
+                    diff_removed: 'removed',
+                    diff_original_text: 'Original Text',
+                    diff_modified_text: 'Modified Text',
+                    diff_original_placeholder: 'Paste original text here...',
+                    diff_modified_placeholder: 'Paste modified text here...',
+                    diff_ignore_case: 'Ignore Case',
+                    diff_ignore_whitespace: 'Ignore Whitespace',
+                    diff_inline: 'Show Line Numbers',
+                    diff_compare: 'Compare',
+                    diff_swap: 'Swap',
+                    diff_clear: 'Clear',
+                    diff_result: 'Comparison Result',
+                    diff_enter_text: 'Enter two texts to compare',
+                    diff_legend_add: 'Added',
+                    diff_legend_del: 'Removed',
+                    diff_no_changes: 'Texts are identical',
+                    diff_lines: 'lines'
+                }
+            };
+
+            const lang = document.documentElement.lang || 'zh';
+            const t = translations[lang] || translations.zh;
+
+            // Apply translations
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.textContent = t[key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) el.placeholder = t[key];
+});
+
+            // DOM elements
+            const originalTextarea = document.getElementById('diff-original');
+            const modifiedTextarea = document.getElementById('diff-modified');
+            const compareBtn = document.getElementById('diff-compare-btn');
+            const swapBtn = document.getElementById('diff-swap-btn');
+            const clearBtn = document.getElementById('diff-clear-btn');
+            const resultDiv = document.getElementById('diff-result');
+            const addCount = document.getElementById('diff-add-count');
+            const delCount = document.getElementById('diff-del-count');
+            const ignoreCase = document.getElementById('diff-ignore-case');
+            const ignoreWhitespace = document.getElementById('diff-ignore-whitespace');
+            const showInline = document.getElementById('diff-show-inline');
+
+            // Diff algorithm (LCS-based line diff)
+            function computeDiff(original, modified, options) {
+                const origLines = original.split('\n');
+                const modLines = modified.split('\n');
+
+                // LCS computation
+                const m = origLines.length;
+                const n = modLines.length;
+                const dp = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+
+                for (let i = 1; i <= m; i++) {
+                    for (let j = 1; j <= n; j++) {
+                        if (origLines[i - 1] === modLines[j - 1]) {
+                            dp[i][j] = dp[i - 1][j - 1] + 1;
+                        } else {
+                            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                        }
+                    }
+                }
+
+                // Backtrack to find diff
+                const diff = [];
+                let i = m, j = n;
+                while (i > 0 || j > 0) {
+                    if (i > 0 && j > 0 && origLines[i - 1] === modLines[j - 1]) {
+                        diff.unshift({ type: 'same', origLine: i, modLine: j, content: origLines[i - 1] });
+                        i--; j--;
+                    } else if (j > 0 && (i === 0 || dp[i][j - 1] >= dp[i - 1][j])) {
+                        diff.unshift({ type: 'add', modLine: j, content: modLines[j - 1] });
+                        j--;
+                    } else {
+                        diff.unshift({ type: 'del', origLine: i, content: origLines[i - 1] });
+                        i--;
+                    }
+                }
+
+                return diff;
+            }
+
+            function applyOptions(text, options) {
+                if (options.ignoreCase) text = text.toLowerCase();
+                if (options.ignoreWhitespace) text = text.replace(/\s+/g, ' ');
+                return text;
+            }
+
+            function renderDiff(diff, showLineNumbers) {
+                if (diff.length === 0) {
+                    return `<div class="diff-empty">${t.diff_enter_text}</div>`;
+                }
+
+                let addCountVal = 0;
+                let delCountVal = 0;
+                let html = '';
+
+                diff.forEach(item => {
+                    if (item.type === 'same') {
+                        const lineNum = showLineNumbers ? `<span class="diff-line-num">${item.origLine}</span>` : '';
+                        html += `<div class="diff-line">
+                            ${lineNum}
+                            <span class="diff-line-marker">&nbsp;</span>
+                            <span class="diff-line-content">${escapeHtml(item.content)}</span>
+                        </div>`;
+                    } else if (item.type === 'add') {
+                        addCountVal++;
+                        const lineNum = showLineNumbers ? `<span class="diff-line-num">${item.modLine}</span>` : '';
+                        html += `<div class="diff-line diff-line-add">
+                            ${lineNum}
+                            <span class="diff-line-marker">+</span>
+                            <span class="diff-line-content">${escapeHtml(item.content)}</span>
+                        </div>`;
+                    } else if (item.type === 'del') {
+                        delCountVal++;
+                        const lineNum = showLineNumbers ? `<span class="diff-line-num">${item.origLine}</span>` : '';
+                        html += `<div class="diff-line diff-line-del">
+                            ${lineNum}
+                            <span class="diff-line-marker">-</span>
+                            <span class="diff-line-content">${escapeHtml(item.content)}</span>
+                        </div>`;
+                    }
+                });
+
+                addCount.textContent = addCountVal;
+                delCount.textContent = delCountVal;
+
+                return html;
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function compare() {
+                const original = originalTextarea.value;
+                const modified = modifiedTextarea.value;
+
+                if (!original.trim() && !modified.trim()) {
+                    resultDiv.innerHTML = `<div class="diff-empty">${t.diff_enter_text}</div>`;
+                    addCount.textContent = '0';
+                    delCount.textContent = '0';
+                    return;
+                }
+
+                const options = {
+                    ignoreCase: ignoreCase.checked,
+                    ignoreWhitespace: ignoreWhitespace.checked
+                };
+
+                // Prepare texts with options
+                let origLines = original.split('\n');
+                let modLines = modified.split('\n');
+
+                if (options.ignoreWhitespace) {
+                    origLines = origLines.map(l => l.replace(/\s+/g, ' '));
+                    modLines = modLines.map(l => l.replace(/\s+/g, ' '));
+                }
+
+                const diff = computeDiff(origLines.join('\n'), modLines.join('\n'), options);
+                const html = renderDiff(diff, showInline.checked);
+                resultDiv.innerHTML = html;
+            }
+
+            // Event listeners
+            compareBtn.addEventListener('click', compare);
+            swapBtn.addEventListener('click', () => {
+                const temp = originalTextarea.value;
+                originalTextarea.value = modifiedTextarea.value;
+                modifiedTextarea.value = temp;
+            });
+            clearBtn.addEventListener('click', () => {
+                originalTextarea.value = '';
+                modifiedTextarea.value = '';
+                resultDiv.innerHTML = `<div class="diff-empty">${t.diff_enter_text}</div>`;
+                addCount.textContent = '0';
+                delCount.textContent = '0';
+            });
+
+            // Option change handlers
+            ignoreCase.addEventListener('change', compare);
+            ignoreWhitespace.addEventListener('change', compare);
+            showInline.addEventListener('change', compare);
+        })();
+    </script>
+</div>
