@@ -828,3 +828,231 @@ other = "Texts are identical"
 
 [diff_lines]
 other = "lines"
+
+# Unit Converter Tool
+[unit_tool_title]
+other = "Unit Converter"
+
+[unit_tool_desc]
+other = "Online unit converter tool. Convert between length, weight, temperature, area, volume, and data storage units."
+
+[unit_length]
+other = "Length"
+
+[unit_weight]
+other = "Weight"
+
+[unit_temperature]
+other = "Temperature"
+
+[unit_area]
+other = "Area"
+
+[unit_volume]
+other = "Volume"
+
+[unit_data]
+other = "Data"
+
+[unit_value]
+other = "Value"
+
+[unit_from]
+other = "From"
+
+[unit_to]
+other = "To"
+
+# Unit Labels
+[unit_enter_value]
+other = "Enter value"
+
+[unit_swap]
+other = "Swap"
+
+[unit_all_conversions]
+other = "All Conversions"
+
+# Length
+[unit_m]
+other = "Meter"
+
+[unit_km]
+other = "Kilometer"
+
+[unit_cm]
+other = "Centimeter"
+
+[unit_mm]
+other = "Millimeter"
+
+[unit_mi]
+other = "Mile"
+
+[unit_yd]
+other = "Yard"
+
+[unit_ft]
+other = "Foot"
+
+[unit_in]
+other = "Inch"
+
+# Weight
+[unit_kg]
+other = "Kilogram"
+
+[unit_g]
+other = "Gram"
+
+[unit_mg]
+other = "Milligram"
+
+[unit_t]
+other = "Ton"
+
+[unit_lb]
+other = "Pound"
+
+[unit_oz]
+other = "Ounce"
+
+# Temperature
+[unit_celsius]
+other = "Celsius"
+
+[unit_fahrenheit]
+other = "Fahrenheit"
+
+[unit_kelvin]
+other = "Kelvin"
+
+[unit_freezing]
+other = "Freezing"
+
+[unit_boiling]
+other = "Boiling"
+
+[unit_body]
+other = "Body Temp"
+
+# Area
+[unit_m2]
+other = "Square Meter"
+
+[unit_km2]
+other = "Square Kilometer"
+
+[unit_cm2]
+other = "Square Centimeter"
+
+[unit_ha]
+other = "Hectare"
+
+[unit_acre]
+other = "Acre"
+
+[unit_ft2]
+other = "Square Foot"
+
+# Volume
+[unit_l]
+other = "Liter"
+
+[unit_ml]
+other = "Milliliter"
+
+[unit_m3]
+other = "Cubic Meter"
+
+[unit_gal]
+other = "Gallon"
+
+[unit_qt]
+other = "Quart"
+
+[unit_pt]
+other = "Pint"
+
+# Data
+[unit_b]
+other = "Byte"
+
+[unit_kb]
+other = "Kilobyte"
+
+[unit_mb]
+other = "Megabyte"
+
+[unit_gb]
+other = "Gigabyte"
+
+[unit_tb]
+other = "Terabyte"
+
+# Hash Generator Tool
+[hash_tool_title]
+other = "Hash Generator"
+
+[hash_tool_desc]
+other = "Online hash calculator supporting MD5, SHA-1, SHA-256, SHA-512 algorithms. Calculate hash from text input or drag-and-drop files."
+
+[hash_text_input]
+other = "Text Input"
+
+[hash_text_placeholder]
+other = "Enter text to hash..."
+
+[hash_file_input]
+other = "File Input"
+
+[hash_drag_drop]
+other = "Drag and drop file here or click to select"
+
+[hash_drag_drop_hint]
+other = "Supports any file format"
+
+[hash_file_name]
+other = "File name"
+
+[hash_file_size]
+other = "File size"
+
+[hash_file_selected]
+other = "File selected"
+
+[hash_algorithm]
+other = "Algorithm"
+
+[hash_calculate]
+other = "Calculate Hash"
+
+[hash_result]
+other = "Hash Result"
+
+[hash_copy]
+other = "Copy"
+
+[hash_copied]
+other = "Copied"
+
+[hash_md5]
+other = "MD5"
+
+[hash_sha1]
+other = "SHA-1"
+
+[hash_sha256]
+other = "SHA-256"
+
+[hash_sha512]
+other = "SHA-512"
+
+[hash_clear]
+other = "Clear"
+
+[hash_text_mode]
+other = "Text"
+
+[hash_file_mode]
+other = "File"

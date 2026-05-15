@@ -91,7 +91,7 @@
 - [ ] Wallet Address Validator	钱包地址校验
 - [ ] Mnemonic Converter	助记词互转
 - [ ] PDF Signer	PDF 本地签名
-- [ ] Hash Generator	文件哈希计算
+- [X] Hash Generator	文件哈希计算
 - [ ] CSV to Chart	CSV 转 交互式图表
 - [ ] Mermaid Editor	流程图实时渲染
 - [ ] ASCII Table Gen	文本表格生成
@@ -134,7 +134,7 @@
 - [ ] Paint Calculator	墙面油漆计算器
 - [ ] Tip Splitter	小费/账单分摊器
 - [ ] Time Zone Meeting Planner	跨时区会议规划
-- [ ] Unit Converter (Ultimate)	全能单位换算
+- [X] Unit Converter (Ultimate)	全能单位换算
 - [ ] Breathing Pacer	呼吸训练器
 - [ ] Social Media Mockup	社交媒体样机生成
 - [ ] Gradient Mesh Gen	弥散渐变背景生成
@@ -238,7 +238,6 @@ Random Sampler 随机抽样器
 Data Sanitizer 敏感数据清洗
 Recipe Scaler 食谱份量缩放
 Tip Splitter 小费/账单分摊器
-Unit Converter (Ultimate) 全能单位换算 (需维护换算表)
 Breathing Pacer 呼吸训练器 (CSS + 定时器)
 Countdown Timer (Pomodoro) 专注计时器
 Reaction Time Tester 反应力测试
@@ -284,7 +283,6 @@ App Icon Resizer 应用图标批量切图 (Canvas 批量)
 Splash Screen Gen 启动屏生成器
 Wallet Address Validator 钱包地址校验 (正则+算法库)
 Mnemonic Converter 助记词互转 (ethers.js 精简版)
-Hash Generator 文件哈希计算 (spark-md5)
 Certificate Decoder SSL 证书解析 (forge)
 Font Installer Preview 字体预览与安装指导
 Decision Wheel 决策转盘

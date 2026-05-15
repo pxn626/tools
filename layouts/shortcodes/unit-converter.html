@@ -1,0 +1,703 @@
+<!-- Unit Converter Tool -->
+<div class="unit-converter-tool">
+    <style>
+        .unit-converter-tool {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --accent-bg: #eff6ff;
+            --accent-text: #1e40af;
+        }
+
+        [data-theme="dark"] .unit-converter-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-bg: #1e3a5f;
+            --accent-text: #93c5fd;
+        }
+
+        .unit-converter-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .unit-converter-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .unit-container {
+            max-width: 800px;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .unit-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .unit-tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .unit-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .unit-tab.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .unit-panel {
+            display: none;
+        }
+
+        .unit-panel.active {
+            display: block;
+        }
+
+        .unit-converter-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .unit-converter-row {
+                flex-direction: column;
+            }
+        }
+
+        .unit-input-group {
+            flex: 1;
+        }
+
+        .unit-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .unit-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-size: 16px;
+            font-family: "Consolas", "Monaco", monospace;
+            transition: border-color 0.2s;
+        }
+
+        .unit-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .unit-swap-btn {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unit-swap-btn:hover {
+            background: var(--accent-bg);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .unit-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .unit-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .unit-result {
+            padding: 16px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 16px;
+        }
+
+        .unit-result-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-text);
+            font-family: "Consolas", "Monaco", monospace;
+            word-break: break-all;
+        }
+
+        .unit-result-unit {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .unit-conversion-list {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .unit-conversion-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .unit-conversion-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+
+        .unit-conversion-item:last-child {
+            border-bottom: none;
+        }
+
+        .unit-conversion-item span:first-child {
+            color: var(--text-muted);
+        }
+
+        .unit-conversion-item span:last-child {
+            font-family: "Consolas", "Monaco", monospace;
+            color: var(--text-main);
+        }
+
+        .unit-quick-inputs {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .unit-quick-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .unit-quick-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+    </style>
+
+    <div class="unit-container">
+        <div class="unit-tabs" id="unit-tabs">
+            <button class="unit-tab active" data-tab="length">{{ i18n "unit_length" }}</button>
+            <button class="unit-tab" data-tab="weight">{{ i18n "unit_weight" }}</button>
+            <button class="unit-tab" data-tab="temperature">{{ i18n "unit_temperature" }}</button>
+            <button class="unit-tab" data-tab="area">{{ i18n "unit_area" }}</button>
+            <button class="unit-tab" data-tab="volume">{{ i18n "unit_volume" }}</button>
+            <button class="unit-tab" data-tab="data">{{ i18n "unit_data" }}</button>
+        </div>
+
+        <!-- Length -->
+        <div class="unit-panel active" id="panel-length">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="length-value" placeholder="{{ i18n "unit_enter_value" }}" value="1" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="length-from">
+                        <option value="m">{{ i18n "unit_m" }} (m)</option>
+                        <option value="km">{{ i18n "unit_km" }} (km)</option>
+                        <option value="cm">{{ i18n "unit_cm" }} (cm)</option>
+                        <option value="mm">{{ i18n "unit_mm" }} (mm)</option>
+                        <option value="mi">{{ i18n "unit_mi" }} (mi)</option>
+                        <option value="yd">{{ i18n "unit_yd" }} (yd)</option>
+                        <option value="ft">{{ i18n "unit_ft" }} (ft)</option>
+                        <option value="in">{{ i18n "unit_in" }} (in)</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('length')" title="{{ i18n "unit_swap" }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="length-to">
+                        <option value="m">{{ i18n "unit_m" }} (m)</option>
+                        <option value="km" selected>{{ i18n "unit_km" }} (km)</option>
+                        <option value="cm">{{ i18n "unit_cm" }} (cm)</option>
+                        <option value="mm">{{ i18n "unit_mm" }} (mm)</option>
+                        <option value="mi">{{ i18n "unit_mi" }} (mi)</option>
+                        <option value="yd">{{ i18n "unit_yd" }} (yd)</option>
+                        <option value="ft">{{ i18n "unit_ft" }} (ft)</option>
+                        <option value="in">{{ i18n "unit_in" }} (in)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="length-result">0.001</div>
+                <div class="unit-result-unit">km</div>
+            </div>
+            <div class="unit-quick-inputs" id="length-quick"></div>
+            <div class="unit-conversion-list" id="length-list"></div>
+        </div>
+
+        <!-- Weight -->
+        <div class="unit-panel" id="panel-weight">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="weight-value" placeholder="{{ i18n "unit_enter_value" }}" value="1" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="weight-from">
+                        <option value="kg">{{ i18n "unit_kg" }} (kg)</option>
+                        <option value="g">{{ i18n "unit_g" }} (g)</option>
+                        <option value="mg">{{ i18n "unit_mg" }} (mg)</option>
+                        <option value="t">{{ i18n "unit_t" }} (t)</option>
+                        <option value="lb">{{ i18n "unit_lb" }} (lb)</option>
+                        <option value="oz">{{ i18n "unit_oz" }} (oz)</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('weight')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="weight-to">
+                        <option value="kg">{{ i18n "unit_kg" }} (kg)</option>
+                        <option value="g">{{ i18n "unit_g" }} (g)</option>
+                        <option value="mg">{{ i18n "unit_mg" }} (mg)</option>
+                        <option value="t">{{ i18n "unit_t" }} (t)</option>
+                        <option value="lb" selected>{{ i18n "unit_lb" }} (lb)</option>
+                        <option value="oz">{{ i18n "unit_oz" }} (oz)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="weight-result">2.20462</div>
+                <div class="unit-result-unit">lb</div>
+            </div>
+            <div class="unit-quick-inputs" id="weight-quick"></div>
+            <div class="unit-conversion-list" id="weight-list"></div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="unit-panel" id="panel-temperature">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="temperature-value" placeholder="{{ i18n "unit_enter_value" }}" value="0" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="temperature-from">
+                        <option value="c">{{ i18n "unit_celsius" }} (°C)</option>
+                        <option value="f">{{ i18n "unit_fahrenheit" }} (°F)</option>
+                        <option value="k">{{ i18n "unit_kelvin" }} (K)</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('temperature')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="temperature-to">
+                        <option value="c" selected>{{ i18n "unit_celsius" }} (°C)</option>
+                        <option value="f">{{ i18n "unit_fahrenheit" }} (°F)</option>
+                        <option value="k">{{ i18n "unit_kelvin" }} (K)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="temperature-result">0</div>
+                <div class="unit-result-unit">°C</div>
+            </div>
+            <div class="unit-quick-inputs" id="temperature-quick"></div>
+        </div>
+
+        <!-- Area -->
+        <div class="unit-panel" id="panel-area">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="area-value" placeholder="{{ i18n "unit_enter_value" }}" value="1" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="area-from">
+                        <option value="m2">{{ i18n "unit_m2" }} (m²)</option>
+                        <option value="km2">{{ i18n "unit_km2" }} (km²)</option>
+                        <option value="cm2">{{ i18n "unit_cm2" }} (cm²)</option>
+                        <option value="ha">{{ i18n "unit_ha" }} (ha)</option>
+                        <option value="acre">{{ i18n "unit_acre" }}</option>
+                        <option value="ft2">{{ i18n "unit_ft2" }} (ft²)</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('area')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="area-to">
+                        <option value="m2">{{ i18n "unit_m2" }} (m²)</option>
+                        <option value="km2" selected>{{ i18n "unit_km2" }} (km²)</option>
+                        <option value="cm2">{{ i18n "unit_cm2" }} (cm²)</option>
+                        <option value="ha">{{ i18n "unit_ha" }} (ha)</option>
+                        <option value="acre">{{ i18n "unit_acre" }}</option>
+                        <option value="ft2">{{ i18n "unit_ft2" }} (ft²)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="area-result">0.000001</div>
+                <div class="unit-result-unit">km²</div>
+            </div>
+            <div class="unit-quick-inputs" id="area-quick"></div>
+            <div class="unit-conversion-list" id="area-list"></div>
+        </div>
+
+        <!-- Volume -->
+        <div class="unit-panel" id="panel-volume">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="volume-value" placeholder="{{ i18n "unit_enter_value" }}" value="1" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="volume-from">
+                        <option value="l">{{ i18n "unit_l" }} (L)</option>
+                        <option value="ml">{{ i18n "unit_ml" }} (mL)</option>
+                        <option value="m3">{{ i18n "unit_m3" }} (m³)</option>
+                        <option value="gal">{{ i18n "unit_gal" }}</option>
+                        <option value="qt">{{ i18n "unit_qt" }}</option>
+                        <option value="pt">{{ i18n "unit_pt" }}</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('volume')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="volume-to">
+                        <option value="l" selected>{{ i18n "unit_l" }} (L)</option>
+                        <option value="ml">{{ i18n "unit_ml" }} (mL)</option>
+                        <option value="m3">{{ i18n "unit_m3" }} (m³)</option>
+                        <option value="gal">{{ i18n "unit_gal" }}</option>
+                        <option value="qt">{{ i18n "unit_qt" }}</option>
+                        <option value="pt">{{ i18n "unit_pt" }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="volume-result">1</div>
+                <div class="unit-result-unit">L</div>
+            </div>
+            <div class="unit-quick-inputs" id="volume-quick"></div>
+            <div class="unit-conversion-list" id="volume-list"></div>
+        </div>
+
+        <!-- Data -->
+        <div class="unit-panel" id="panel-data">
+            <div class="unit-converter-row">
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_value" }}</label>
+                    <input type="number" class="unit-input" id="data-value" placeholder="{{ i18n "unit_enter_value" }}" value="1" />
+                </div>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_from" }}</label>
+                    <select class="unit-select" id="data-from">
+                        <option value="b">{{ i18n "unit_b" }} (B)</option>
+                        <option value="kb">{{ i18n "unit_kb" }} (KB)</option>
+                        <option value="mb">{{ i18n "unit_mb" }} (MB)</option>
+                        <option value="gb">{{ i18n "unit_gb" }} (GB)</option>
+                        <option value="tb">{{ i18n "unit_tb" }} (TB)</option>
+                    </select>
+                </div>
+                <button class="unit-swap-btn" onclick="unitSwap('data')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                </button>
+                <div class="unit-input-group">
+                    <label class="unit-label">{{ i18n "unit_to" }}</label>
+                    <select class="unit-select" id="data-to">
+                        <option value="b">{{ i18n "unit_b" }} (B)</option>
+                        <option value="kb">{{ i18n "unit_kb" }} (KB)</option>
+                        <option value="mb" selected>{{ i18n "unit_mb" }} (MB)</option>
+                        <option value="gb">{{ i18n "unit_gb" }} (GB)</option>
+                        <option value="tb">{{ i18n "unit_tb" }} (TB)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="unit-result">
+                <div class="unit-result-value" id="data-result">0.0009765625</div>
+                <div class="unit-result-unit">MB</div>
+            </div>
+            <div class="unit-quick-inputs" id="data-quick"></div>
+            <div class="unit-conversion-list" id="data-list"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Conversion factors (to base unit)
+            const units = {
+                length: {
+                    m: 1, km: 1000, cm: 0.01, mm: 0.001,
+                    mi: 1609.344, yd: 0.9144, ft: 0.3048, in: 0.0254
+                },
+                weight: {
+                    kg: 1, g: 0.001, mg: 0.000001, t: 1000,
+                    lb: 0.453592, oz: 0.0283495
+                },
+                area: {
+                    'm2': 1, 'km2': 1000000, 'cm2': 0.0001, 'ha': 10000,
+                    'acre': 4046.86, 'ft2': 0.092903
+                },
+                volume: {
+                    l: 1, ml: 0.001, m3: 1000, gal: 3.78541,
+                    qt: 0.946353, pt: 0.473176
+                },
+                data: {
+                    b: 1, kb: 1024, mb: 1048576, gb: 1073741824, tb: 1099511627776
+                }
+            };
+
+            // i18n labels
+            const labels = {
+                length: { m: 'm', km: 'km', cm: 'cm', mm: 'mm', mi: 'mi', yd: 'yd', ft: 'ft', in: 'in' },
+                weight: { kg: 'kg', g: 'g', mg: 'mg', t: 't', lb: 'lb', oz: 'oz' },
+                area: { 'm2': 'm²', 'km2': 'km²', 'cm2': 'cm²', 'ha': 'ha', 'acre': 'acre', 'ft2': 'ft²' },
+                volume: { l: 'L', ml: 'mL', m3: 'm³', gal: 'gal', qt: 'qt', pt: 'pt' },
+                data: { b: 'B', kb: 'KB', mb: 'MB', gb: 'GB', tb: 'TB' }
+            };
+            const tempLabels = { c: '°C', f: '°F', k: 'K' };
+
+            // Quick buttons config
+            const quickButtons = {
+                length: [
+                    { label: '1m', value: 1 },
+                    { label: '1000m', value: 1000 },
+                    { label: '1ft', value: 0.3048 },
+                    { label: '1mi', value: 1.60934 }
+                ],
+                weight: [
+                    { label: '1kg', value: 1 },
+                    { label: '1000g', value: 1000 },
+                    { label: '1lb', value: 0.453592 }
+                ],
+                temperature: [
+                    { label: '0°C ({{ i18n "unit_freezing" }})', value: 0 },
+                    { label: '100°C ({{ i18n "unit_boiling" }})', value: 100 },
+                    { label: '37°C ({{ i18n "unit_body" }})', value: 37 }
+                ],
+                area: [
+                    { label: '1m²', value: 1 },
+                    { label: '1ha', value: 10000 },
+                    { label: '1acre', value: 4046.86 }
+                ],
+                volume: [
+                    { label: '1L', value: 1 },
+                    { label: '1gal', value: 3.78541 },
+                    { label: '1m³', value: 1000 }
+                ],
+                data: [
+                    { label: '1KB', value: 1024 },
+                    { label: '1MB', value: 1048576 },
+                    { label: '1GB', value: 1073741824 }
+                ]
+            };
+
+            // Generate quick buttons
+            function generateQuickButtons() {
+                Object.keys(quickButtons).forEach(type => {
+                    const container = document.getElementById(`${type}-quick`);
+                    if (!container) return;
+                    container.innerHTML = quickButtons[type].map(btn =>
+                        `<button class="unit-quick-btn" onclick="unitQuick('${type}', ${btn.value})">${btn.label}</button>`
+                    ).join('');
+                });
+            }
+
+            // Generate conversion list
+            function generateConversionList(type) {
+                const container = document.getElementById(`${type}-list`);
+                if (!container) return;
+
+                const fromSelect = document.getElementById(`${type}-from`);
+                const valueInput = document.getElementById(`${type}-value`);
+                const value = parseFloat(valueInput.value) || 1;
+                const from = fromSelect.value;
+                const baseValue = value * units[type][from];
+
+                const listTitle = container.previousElementSibling?.classList.contains('unit-quick-inputs')
+                    ? '{{ i18n "unit_all_conversions" }}' : '{{ i18n "unit_all_conversions" }}';
+
+                let html = `<div class="unit-conversion-title">${listTitle}</div>`;
+                Object.keys(units[type]).forEach(unit => {
+                    if (unit === from) return;
+                    const result = baseValue / units[type][unit];
+                    html += `<div class="unit-conversion-item">
+                        <span>${labels[type][unit]}</span>
+                        <span>${formatNumber(result)}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
+
+            // Convert function
+            function convert(type, value, from, to) {
+                if (type === 'temperature') {
+                    let celsius;
+                    if (from === 'c') celsius = value;
+                    else if (from === 'f') celsius = (value - 32) * 5 / 9;
+                    else celsius = value - 273.15;
+                    if (to === 'c') return celsius;
+                    else if (to === 'f') return celsius * 9 / 5 + 32;
+                    else return celsius + 273.15;
+                }
+                const baseValue = value * units[type][from];
+                return baseValue / units[type][to];
+            }
+
+            // Format number
+            function formatNumber(num) {
+                if (Math.abs(num) < 0.000001 && num !== 0) {
+                    return num.toExponential(4);
+                }
+                if (Math.abs(num) >= 1000000000) {
+                    return num.toExponential(4);
+                }
+                return parseFloat(num.toPrecision(10)).toString();
+            }
+
+            // Update result
+            function updateResult(type) {
+                const valueInput = document.getElementById(`${type}-value`);
+                const fromSelect = document.getElementById(`${type}-from`);
+                const toSelect = document.getElementById(`${type}-to`);
+                const resultDiv = document.getElementById(`${type}-result`);
+                const unitDiv = resultDiv.nextElementSibling;
+
+                const value = parseFloat(valueInput.value) || 0;
+                const from = fromSelect.value;
+                const to = toSelect.value;
+
+                const result = convert(type, value, from, to);
+                resultDiv.textContent = formatNumber(result);
+
+                if (type === 'temperature') {
+                    unitDiv.textContent = tempLabels[to];
+                } else {
+                    unitDiv.textContent = labels[type][to];
+                    generateConversionList(type);
+                }
+            }
+
+            // Swap units
+            window.unitSwap = function(type) {
+                const fromSelect = document.getElementById(`${type}-from`);
+                const toSelect = document.getElementById(`${type}-to`);
+                const temp = fromSelect.value;
+                fromSelect.value = toSelect.value;
+                toSelect.value = temp;
+                updateResult(type);
+            };
+
+            // Quick input
+            window.unitQuick = function(type, value) {
+                const input = document.getElementById(`${type}-value`);
+                input.value = value;
+                updateResult(type);
+            };
+
+            // Tab switching
+            document.querySelectorAll('.unit-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.unit-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.unit-panel').forEach(p => p.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+                });
+            });
+
+            // Input change handlers
+            ['length', 'weight', 'temperature', 'area', 'volume', 'data'].forEach(type => {
+                const valueInput = document.getElementById(`${type}-value`);
+                const fromSelect = document.getElementById(`${type}-from`);
+                const toSelect = document.getElementById(`${type}-to`);
+
+                valueInput.addEventListener('input', () => updateResult(type));
+                fromSelect.addEventListener('change', () => updateResult(type));
+                toSelect.addEventListener('change', () => updateResult(type));
+            });
+
+            // Initialize
+            generateQuickButtons();
+            ['length', 'weight', 'area', 'volume', 'data'].forEach(type => generateConversionList(type));
+            ['length', 'weight', 'temperature', 'area', 'volume', 'data'].forEach(updateResult);
+        })();
+    </script>
+</div>

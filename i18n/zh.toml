@@ -1272,3 +1272,231 @@ other = "两段文本完全相同"
 
 [diff_lines]
 other = "行"
+
+# Unit Converter Tool
+[unit_tool_title]
+other = "单位转换器"
+
+[unit_tool_desc]
+other = "在线单位转换工具，支持长度、重量、温度、面积、体积、数据存储单位之间的互相转换。"
+
+[unit_length]
+other = "长度"
+
+[unit_weight]
+other = "重量"
+
+[unit_temperature]
+other = "温度"
+
+[unit_area]
+other = "面积"
+
+[unit_volume]
+other = "体积"
+
+[unit_data]
+other = "数据"
+
+[unit_value]
+other = "数值"
+
+[unit_from]
+other = "从"
+
+[unit_to]
+other = "到"
+
+# Unit Labels
+[unit_enter_value]
+other = "输入数值"
+
+[unit_swap]
+other = "交换"
+
+[unit_all_conversions]
+other = "所有转换结果"
+
+# Length
+[unit_m]
+other = "米"
+
+[unit_km]
+other = "千米"
+
+[unit_cm]
+other = "厘米"
+
+[unit_mm]
+other = "毫米"
+
+[unit_mi]
+other = "英里"
+
+[unit_yd]
+other = "码"
+
+[unit_ft]
+other = "英尺"
+
+[unit_in]
+other = "英寸"
+
+# Weight
+[unit_kg]
+other = "千克"
+
+[unit_g]
+other = "克"
+
+[unit_mg]
+other = "毫克"
+
+[unit_t]
+other = "吨"
+
+[unit_lb]
+other = "磅"
+
+[unit_oz]
+other = "盎司"
+
+# Temperature
+[unit_celsius]
+other = "摄氏度"
+
+[unit_fahrenheit]
+other = "华氏度"
+
+[unit_kelvin]
+other = "开尔文"
+
+[unit_freezing]
+other = "冰点"
+
+[unit_boiling]
+other = "沸点"
+
+[unit_body]
+other = "体温"
+
+# Area
+[unit_m2]
+other = "平方米"
+
+[unit_km2]
+other = "平方千米"
+
+[unit_cm2]
+other = "平方厘米"
+
+[unit_ha]
+other = "公顷"
+
+[unit_acre]
+other = "英亩"
+
+[unit_ft2]
+other = "平方英尺"
+
+# Volume
+[unit_l]
+other = "升"
+
+[unit_ml]
+other = "毫升"
+
+[unit_m3]
+other = "立方米"
+
+[unit_gal]
+other = "加仑"
+
+[unit_qt]
+other = "夸脱"
+
+[unit_pt]
+other = "品脱"
+
+# Data
+[unit_b]
+other = "字节"
+
+[unit_kb]
+other = "千字节"
+
+[unit_mb]
+other = "兆字节"
+
+[unit_gb]
+other = "吉字节"
+
+[unit_tb]
+other = "太字节"
+
+# Hash Generator Tool
+[hash_tool_title]
+other = "哈希生成器"
+
+[hash_tool_desc]
+other = "在线哈希计算工具，支持MD5、SHA-1、SHA-256、SHA-512等算法，输入文本或拖放文件进行哈希计算。"
+
+[hash_text_input]
+other = "输入文本"
+
+[hash_text_placeholder]
+other = "在此输入需要计算哈希的文本..."
+
+[hash_file_input]
+other = "文件输入"
+
+[hash_drag_drop]
+other = "拖拽文件到此处或点击选择"
+
+[hash_drag_drop_hint]
+other = "支持任意文件格式"
+
+[hash_file_name]
+other = "文件名"
+
+[hash_file_size]
+other = "文件大小"
+
+[hash_file_selected]
+other = "已选择文件"
+
+[hash_algorithm]
+other = "算法"
+
+[hash_calculate]
+other = "计算哈希"
+
+[hash_result]
+other = "哈希结果"
+
+[hash_copy]
+other = "复制"
+
+[hash_copied]
+other = "已复制"
+
+[hash_md5]
+other = "MD5"
+
+[hash_sha1]
+other = "SHA-1"
+
+[hash_sha256]
+other = "SHA-256"
+
+[hash_sha512]
+other = "SHA-512"
+
+[hash_clear]
+other = "清除"
+
+[hash_text_mode]
+other = "文本"
+
+[hash_file_mode]
+other = "文件"
