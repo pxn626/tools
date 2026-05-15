@@ -104,13 +104,13 @@
 - [ ] Star Chart Generator	星图生成器
 - [ ] Periodic Table Calc	元素周期表计算器
 - [ ] Binary Visualizer	二进制/位运算可视化
-- [ ] C64/PETSCII Converter	Commodore 字符转换
+- [ ] C64/PETSCII Converter	CommodorXe 字符转换
 - [ ] ROM Checker	游戏卡带校验
 - [ ] Tape/Wav Encoder	磁带机音频编码
 - [ ] ASCII Art Animator	字符动画生成器
 - [ ] Unicode Inspector	字符深层解析
-- [ ] Regex Tester & Explainer	正则表达式测试
-- [XX] Lorem Ipsum (Specialized)	特殊风格假文
+- [X] Regex Tester & Explainer	正则表达式测试
+- [X] Lorem Ipsum (Specialized)	特殊风格假文
 - [ ] Text Diff Patch	生成 Patch 文件
 - [ ] Markdown to PDF (Print)	完美打印版 PDF
 - [ ] BPM Tapper	节奏检测器
@@ -253,7 +253,6 @@ Bio Link Builder 个人主页链接生成 (表单转 HTML)
 Markdown Table Gen 表格生成器
 ASCII Table Gen 文本表格生成
 Text Diff Patch 生成 Patch 文件 (基于 jsdiff)
-Regex Tester & Explainer 正则表达式测试
 Unicode Inspector 字符深层解析
 🟡 Level 2: 基础库级 (引入成熟 JS 库)
 特点：依赖特定的 npm 包，但文档完善，API 调用直观。主要工作量在 UI 交互。
