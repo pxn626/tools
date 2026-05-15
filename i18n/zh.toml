@@ -1500,3 +1500,232 @@ other = "文本"
 
 [hash_file_mode]
 other = "文件"
+
+# JSON to TypeScript Tool
+[json_ts_title]
+other = "JSON 转 TypeScript 类型定义"
+
+[json_ts_intro]
+other = "将 JSON 数据自动转换为 TypeScript 接口类型定义，支持嵌套对象和数组类型推断。"
+
+[json_ts_input]
+other = "JSON 输入"
+
+[json_ts_output]
+other = "TypeScript 输出"
+
+[json_ts_format]
+other = "格式化"
+
+[json_ts_copy]
+other = "复制"
+
+[json_ts_copied]
+other = "已复制"
+
+[json_ts_input_placeholder]
+other = "在此输入或粘贴 JSON 数据..."
+
+[json_ts_output_placeholder]
+other = "TypeScript 类型定义将在这里生成..."
+
+[json_ts_options]
+other = "生成选项"
+
+[json_ts_add_root]
+other = "添加根类型"
+
+[json_ts_optional_props]
+other = "可选属性 (?)"
+
+[json_ts_readonly]
+other = "只读属性 (readonly)"
+
+[json_ts_root_name]
+other = "根类型名称"
+
+[json_ts_error_invalid]
+other = "JSON 解析错误"
+
+# Binary Visualizer Tool
+[bv_title]
+other = "二进制可视化工具"
+
+[bv_intro]
+other = "可视化数字的二进制表示，支持位运算操作和进制转换。"
+
+[bv_enter_number]
+other = "输入数字"
+
+[bv_input_placeholder]
+other = "输入整数（如 42、0xFF、0b1010）..."
+
+[bv_binary_view]
+other = "二进制视图"
+
+[bv_operations]
+other = "位运算"
+
+[bv_conversion]
+other = "进制转换"
+
+[bv_decimal]
+other = "十进制"
+
+[bv_hex]
+other = "十六进制"
+
+[bv_binary]
+other = "二进制"
+
+[bv_octal]
+other = "八进制"
+
+[bv_ascii]
+other = "ASCII"
+
+[bv_bitwise_ops]
+other = "位运算操作"
+
+[bv_calculate]
+other = "计算"
+
+[bv_result]
+other = "结果"
+
+# Duplicate Remover Tool
+[dr_title]
+other = "列表去重工具"
+
+[dr_intro]
+other = "快速去除列表中的重复项，支持多种分隔符和大小写敏感选项。"
+
+[dr_input_items]
+other = "输入列表"
+
+[dr_input_placeholder]
+other = "输入或粘贴需要去重的列表项，每行一项..."
+
+[dr_clear]
+other = "清除"
+
+[dr_output_placeholder]
+other = "去重后的结果将显示在这里..."
+
+[dr_result]
+other = "结果"
+
+[dr_copy]
+other = "复制"
+
+[dr_copied]
+other = "已复制"
+
+[dr_trim_whitespace]
+other = "去首尾空格"
+
+[dr_case_sensitive]
+other = "区分大小写"
+
+[dr_separator]
+other = "分隔符"
+
+[dr_newline]
+other = "换行"
+
+[dr_comma]
+other = "逗号"
+
+[dr_tab]
+other = "制表符"
+
+[dr_space]
+other = "空格"
+
+[dr_remove_duplicates]
+other = "去除重复项"
+
+[dr_sort]
+other = "排序"
+
+[dr_reverse]
+other = "反转"
+
+[dr_removed]
+other = "已去除"
+
+[dr_kept]
+other = "已保留"
+
+[dr_found_duplicates]
+other = "发现的重复项"
+
+# Random Sampler Tool
+[rs_title]
+other = "随机抽样工具"
+
+[rs_intro]
+other = "从列表中随机抽取指定数量的项目，支持不放回抽样和可放回抽样。"
+
+[rs_input_items]
+other = "输入列表"
+
+[rs_input_placeholder]
+other = "输入或粘贴需要进行抽样的项目，每行一项..."
+
+[rs_clear]
+other = "清除"
+
+[rs_sample_size]
+other = "抽样数量"
+
+[rs_items]
+other = "项"
+
+[rs_separator]
+other = "分隔符"
+
+[rs_newline]
+other = "换行"
+
+[rs_comma]
+other = "逗号"
+
+[rs_tab]
+other = "制表符"
+
+[rs_options]
+other = "选项"
+
+[rs_allow_duplicates]
+other = "允许重复（可放回抽样）"
+
+[rs_sample]
+other = "开始抽样"
+
+[rs_copy]
+other = "复制结果"
+
+[rs_clear_result]
+other = "清除结果"
+
+[rs_sampled_items]
+other = "抽样结果"
+
+[rs_total_items]
+other = "总项目数"
+
+[rs_sampled]
+other = "已抽取"
+
+[rs_copied]
+other = "已复制"
+
+[rs_error_no_items]
+other = "请先输入项目列表"
+
+[rs_error_too_many]
+other = "抽样数量超过列表长度，已自动调整为"
+
+[rs_error_items_available]
+other = "（可用项目数）"

@@ -1,0 +1,564 @@
+<!-- Duplicate Remover Tool -->
+<div class="duplicate-remover-tool">
+    <style>
+        .duplicate-remover-tool {
+            --primary-color: #059669;
+            --primary-hover: #047857;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --accent-bg: #ecfdf5;
+            --accent-text: #059669;
+        }
+
+        [data-theme="dark"] .duplicate-remover-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-bg: #064e3b;
+            --accent-text: #34d399;
+        }
+
+        .duplicate-remover-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .duplicate-remover-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .dr-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .dr-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .dr-intro {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .dr-input-section {
+            margin-bottom: 20px;
+        }
+
+        .dr-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dr-btn-small {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dr-btn-small:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .dr-textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .dr-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .dr-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .dr-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .dr-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dr-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+
+        .dr-option label {
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .dr-separator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dr-separator label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .dr-separator select {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        .dr-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .dr-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dr-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .dr-btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .dr-btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .dr-btn-secondary:hover {
+            background: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .dr-output-section {
+            margin-top: 20px;
+        }
+
+        .dr-stats {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .dr-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .dr-stat-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .dr-stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--accent-text);
+        }
+
+        .dr-stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .dr-stat.removed {
+            background: #fef2f2;
+        }
+
+        .dr-stat.removed .dr-stat-value {
+            color: #dc2626;
+        }
+
+        [data-theme="dark"] .dr-stat.removed {
+            background: #450a0a;
+        }
+
+        [data-theme="dark"] .dr-stat.removed .dr-stat-value {
+            color: #fca5a5;
+        }
+
+        .dr-stat.kept {
+            background: var(--accent-bg);
+        }
+
+        .dr-output-textarea {
+            height: 200px;
+        }
+
+        .dr-duplicates-section {
+            margin-top: 20px;
+        }
+
+        .dr-duplicates-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dr-duplicate-count {
+            padding: 2px 8px;
+            background: #fef2f2;
+            color: #dc2626;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        [data-theme="dark"] .dr-duplicate-count {
+            background: #450a0a;
+            color: #fca5a5;
+        }
+
+        .dr-duplicate-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .dr-duplicate-item {
+            padding: 6px 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #dc2626;
+        }
+
+        [data-theme="dark"] .dr-duplicate-item {
+            background: #450a0a;
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+    </style>
+
+    <div class="dr-container">
+        <h2 class="dr-title">{{ i18n "dr_title" }}</h2>
+        <p class="dr-intro">{{ i18n "dr_intro" }}</p>
+
+        <div class="dr-input-section">
+            <label class="dr-label">
+                {{ i18n "dr_input_items" }}
+                <button class="dr-btn-small" onclick="drClear()">{{ i18n "dr_clear" }}</button>
+            </label>
+            <textarea class="dr-textarea" id="dr-input" placeholder="{{ i18n "dr_input_placeholder" }}"></textarea>
+        </div>
+
+        <div class="dr-options">
+            <div class="dr-option">
+                <input type="checkbox" id="dr-trim" checked>
+                <label for="dr-trim">{{ i18n "dr_trim_whitespace" }}</label>
+            </div>
+            <div class="dr-option">
+                <input type="checkbox" id="dr-case-sensitive">
+                <label for="dr-case-sensitive">{{ i18n "dr_case_sensitive" }}</label>
+            </div>
+            <div class="dr-separator">
+                <label>{{ i18n "dr_separator" }}:</label>
+                <select id="dr-separator">
+                    <option value="newline">{{ i18n "dr_newline" }} (\n)</option>
+                    <option value="comma">{{ i18n "dr_comma" }} (,)</option>
+                    <option value="tab">{{ i18n "dr_tab" }} (\t)</option>
+                    <option value="space">{{ i18n "dr_space" }} ( )</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="dr-actions">
+            <button class="dr-btn dr-btn-primary" onclick="drRemoveDuplicates()">
+                {{ i18n "dr_remove_duplicates" }}
+            </button>
+            <button class="dr-btn dr-btn-secondary" onclick="drSort()">
+                {{ i18n "dr_sort" }}
+            </button>
+            <button class="dr-btn dr-btn-secondary" onclick="drReverse()">
+                {{ i18n "dr_reverse" }}
+            </button>
+        </div>
+
+        <div class="dr-stats" id="dr-stats" style="display: none;">
+            <div class="dr-stat removed">
+                <span class="dr-stat-value" id="dr-removed-count">0</span>
+                <span class="dr-stat-label">{{ i18n "dr_removed" }}</span>
+            </div>
+            <div class="dr-stat kept">
+                <span class="dr-stat-value" id="dr-kept-count">0</span>
+                <span class="dr-stat-label">{{ i18n "dr_kept" }}</span>
+            </div>
+        </div>
+
+        <div class="dr-output-section">
+            <label class="dr-label">
+                {{ i18n "dr_result" }}
+                <button class="dr-btn-small" onclick="drCopy()">{{ i18n "dr_copy" }}</button>
+            </label>
+            <textarea class="dr-textarea dr-output-textarea" id="dr-output" readonly placeholder="{{ i18n "dr_output_placeholder" }}"></textarea>
+        </div>
+
+        <div class="dr-duplicates-section" id="dr-duplicates-section" style="display: none;">
+            <div class="dr-duplicates-title">
+                {{ i18n "dr_found_duplicates" }}
+                <span class="dr-duplicate-count" id="dr-duplicate-count">0</span>
+            </div>
+            <div class="dr-duplicate-list" id="dr-duplicate-list"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const input = document.getElementById('dr-input');
+            const output = document.getElementById('dr-output');
+            const stats = document.getElementById('dr-stats');
+            const duplicatesSection = document.getElementById('dr-duplicates-section');
+            const separatorSelect = document.getElementById('dr-separator');
+
+            function getItems() {
+                const text = input.value;
+                const separator = separatorSelect.value;
+
+                let items;
+                switch (separator) {
+                    case 'newline':
+                        items = text.split(/\r?\n/);
+                        break;
+                    case 'comma':
+                        items = text.split(',');
+                        break;
+                    case 'tab':
+                        items = text.split('\t');
+                        break;
+                    case 'space':
+                        items = text.split(/ +/);
+                        break;
+                    default:
+                        items = text.split(/\r?\n/);
+                }
+
+                return items;
+            }
+
+            function getSeparator() {
+                const separator = separatorSelect.value;
+                switch (separator) {
+                    case 'newline': return '\n';
+                    case 'comma': return ',';
+                    case 'tab': return '\t';
+                    case 'space': return ' ';
+                    default: return '\n';
+                }
+            }
+
+            window.drRemoveDuplicates = function() {
+                let items = getItems();
+                const trimWhitespace = document.getElementById('dr-trim').checked;
+                const caseSensitive = document.getElementById('dr-case-sensitive').checked;
+
+                // Process items
+                if (trimWhitespace) {
+                    items = items.map(item => item.trim());
+                }
+
+                // Filter empty items
+                items = items.filter(item => item !== '');
+
+                // Find duplicates before removing
+                const seen = {};
+                const duplicates = [];
+                const seenValues = new Set();
+
+                items.forEach(item => {
+                    const key = caseSensitive ? item : item.toLowerCase();
+                    if (seen[key] !== undefined) {
+                        if (!duplicates.includes(seen[key])) {
+                            duplicates.push(seen[key]);
+                        }
+                        duplicates.push(item);
+                    } else {
+                        seen[key] = item;
+                    }
+                });
+
+                // Remove duplicates - keep first occurrence
+                const uniqueItems = [];
+                const seenUnique = new Set();
+                items.forEach(item => {
+                    const key = caseSensitive ? item : item.toLowerCase();
+                    if (!seenUnique.has(key)) {
+                        seenUnique.add(key);
+                        uniqueItems.push(item);
+                    }
+                });
+
+                const originalCount = items.length;
+                const removedCount = originalCount - uniqueItems.length;
+                const keptCount = uniqueItems.length;
+
+                // Display results
+                const separator = getSeparator();
+                output.value = uniqueItems.join(separator);
+
+                // Show stats
+                document.getElementById('dr-removed-count').textContent = removedCount;
+                document.getElementById('dr-kept-count').textContent = keptCount;
+                stats.style.display = 'flex';
+
+                // Show duplicates
+                if (duplicates.length > 0) {
+                    const uniqueDuplicates = [...new Set(duplicates)];
+                    document.getElementById('dr-duplicate-count').textContent = uniqueDuplicates.length;
+                    document.getElementById('dr-duplicate-list').innerHTML =
+                        uniqueDuplicates.map(d => `<span class="dr-duplicate-item">${escapeHtml(d)}</span>`).join('');
+                    duplicatesSection.style.display = 'block';
+                } else {
+                    duplicatesSection.style.display = 'none';
+                }
+            };
+
+            window.drSort = function() {
+                let items = getItems();
+                const trimWhitespace = document.getElementById('dr-trim').checked;
+                const caseSensitive = document.getElementById('dr-case-sensitive').checked;
+
+                if (trimWhitespace) {
+                    items = items.map(item => item.trim());
+                }
+
+                items = items.filter(item => item !== '');
+
+                items.sort((a, b) => {
+                    if (caseSensitive) {
+                        return a.localeCompare(b);
+                    }
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+
+                const separator = getSeparator();
+                input.value = items.join(separator);
+            };
+
+            window.drReverse = function() {
+                let items = getItems();
+                items = items.filter(item => item !== '');
+                items.reverse();
+                const separator = getSeparator();
+                input.value = items.join(separator);
+            };
+
+            window.drClear = function() {
+                input.value = '';
+                output.value = '';
+                stats.style.display = 'none';
+                duplicatesSection.style.display = 'none';
+            };
+
+            window.drCopy = function() {
+                if (!output.value) return;
+                navigator.clipboard.writeText(output.value).then(() => {
+                    const btn = document.querySelector('.dr-output-section .dr-btn-small');
+                    const originalText = btn.textContent;
+                    btn.textContent = '{{ i18n "dr_copied" }}';
+                    btn.style.background = 'var(--success-color)';
+                    btn.style.borderColor = 'var(--success-color)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }, 1500);
+                });
+            };
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            separatorSelect.addEventListener('change', () => {
+                if (input.value) {
+                    // Re-parse with new separator
+                }
+            });
+        })();
+    </script>
+</div>

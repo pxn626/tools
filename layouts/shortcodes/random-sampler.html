@@ -1,0 +1,486 @@
+<!-- Random Sampler Tool -->
+<div class="random-sampler-tool">
+    <style>
+        .random-sampler-tool {
+            --primary-color: #0891b2;
+            --primary-hover: #0e7490;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --accent-bg: #ecfeff;
+            --accent-text: #0891b2;
+            --warning-bg: #fffbeb;
+            --warning-text: #b45309;
+        }
+
+        [data-theme="dark"] .random-sampler-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-bg: #164e63;
+            --accent-text: #22d3ee;
+            --warning-bg: #451a03;
+            --warning-text: #fcd34d;
+        }
+
+        .random-sampler-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .random-sampler-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .rs-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .rs-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .rs-intro {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .rs-section {
+            margin-bottom: 20px;
+        }
+
+        .rs-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .rs-btn-small {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rs-btn-small:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .rs-textarea {
+            width: 100%;
+            height: 180px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .rs-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .rs-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .rs-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .rs-option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rs-option-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .rs-option-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .rs-option-row input[type="number"] {
+            width: 100px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+        }
+
+        .rs-option-row input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .rs-option-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+
+        .rs-option-row label {
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .rs-separator-select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .rs-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .rs-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rs-btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .rs-btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .rs-btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .rs-btn-secondary:hover {
+            background: var(--bg-color);
+            color: var(--text-main);
+        }
+
+        .rs-output-section {
+            margin-top: 20px;
+        }
+
+        .rs-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .rs-stat {
+            padding: 8px 12px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .rs-stat-value {
+            font-weight: 600;
+            color: var(--accent-text);
+        }
+
+        .rs-warning {
+            padding: 12px;
+            background: var(--warning-bg);
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--warning-text);
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .rs-warning.show {
+            display: block;
+        }
+
+        .rs-sampled-item {
+            display: inline-block;
+            padding: 6px 12px;
+            margin: 4px;
+            background: var(--accent-bg);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--accent-text);
+            border: 1px solid var(--primary-color);
+        }
+
+        .rs-sampled-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 12px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+    </style>
+
+    <div class="rs-container">
+        <h2 class="rs-title">{{ i18n "rs_title" }}</h2>
+        <p class="rs-intro">{{ i18n "rs_intro" }}</p>
+
+        <div class="rs-section">
+            <label class="rs-label">
+                {{ i18n "rs_input_items" }}
+                <button class="rs-btn-small" onclick="rsClear()">{{ i18n "rs_clear" }}</button>
+            </label>
+            <textarea class="rs-textarea" id="rs-input" placeholder="{{ i18n "rs_input_placeholder" }}"></textarea>
+        </div>
+
+        <div class="rs-options">
+            <div class="rs-option-group">
+                <span class="rs-option-label">{{ i18n "rs_sample_size" }}</span>
+                <div class="rs-option-row">
+                    <input type="number" id="rs-sample-size" min="1" value="10">
+                    <label>{{ i18n "rs_items" }}</label>
+                </div>
+            </div>
+            <div class="rs-option-group">
+                <span class="rs-option-label">{{ i18n "rs_separator" }}</span>
+                <div class="rs-option-row">
+                    <select class="rs-separator-select" id="rs-separator">
+                        <option value="newline">{{ i18n "rs_newline" }} (\n)</option>
+                        <option value="comma">{{ i18n "rs_comma" }} (,)</option>
+                        <option value="tab">{{ i18n "rs_tab" }} (\t)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="rs-option-group">
+                <span class="rs-option-label">{{ i18n "rs_options" }}</span>
+                <div class="rs-option-row">
+                    <input type="checkbox" id="rs-allow-duplicates">
+                    <label for="rs-allow-duplicates">{{ i18n "rs_allow_duplicates" }}</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="rs-actions">
+            <button class="rs-btn rs-btn-primary" onclick="rsSample()">
+                {{ i18n "rs_sample" }}
+            </button>
+            <button class="rs-btn rs-btn-secondary" onclick="rsCopy()">
+                {{ i18n "rs_copy" }}
+            </button>
+            <button class="rs-btn rs-btn-secondary" onclick="rsClearResult()">
+                {{ i18n "rs_clear_result" }}
+            </button>
+        </div>
+
+        <div class="rs-warning" id="rs-warning"></div>
+
+        <div class="rs-stats" id="rs-stats" style="display: none;">
+            <div class="rs-stat">{{ i18n "rs_total_items" }}: <span class="rs-stat-value" id="rs-total">0</span></div>
+            <div class="rs-stat">{{ i18n "rs_sampled" }}: <span class="rs-stat-value" id="rs-sampled-count">0</span></div>
+        </div>
+
+        <div class="rs-output-section">
+            <label class="rs-label">{{ i18n "rs_sampled_items" }}</label>
+            <div class="rs-sampled-list" id="rs-output"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const input = document.getElementById('rs-input');
+            const output = document.getElementById('rs-output');
+            const stats = document.getElementById('rs-stats');
+            const warning = document.getElementById('rs-warning');
+            const separatorSelect = document.getElementById('rs-separator');
+
+            let sampledItems = [];
+
+            function getItems() {
+                const text = input.value;
+                const separator = separatorSelect.value;
+
+                let items;
+                switch (separator) {
+                    case 'newline':
+                        items = text.split(/\r?\n/);
+                        break;
+                    case 'comma':
+                        items = text.split(',');
+                        break;
+                    case 'tab':
+                        items = text.split('\t');
+                        break;
+                    default:
+                        items = text.split(/\r?\n/);
+                }
+
+                // Filter and trim
+                items = items.map(item => item.trim()).filter(item => item !== '');
+                return items;
+            }
+
+            function shuffle(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            }
+
+            window.rsSample = function() {
+                const items = getItems();
+                const sampleSize = parseInt(document.getElementById('rs-sample-size').value) || 10;
+                const allowDuplicates = document.getElementById('rs-allow-duplicates').checked;
+
+                // Hide warning
+                warning.classList.remove('show');
+
+                if (items.length === 0) {
+                    warning.textContent = '{{ i18n "rs_error_no_items" }}';
+                    warning.classList.add('show');
+                    return;
+                }
+
+                if (!allowDuplicates && sampleSize > items.length) {
+                    warning.textContent = '{{ i18n "rs_error_too_many" }} ' + items.length + ' {{ i18n "rs_error_items_available" }}';
+                    warning.classList.add('show');
+                }
+
+                // Sample
+                if (allowDuplicates) {
+                    // With replacement
+                    sampledItems = [];
+                    for (let i = 0; i < sampleSize; i++) {
+                        const randomIndex = Math.floor(Math.random() * items.length);
+                        sampledItems.push(items[randomIndex]);
+                    }
+                } else {
+                    // Without replacement
+                    const shuffled = shuffle(items);
+                    sampledItems = shuffled.slice(0, Math.min(sampleSize, items.length));
+                }
+
+                // Display
+                renderOutput();
+
+                // Show stats
+                document.getElementById('rs-total').textContent = items.length;
+                document.getElementById('rs-sampled-count').textContent = sampledItems.length;
+                stats.style.display = 'flex';
+            };
+
+            function renderOutput() {
+                output.innerHTML = sampledItems.map(item => {
+                    return '<span class="rs-sampled-item">' + escapeHtml(item) + '</span>';
+                }).join('');
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            window.rsCopy = function() {
+                if (sampledItems.length === 0) return;
+                const separator = separatorSelect.value;
+                let sep = '\n';
+                switch (separator) {
+                    case 'comma': sep = ','; break;
+                    case 'tab': sep = '\t'; break;
+                }
+                navigator.clipboard.writeText(sampledItems.join(sep)).then(() => {
+                    const btn = event.target;
+                    const originalText = btn.textContent;
+                    btn.textContent = '{{ i18n "rs_copied" }}';
+                    btn.style.background = 'var(--success-color)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 1500);
+                });
+            };
+
+            window.rsClear = function() {
+                input.value = '';
+                sampledItems = [];
+                output.innerHTML = '';
+                stats.style.display = 'none';
+                warning.classList.remove('show');
+            };
+
+            window.rsClearResult = function() {
+                sampledItems = [];
+                output.innerHTML = '';
+                stats.style.display = 'none';
+            };
+
+            separatorSelect.addEventListener('change', () => {
+                // Reparse on separator change
+            });
+        })();
+    </script>
+</div>

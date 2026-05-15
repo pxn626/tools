@@ -1056,3 +1056,232 @@ other = "Text"
 
 [hash_file_mode]
 other = "File"
+
+# JSON to TypeScript Tool
+[json_ts_title]
+other = "JSON to TypeScript Type Definition"
+
+[json_ts_intro]
+other = "Convert JSON data to TypeScript interface type definitions automatically. Supports nested objects and array type inference."
+
+[json_ts_input]
+other = "JSON Input"
+
+[json_ts_output]
+other = "TypeScript Output"
+
+[json_ts_format]
+other = "Format"
+
+[json_ts_copy]
+other = "Copy"
+
+[json_ts_copied]
+other = "Copied"
+
+[json_ts_input_placeholder]
+other = "Enter or paste JSON data here..."
+
+[json_ts_output_placeholder]
+other = "TypeScript type definitions will be generated here..."
+
+[json_ts_options]
+other = "Generation Options"
+
+[json_ts_add_root]
+other = "Add Root Type"
+
+[json_ts_optional_props]
+other = "Optional Properties (?)"
+
+[json_ts_readonly]
+other = "Readonly Properties"
+
+[json_ts_root_name]
+other = "Root Type Name"
+
+[json_ts_error_invalid]
+other = "JSON Parse Error"
+
+# Binary Visualizer Tool
+[bv_title]
+other = "Binary Visualizer"
+
+[bv_intro]
+other = "Visualize binary representation of numbers with bitwise operations and base conversion."
+
+[bv_enter_number]
+other = "Enter Number"
+
+[bv_input_placeholder]
+other = "Enter integer (e.g., 42, 0xFF, 0b1010)..."
+
+[bv_binary_view]
+other = "Binary View"
+
+[bv_operations]
+other = "Operations"
+
+[bv_conversion]
+other = "Conversion"
+
+[bv_decimal]
+other = "Decimal"
+
+[bv_hex]
+other = "Hex"
+
+[bv_binary]
+other = "Binary"
+
+[bv_octal]
+other = "Octal"
+
+[bv_ascii]
+other = "ASCII"
+
+[bv_bitwise_ops]
+other = "Bitwise Operations"
+
+[bv_calculate]
+other = "Calculate"
+
+[bv_result]
+other = "Result"
+
+# Duplicate Remover Tool
+[dr_title]
+other = "List Duplicate Remover"
+
+[dr_intro]
+other = "Quickly remove duplicates from lists with multiple separator support and case sensitivity options."
+
+[dr_input_items]
+other = "Input List"
+
+[dr_input_placeholder]
+other = "Enter or paste list items to deduplicate, one per line..."
+
+[dr_clear]
+other = "Clear"
+
+[dr_output_placeholder]
+other = "Deduplicated results will appear here..."
+
+[dr_result]
+other = "Result"
+
+[dr_copy]
+other = "Copy"
+
+[dr_copied]
+other = "Copied"
+
+[dr_trim_whitespace]
+other = "Trim Whitespace"
+
+[dr_case_sensitive]
+other = "Case Sensitive"
+
+[dr_separator]
+other = "Separator"
+
+[dr_newline]
+other = "Newline"
+
+[dr_comma]
+other = "Comma"
+
+[dr_tab]
+other = "Tab"
+
+[dr_space]
+other = "Space"
+
+[dr_remove_duplicates]
+other = "Remove Duplicates"
+
+[dr_sort]
+other = "Sort"
+
+[dr_reverse]
+other = "Reverse"
+
+[dr_removed]
+other = "Removed"
+
+[dr_kept]
+other = "Kept"
+
+[dr_found_duplicates]
+other = "Found Duplicates"
+
+# Random Sampler Tool
+[rs_title]
+other = "Random Sampler"
+
+[rs_intro]
+other = "Randomly select specified number of items from a list. Supports sampling with and without replacement."
+
+[rs_input_items]
+other = "Input List"
+
+[rs_input_placeholder]
+other = "Enter or paste items for sampling, one per line..."
+
+[rs_clear]
+other = "Clear"
+
+[rs_sample_size]
+other = "Sample Size"
+
+[rs_items]
+other = "items"
+
+[rs_separator]
+other = "Separator"
+
+[rs_newline]
+other = "Newline"
+
+[rs_comma]
+other = "Comma"
+
+[rs_tab]
+other = "Tab"
+
+[rs_options]
+other = "Options"
+
+[rs_allow_duplicates]
+other = "Allow Duplicates (With Replacement)"
+
+[rs_sample]
+other = "Sample"
+
+[rs_copy]
+other = "Copy Results"
+
+[rs_clear_result]
+other = "Clear Results"
+
+[rs_sampled_items]
+other = "Sampled Items"
+
+[rs_total_items]
+other = "Total Items"
+
+[rs_sampled]
+other = "Sampled"
+
+[rs_copied]
+other = "Copied"
+
+[rs_error_no_items]
+other = "Please enter a list of items first"
+
+[rs_error_too_many]
+other = "Sample size exceeds list length, auto-adjusted to"
+
+[rs_error_items_available]
+other = "(available items)"

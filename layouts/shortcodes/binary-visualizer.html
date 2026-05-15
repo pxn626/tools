@@ -1,0 +1,602 @@
+<!-- Binary Visualizer Tool -->
+<div class="binary-visualizer-tool">
+    <style>
+        .binary-visualizer-tool {
+            --primary-color: #7c3aed;
+            --primary-hover: #6d28d9;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --accent-bg: #f5f3ff;
+            --accent-text: #7c3aed;
+            --bit-on: #10b981;
+            --bit-off: #e2e8f0;
+            --register-bg: #f6f8fa;
+        }
+
+        [data-theme="dark"] .binary-visualizer-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-bg: #2e1f5e;
+            --accent-text: #c4b5fd;
+            --bit-on: #34d399;
+            --bit-off: #334155;
+            --register-bg: #1a2332;
+        }
+
+        .binary-visualizer-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .binary-visualizer-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .bv-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .bv-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .bv-intro {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .bv-input-section {
+            margin-bottom: 24px;
+        }
+
+        .bv-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .bv-input-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .bv-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: "Consolas", "Monaco", monospace;
+            background: var(--card-bg);
+            color: var(--text-main);
+            transition: border-color 0.2s;
+        }
+
+        .bv-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .bv-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .bv-tab {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bv-tab:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .bv-tab.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .bv-panel {
+            display: none;
+        }
+
+        .bv-panel.active {
+            display: block;
+        }
+
+        .bv-radix-input {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .bv-radix-input label {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .bv-radix-input select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .bv-binary-display {
+            background: var(--register-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .bv-binary-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .bv-bit {
+            width: 32px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bit-off);
+            color: var(--text-muted);
+        }
+
+        .bv-bit.on {
+            background: var(--bit-on);
+            color: white;
+        }
+
+        .bv-bit:hover {
+            transform: scale(1.1);
+        }
+
+        .bv-bit-labels {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .bv-bit-label {
+            width: 32px;
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: "Consolas", "Monaco", monospace;
+        }
+
+        .bv-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .bv-value-card {
+            background: var(--accent-bg);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .bv-value-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .bv-value-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-text);
+            font-family: "Consolas", "Monaco", monospace;
+            word-break: break-all;
+        }
+
+        .bv-operations {
+            background: var(--register-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .bv-op-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .bv-op-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .bv-op-row input {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-main);
+        }
+
+        .bv-op-row button {
+            padding: 10px 16px;
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bv-op-row button:hover {
+            background: var(--primary-hover);
+        }
+
+        .bv-op-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--accent-bg);
+            border-radius: 8px;
+        }
+
+        .bv-op-result-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .bv-op-result-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-text);
+            font-family: "Consolas", "Monaco", monospace;
+        }
+
+        .bv-bitwise-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .bv-bitwise-card {
+            background: var(--register-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .bv-bitwise-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .bv-bitwise-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .bv-bitwise-row span {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: "Consolas", "Monaco", monospace;
+        }
+
+        .bv-bitwise-row .op-a {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .bv-bitwise-row .op-b {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .bv-bitwise-row .op-r {
+            background: #d1fae5;
+            color: #065f46;
+        }
+    </style>
+
+    <div class="bv-container">
+        <h2 class="bv-title">{{ i18n "bv_title" }}</h2>
+        <p class="bv-intro">{{ i18n "bv_intro" }}</p>
+
+        <div class="bv-input-section">
+            <label class="bv-label">{{ i18n "bv_enter_number" }}</label>
+            <div class="bv-input-row">
+                <input type="text" class="bv-input" id="bv-input" placeholder="{{ i18n "bv_input_placeholder" }}">
+                <select class="bv-input" id="bv-radix" style="max-width: 120px;">
+                    <option value="10">Decimal</option>
+                    <option value="2">Binary</option>
+                    <option value="16">Hex</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bv-tabs" id="bv-tabs">
+            <button class="bv-tab active" data-tab="binary">{{ i18n "bv_binary_view" }}</button>
+            <button class="bv-tab" data-tab="operations">{{ i18n "bv_operations" }}</button>
+            <button class="bv-tab" data-tab="conversion">{{ i18n "bv_conversion" }}</button>
+        </div>
+
+        <!-- Binary View -->
+        <div class="bv-panel active" id="panel-binary">
+            <div class="bv-binary-display">
+                <div class="bv-binary-row" id="bv-bits"></div>
+                <div class="bv-bit-labels" id="bv-labels"></div>
+            </div>
+            <div class="bv-values">
+                <div class="bv-value-card">
+                    <div class="bv-value-label">{{ i18n "bv_decimal" }}</div>
+                    <div class="bv-value-number" id="bv-decimal">0</div>
+                </div>
+                <div class="bv-value-card">
+                    <div class="bv-value-label">{{ i18n "bv_hex" }}</div>
+                    <div class="bv-value-number" id="bv-hex">0x0</div>
+                </div>
+                <div class="bv-value-card">
+                    <div class="bv-value-label">{{ i18n "bv_binary" }}</div>
+                    <div class="bv-value-number" id="bv-binary">0b0</div>
+                </div>
+                <div class="bv-value-card">
+                    <div class="bv-value-label">{{ i18n "bv_octal" }}</div>
+                    <div class="bv-value-number" id="bv-octal">0o0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bitwise Operations -->
+        <div class="bv-panel" id="panel-operations">
+            <div class="bv-operations">
+                <div class="bv-op-title">{{ i18n "bv_bitwise_ops" }}</div>
+                <div class="bv-op-row">
+                    <input type="number" id="bv-op-a" placeholder="A" value="42">
+                    <select id="bv-op-type">
+                        <option value="and">&amp; AND</option>
+                        <option value="or">| OR</option>
+                        <option value="xor">^ XOR</option>
+                        <option value="not-a">~ A</option>
+                        <option value="not-b">~ B</option>
+                        <option value="shl">&lt;&lt; 左移</option>
+                        <option value="shr">&gt;&gt; 右移</option>
+                    </select>
+                    <input type="number" id="bv-op-b" placeholder="B" value="15">
+                    <button onclick="bvCalculate()">{{ i18n "bv_calculate" }}</button>
+                </div>
+                <div class="bv-op-result">
+                    <div class="bv-op-result-label">{{ i18n "bv_result" }}</div>
+                    <div class="bv-op-result-value" id="bv-op-result">38</div>
+                </div>
+            </div>
+            <div class="bv-bitwise-results" id="bv-bitwise-results"></div>
+        </div>
+
+        <!-- Base Conversion -->
+        <div class="bv-panel" id="panel-conversion">
+            <div class="bv-values" id="bv-conversion-list"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const input = document.getElementById('bv-input');
+            const radixSelect = document.getElementById('bv-radix');
+            const bitsContainer = document.getElementById('bv-bits');
+            const labelsContainer = document.getElementById('bv-labels');
+            const decimalEl = document.getElementById('bv-decimal');
+            const hexEl = document.getElementById('bv-hex');
+            const binaryEl = document.getElementById('bv-binary');
+            const octalEl = document.getElementById('bv-octal');
+            const conversionList = document.getElementById('bv-conversion-list');
+            const bitwiseResults = document.getElementById('bv-bitwise-results');
+
+            let currentValue = 0;
+
+            function updateDisplay() {
+                const inputVal = input.value.trim();
+                const radix = parseInt(radixSelect.value);
+
+                if (!inputVal) {
+                    currentValue = 0;
+                } else {
+                    try {
+                        currentValue = parseInt(inputVal, radix);
+                        if (isNaN(currentValue) || !isFinite(currentValue)) {
+                            currentValue = 0;
+                        }
+                    } catch (e) {
+                        currentValue = 0;
+                    }
+                }
+
+                // Handle negative numbers (use 32-bit two's complement)
+                let displayValue = currentValue;
+                if (displayValue < 0) {
+                    displayValue = (displayValue >>> 0);
+                }
+
+                const bits = 32;
+                const bitsArray = [];
+                for (let i = bits - 1; i >= 0; i--) {
+                    bitsArray.push((displayValue >>> i) & 1);
+                }
+
+                bitsContainer.innerHTML = bitsArray.map((bit, i) =>
+                    `<div class="bv-bit ${bit ? 'on' : ''}" data-index="${i}" onclick="bvToggleBit(${i})">${bit}</div>`
+                ).join('');
+
+                labelsContainer.innerHTML = [31, 24, 16, 8, 0].map(n =>
+                    `<div class="bv-bit-label">${n}</div>`
+                ).join('');
+
+                // Update values
+                const finalValue = currentValue;
+                decimalEl.textContent = finalValue.toString();
+                hexEl.textContent = '0x' + finalValue.toString(16).toUpperCase();
+                binaryEl.textContent = '0b' + finalValue.toString(2);
+                octalEl.textContent = '0o' + finalValue.toString(8);
+
+                // Update conversion list
+                updateConversionList(finalValue);
+            }
+
+            function updateConversionList(value) {
+                const bases = [
+                    { name: '{{ i18n "bv_binary" }}', prefix: '0b', value: value.toString(2) },
+                    { name: '{{ i18n "bv_octal" }}', prefix: '0o', value: value.toString(8) },
+                    { name: '{{ i18n "bv_decimal" }}', prefix: '', value: value.toString(10) },
+                    { name: '{{ i18n "bv_hex" }}', prefix: '0x', value: value.toString(16).toUpperCase() },
+                    { name: '{{ i18n "bv_ascii" }}', prefix: '', value: (value >= 32 && value <= 126) ? String.fromCharCode(value) : '-' },
+                ];
+
+                conversionList.innerHTML = bases.map(base =>
+                    `<div class="bv-value-card">
+                        <div class="bv-value-label">${base.name}</div>
+                        <div class="bv-value-number">${base.prefix}${base.value}</div>
+                    </div>`
+                ).join('');
+            }
+
+            window.bvToggleBit = function(index) {
+                currentValue ^= (1 << (31 - index));
+                input.value = currentValue.toString(parseInt(radixSelect.value));
+                updateDisplay();
+            };
+
+            window.bvCalculate = function() {
+                const a = parseInt(document.getElementById('bv-op-a').value) || 0;
+                const b = parseInt(document.getElementById('bv-op-b').value) || 0;
+                const opType = document.getElementById('bv-op-type').value;
+                let result;
+
+                switch (opType) {
+                    case 'and': result = a & b; break;
+                    case 'or': result = a | b; break;
+                    case 'xor': result = a ^ b; break;
+                    case 'not-a': result = ~a; break;
+                    case 'not-b': result = ~b; break;
+                    case 'shl': result = a << b; break;
+                    case 'shr': result = a >> b; break;
+                    default: result = 0;
+                }
+
+                document.getElementById('bv-op-result').textContent = result;
+
+                // Show bitwise visualization
+                const aBits = (a >>> 0).toString(2).padStart(8, '0');
+                const bBits = (b >>> 0).toString(2).padStart(8, '0');
+                const rBits = (result >>> 0).toString(2).padStart(8, '0');
+
+                bitwiseResults.innerHTML = `
+                    <div class="bv-bitwise-card">
+                        <div class="bv-bitwise-title">A = ${a} (${aBits})</div>
+                        <div class="bv-bitwise-row">
+                            ${aBits.split('').map(b => `<span class="op-a">${b}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="bv-bitwise-card">
+                        <div class="bv-bitwise-title">B = ${b} (${bBits})</div>
+                        <div class="bv-bitwise-row">
+                            ${bBits.split('').map(b => `<span class="op-b">${b}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="bv-bitwise-card">
+                        <div class="bv-bitwise-title">{{ i18n "bv_result" }} = ${result} (${rBits})</div>
+                        <div class="bv-bitwise-row">
+                            ${rBits.split('').map(b => `<span class="op-r">${b}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Tab switching
+            document.querySelectorAll('.bv-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.bv-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.bv-panel').forEach(p => p.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+                });
+            });
+
+            input.addEventListener('input', updateDisplay);
+            radixSelect.addEventListener('change', updateDisplay);
+
+            // Initialize
+            updateDisplay();
+            updateConversionList(0);
+        })();
+    </script>
+</div>

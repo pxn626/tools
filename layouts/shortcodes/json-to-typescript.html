@@ -1,0 +1,441 @@
+<!-- JSON to TypeScript Tool -->
+<div class="json-ts-tool">
+    <style>
+        .json-ts-tool {
+            --primary-color: #3178c6;
+            --primary-hover: #2a6db5;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --accent-bg: #eef2f8;
+            --accent-text: #3178c6;
+            --code-bg: #f6f8fa;
+            --code-border: #d1d9e0;
+        }
+
+        [data-theme="dark"] .json-ts-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --accent-bg: #1e3a5f;
+            --accent-text: #93c5fd;
+            --code-bg: #1a2332;
+            --code-border: #334155;
+        }
+
+        .json-ts-tool * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .json-ts-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .json-ts-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .json-ts-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .json-ts-intro {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .json-ts-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .json-ts-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .json-ts-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .json-ts-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .json-ts-btn-small {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .json-ts-btn-small:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .json-ts-textarea {
+            width: 100%;
+            height: 300px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--code-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .json-ts-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .json-ts-textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .json-ts-options {
+            margin: 16px 0;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: 8px;
+        }
+
+        .json-ts-options-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        .json-ts-option-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .json-ts-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .json-ts-option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+
+        .json-ts-option label {
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .json-ts-error {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            color: #dc2626;
+            font-size: 13px;
+            display: none;
+        }
+
+        [data-theme="dark"] .json-ts-error {
+            background: #450a0a;
+            border-color: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        .json-ts-error.show {
+            display: block;
+        }
+
+        .json-ts-root-type {
+            margin-top: 12px;
+        }
+
+        .json-ts-root-type label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        .json-ts-root-type input {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: "Consolas", "Monaco", monospace;
+            width: 150px;
+        }
+
+        .json-ts-root-type input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+    </style>
+
+    <div class="json-ts-container">
+        <h2 class="json-ts-title">{{ i18n "json_ts_title" }}</h2>
+        <p class="json-ts-intro">{{ i18n "json_ts_intro" }}</p>
+
+        <div class="json-ts-panels">
+            <div class="json-ts-panel">
+                <label class="json-ts-label">
+                    {{ i18n "json_ts_input" }}
+                    <button class="json-ts-btn-small" onclick="jsonTsFormat()">{{ i18n "json_ts_format" }}</button>
+                </label>
+                <textarea class="json-ts-textarea" id="json-ts-input" placeholder='{{ i18n "json_ts_input_placeholder" }}'></textarea>
+            </div>
+            <div class="json-ts-panel">
+                <label class="json-ts-label">
+                    {{ i18n "json_ts_output" }}
+                    <button class="json-ts-btn-small" onclick="jsonTsCopy()">{{ i18n "json_ts_copy" }}</button>
+                </label>
+                <textarea class="json-ts-textarea" id="json-ts-output" readonly placeholder='{{ i18n "json_ts_output_placeholder" }}'></textarea>
+            </div>
+        </div>
+
+        <div class="json-ts-error" id="json-ts-error"></div>
+
+        <div class="json-ts-options">
+            <div class="json-ts-options-title">{{ i18n "json_ts_options" }}</div>
+            <div class="json-ts-option-row">
+                <div class="json-ts-option">
+                    <input type="checkbox" id="json-ts-root-name" checked>
+                    <label for="json-ts-root-name">{{ i18n "json_ts_add_root" }}</label>
+                </div>
+                <div class="json-ts-option">
+                    <input type="checkbox" id="json-ts-optional">
+                    <label for="json-ts-optional">{{ i18n "json_ts_optional_props" }}</label>
+                </div>
+                <div class="json-ts-option">
+                    <input type="checkbox" id="json-ts-readonly">
+                    <label for="json-ts-readonly">{{ i18n "json_ts_readonly" }}</label>
+                </div>
+            </div>
+            <div class="json-ts-root-type">
+                <label for="json-ts-root-name-input">{{ i18n "json_ts_root_name" }}:</label>
+                <input type="text" id="json-ts-root-name-input" value="RootType" placeholder="RootType">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const input = document.getElementById('json-ts-input');
+            const output = document.getElementById('json-ts-output');
+            const errorDiv = document.getElementById('json-ts-error');
+
+            function inferType(value, key, options) {
+                if (value === null) return 'null';
+                if (value === undefined) return 'undefined';
+
+                const type = typeof value;
+
+                if (type === 'string') return 'string';
+                if (type === 'number') {
+                    return Number.isInteger(value) ? 'number' : 'number';
+                }
+                if (type === 'boolean') return 'boolean';
+
+                if (Array.isArray(value)) {
+                    if (value.length === 0) return 'any[]';
+                    const types = new Set(value.map((v, i) => inferType(v, i, options)));
+                    if (types.size === 1) {
+                        const innerType = Array.from(types)[0];
+                        return innerType === 'object' ? generateInlineObject(value[0], options) + '[]' : innerType + '[]';
+                    }
+                    return '(' + Array.from(types).join(' | ') + ')[]';
+                }
+
+                if (type === 'object') return generateInterface(value, key, options);
+                return 'any';
+            }
+
+            function generateInlineObject(obj, options) {
+                if (!obj || typeof obj !== 'object') return 'any';
+                
+                const props = Object.keys(obj).map(key => {
+                    return '    ' + key + ': ' + inferType(obj[key], key, options);
+                }).join(';\n');
+
+                return '{\n' + props + '\n  }';
+            }
+
+            function generateInterface(obj, name, options, interfaces = {}, depth = 0) {
+                if (!obj || typeof obj !== 'object') return 'any';
+
+                const prefix = options.readonly ? 'readonly ' : '';
+                const optionalPrefix = options.optional ? '?' : '';
+
+                if (Array.isArray(obj)) {
+                    if (obj.length === 0) return 'any[]';
+                    const types = new Set(obj.map(v => inferType(v, null, options)));
+                    return Array.from(types).join(' | ') + '[]';
+                }
+
+                const keys = Object.keys(obj);
+                if (keys.length === 0) return 'Record<string, any>';
+
+                let interfaceName = name || 'Interface';
+                if (depth > 0) {
+                    interfaceName = capitalize(name || 'Object') + (depth > 1 ? depth : '');
+                }
+
+                if (interfaces[interfaceName]) {
+                    return interfaceName;
+                }
+
+                const originalInterface = interfaces[interfaceName];
+                interfaces[interfaceName] = true;
+
+                const props = keys.map(key => {
+                    const value = obj[key];
+                    const type = inferType(value, key, options);
+                    const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`;
+                    return '  ' + prefix + safeKey + optionalPrefix + ': ' + type + ';';
+                }).join('\n');
+
+                interfaces[interfaceName] = 'interface ' + interfaceName + ' {\n' + props + '\n}';
+
+                setTimeout(() => {
+                    renderOutput(interfaces);
+                }, 0);
+
+                return interfaceName;
+            }
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+
+            function sanitizeName(name) {
+                if (!name) return 'RootType';
+                return name.replace(/[^a-zA-Z0-9_$]/g, '_').replace(/^[0-9]/, '_$&');
+            }
+
+            function renderOutput(interfaces) {
+                const values = Object.values(interfaces).filter(v => typeof v === 'string');
+                output.value = values.join('\n\n');
+            }
+
+            function convert() {
+                const inputVal = input.value.trim();
+                errorDiv.classList.remove('show');
+                output.value = '';
+
+                if (!inputVal) return;
+
+                const options = {
+                    addRoot: document.getElementById('json-ts-root-name').checked,
+                    optional: document.getElementById('json-ts-optional').checked,
+                    readonly: document.getElementById('json-ts-readonly').checked
+                };
+
+                let json;
+                try {
+                    json = JSON.parse(inputVal);
+                } catch (e) {
+                    errorDiv.textContent = '{{ i18n "json_ts_error_invalid" }}: ' + e.message;
+                    errorDiv.classList.add('show');
+                    return;
+                }
+
+                const rootName = sanitizeName(document.getElementById('json-ts-root-name-input').value) || 'RootType';
+                const interfaces = {};
+
+                if (options.addRoot) {
+                    generateInterface(json, rootName, options, interfaces, 0);
+                } else {
+                    const type = inferType(json, null, options);
+                    if (type.includes('{\n')) {
+                        output.value = 'type ' + rootName + ' = ' + type;
+                    } else {
+                        output.value = 'type ' + rootName + ' = ' + type;
+                    }
+                }
+            }
+
+            function formatJson() {
+                try {
+                    const json = JSON.parse(input.value);
+                    input.value = JSON.stringify(json, null, 2);
+                } catch (e) {
+                    // ignore
+                }
+            }
+
+            window.jsonTsCopy = function() {
+                if (!output.value) return;
+                navigator.clipboard.writeText(output.value).then(() => {
+                    const btn = document.querySelector('.json-ts-panel:last-child .json-ts-btn-small');
+                    const originalText = btn.textContent;
+                    btn.textContent = '{{ i18n "json_ts_copied" }}';
+                    btn.style.background = 'var(--success-color)';
+                    btn.style.borderColor = 'var(--success-color)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                        btn.style.borderColor = '';
+                        btn.style.color = '';
+                    }, 1500);
+                });
+            };
+
+            window.jsonTsFormat = formatJson;
+
+            input.addEventListener('input', convert);
+
+            document.getElementById('json-ts-root-name').addEventListener('change', convert);
+            document.getElementById('json-ts-optional').addEventListener('change', convert);
+            document.getElementById('json-ts-readonly').addEventListener('change', convert);
+            document.getElementById('json-ts-root-name-input').addEventListener('input', convert);
+        })();
+    </script>
+</div>
