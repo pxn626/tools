@@ -1,0 +1,206 @@
+{{ $id := .Get "id" | default "uuid" }}
+<div class="tool-container" id="{{ $id }}-tool">
+    <div class="tool-header">
+        <h3>{{ i18n "uuid_title" }}</h3>
+        <p class="tool-desc">{{ i18n "uuid_desc" }}</p>
+    </div>
+
+    <div class="uuid-layout">
+        <div class="uuid-options">
+            <label for="{{ $id }}-version">{{ i18n "uuid_label_version" }}</label>
+            <select id="{{ $id }}-version">
+                <option value="v4" selected>UUID v4 (random)</option>
+                <option value="v7">UUID v7 (time-sortable, 2024+)</option>
+                <option value="v1">UUID v1 (time + MAC, legacy)</option>
+            </select>
+
+            <label for="{{ $id }}-count">{{ i18n "uuid_label_count" }}</label>
+            <input type="number" id="{{ $id }}-count" value="5" min="1" max="1000" />
+
+            <div class="uuid-formats">
+                <label>{{ i18n "uuid_label_format" }}</label>
+                <div>
+                    <input type="radio" id="{{ $id }}-case-lower" name="{{ $id }}-case" value="lower" checked>
+                    <label for="{{ $id }}-case-lower" class="inline">{{ i18n "uuid_case_lower" }}</label>
+                </div>
+                <div>
+                    <input type="radio" id="{{ $id }}-case-upper" name="{{ $id }}-case" value="upper">
+                    <label for="{{ $id }}-case-upper" class="inline">{{ i18n "uuid_case_upper" }}</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="{{ $id }}-nohyphen" />
+                    <label for="{{ $id }}-nohyphen" class="inline">{{ i18n "uuid_nohyphen" }}</label>
+                </div>
+            </div>
+
+            <button id="{{ $id }}-generate" class="btn-primary">{{ i18n "uuid_btn_generate" }}</button>
+        </div>
+
+        <div class="uuid-output">
+            <div class="uuid-actions">
+                <button id="{{ $id }}-copy" class="btn-secondary" disabled>{{ i18n "uuid_btn_copy" }}</button>
+                <button id="{{ $id }}-download" class="btn-secondary" disabled>{{ i18n "uuid_btn_download" }}</button>
+                <button id="{{ $id }}-clear" class="btn-secondary">{{ i18n "btn_clear" }}</button>
+            </div>
+            <ul id="{{ $id }}-list" class="uuid-list"></ul>
+            <div id="{{ $id }}-status" class="tool-status"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+.uuid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+.uuid-options { display: flex; flex-direction: column; gap: 0.8rem; }
+.uuid-options label { font-weight: bold; font-size: 0.9rem; }
+.uuid-options input, .uuid-options select { padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); }
+.uuid-formats { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.8rem; background: var(--entry); border-radius: 4px; border: 1px solid var(--border); }
+.uuid-formats label.inline { font-weight: normal; display: inline; }
+.uuid-formats > div { display: flex; align-items: center; gap: 0.3rem; }
+.uuid-output { display: flex; flex-direction: column; gap: 0.8rem; }
+.uuid-actions { display: flex; gap: 0.5rem; }
+.uuid-actions button { flex: 1; }
+.uuid-list { list-style: none; padding: 0; margin: 0; max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); }
+.uuid-list li { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); cursor: pointer; font-family: monospace; font-size: 0.85rem; word-break: break-all; transition: background 0.15s; }
+.uuid-list li:hover { background: var(--code-bg); }
+.uuid-list li:last-child { border-bottom: none; }
+.uuid-list li.copied { background: #d4edda; color: #155724; }
+.btn-primary { background: var(--primary); color: var(--theme); border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-primary:hover { opacity: 0.9; }
+.btn-secondary { background: var(--entry); color: var(--primary); border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; }
+.btn-secondary:hover { background: var(--code-bg); }
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (max-width: 768px) { .uuid-layout { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+(function() {
+    const $ = (s) => document.querySelector(s);
+    const root = $('#{{ $id }}-tool');
+    if (!root) return;
+
+    const listEl = $('#{{ $id }}-list');
+    const statusEl = $('#{{ $id }}-status');
+    let currentList = [];
+
+    // UUID v4:浏览器原生
+    function uuidv4() {
+        if (crypto.randomUUID) return crypto.randomUUID();
+        // fallback
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    // UUID v7:Unix ms 时间戳 + 74 位随机数
+    function uuidv7() {
+        const ts = Date.now();
+        const tsHex = ts.toString(16).padStart(12, '0'); // 48 bits
+        const randHex = Array.from({length: 10}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        // 格式:xxxxxxxx-xxxx-7xxx-yxxx-xxxxxxxxxxxx (8-4-4-4-12)
+        const version = '7';
+        const variant = Math.floor(Math.random() * 4 + 8).toString(16); // 8-b
+        const rest = Array.from({length: 18}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        // 合并
+        const id = tsHex.slice(0, 8) + '-' + tsHex.slice(8, 12) + '-' + version + randHex.slice(0, 3) + '-' + variant + randHex.slice(3, 6) + '-' + randHex.slice(6, 10) + rest.slice(0, 12);
+        // 补足 36 字符
+        const padded = (id + '0'.repeat(36)).slice(0, 36);
+        return padded;
+    }
+
+    // UUID v1:模拟(time + node)
+    function uuidv1() {
+        const ts = Date.now();
+        const tsHex = ts.toString(16).padStart(12, '0');
+        const randNode = Array.from({length: 12}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+        return tsHex.slice(0, 8) + '-' + tsHex.slice(8, 12) + '-1' + randNode.slice(0, 3) + '-8' + randNode.slice(3, 6) + '-' + randNode.slice(6, 18);
+    }
+
+    function generateOne(version) {
+        if (version === 'v1') return uuidv1();
+        if (version === 'v7') return uuidv7();
+        return uuidv4();
+    }
+
+    function formatUUID(u, upper, noHyphen) {
+        let r = u;
+        if (upper) r = r.toUpperCase();
+        if (noHyphen) r = r.replace(/-/g, '');
+        return r;
+    }
+
+    function generate() {
+        const version = $('#{{ $id }}-version').value;
+        let count = parseInt($('#{{ $id }}-count').value);
+        if (isNaN(count) || count < 1) count = 1;
+        if (count > 1000) count = 1000;
+        const upper = $('#{{ $id }}-case-upper').checked;
+        const noHyphen = $('#{{ $id }}-nohyphen').checked;
+
+        currentList = [];
+        for (let i = 0; i < count; i++) {
+            currentList.push(formatUUID(generateOne(version), upper, noHyphen));
+        }
+
+        renderList();
+        $('#{{ $id }}-copy').disabled = currentList.length === 0;
+        $('#{{ $id }}-download').disabled = currentList.length === 0;
+        statusEl.textContent = `{{ i18n "msg_success" }} (${currentList.length})`;
+        statusEl.className = 'tool-status status-success';
+    }
+
+    function renderList() {
+        listEl.innerHTML = currentList.map(u => `<li>${escapeHTML(u)}</li>`).join('');
+        listEl.querySelectorAll('li').forEach((li, idx) => {
+            li.addEventListener('click', () => {
+                navigator.clipboard.writeText(currentList[idx]).then(() => {
+                    li.classList.add('copied');
+                    statusEl.textContent = '{{ i18n "uuid_copied_one" }}';
+                    statusEl.className = 'tool-status status-success';
+                    setTimeout(() => li.classList.remove('copied'), 800);
+                });
+            });
+        });
+    }
+
+    function escapeHTML(s) {
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    $('#{{ $id }}-generate').addEventListener('click', generate);
+
+    $('#{{ $id }}-copy').addEventListener('click', () => {
+        const text = currentList.join('\n');
+        navigator.clipboard.writeText(text).then(() => {
+            statusEl.textContent = '{{ i18n "uuid_copied_all" }} (' + currentList.length + ')';
+            statusEl.className = 'tool-status status-success';
+        });
+    });
+
+    $('#{{ $id }}-download').addEventListener('click', () => {
+        const text = currentList.join('\n');
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'uuids.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    });
+
+    $('#{{ $id }}-clear').addEventListener('click', () => {
+        currentList = [];
+        listEl.innerHTML = '';
+        $('#{{ $id }}-copy').disabled = true;
+        $('#{{ $id }}-download').disabled = true;
+        statusEl.textContent = '';
+        statusEl.className = 'tool-status';
+    });
+
+    // 首次自动生成 5 个
+    generate();
+})();
+</script>
