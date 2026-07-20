@@ -1729,3 +1729,110 @@ other = "抽样数量超过列表长度，已自动调整为"
 
 [rs_error_items_available]
 other = "（可用项目数）"
+
+# QR Code Generator
+[qr_title]
+other = "在线二维码生成器"
+
+[qr_desc]
+other = "文本、网址、WiFi 内容转 QR 二维码,纯前端,可自定义颜色尺寸"
+
+[qr_tab_text]
+other = "文本"
+
+[qr_tab_url]
+other = "网址"
+
+[qr_tab_wifi]
+other = "WiFi"
+
+[qr_label_content]
+other = "输入内容"
+
+[qr_text_ph]
+other = "任意文本,例如:Hello World"
+
+[qr_label_url]
+other = "网址 URL"
+
+[qr_label_ssid]
+other = "WiFi 名称 (SSID)"
+
+[qr_wifi_ssid_ph]
+other = "你的 WiFi 名称"
+
+[qr_label_pass]
+other = "WiFi 密码"
+
+[qr_wifi_pass_ph]
+other = "WiFi 密码(无密码留空)"
+
+[qr_label_encrypt]
+other = "加密方式"
+
+[qr_wifi_nopass]
+other = "无密码"
+
+[qr_label_hidden]
+other = "隐藏网络"
+
+[qr_label_size]
+other = "尺寸"
+
+[qr_label_ec]
+other = "容错率"
+
+[qr_label_fg]
+other = "前景色"
+
+[qr_label_bg]
+other = "背景色"
+
+[qr_empty]
+other = "输入内容后,二维码显示在这里"
+
+[qr_btn_png]
+other = "下载 PNG"
+
+[qr_btn_svg]
+other = "下载 SVG"
+
+# UUID Generator
+[uuid_title]
+other = "在线 UUID 生成器"
+
+[uuid_desc]
+other = "支持 v1 / v4 / v7 标准,批量生成 1-1000 个"
+
+[uuid_label_version]
+other = "UUID 版本"
+
+[uuid_label_count]
+other = "生成数量 (1-1000)"
+
+[uuid_label_format]
+other = "格式选项"
+
+[uuid_case_lower]
+other = "小写"
+
+[uuid_case_upper]
+other = "大写"
+
+[uuid_nohyphen]
+other = "无连字符"
+
+[uuid_btn_generate]
+other = "生成 UUID"
+
+[uuid_btn_copy]
+other = "复制全部"
+
+[uuid_btn_download]
+other = "下载 TXT"
+
+[uuid_copied_one]
+other = "已复制单个 UUID"
+
+[uuid_copied_all]
+other = "已复制所有 UUID"

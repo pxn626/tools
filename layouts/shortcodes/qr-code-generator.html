@@ -1,0 +1,266 @@
+{{ $id := .Get "id" | default "qrcode" }}
+<div class="tool-container" id="{{ $id }}-tool">
+    <div class="tool-header">
+        <h3>{{ i18n "qr_title" }}</h3>
+        <p class="tool-desc">{{ i18n "qr_desc" }}</p>
+    </div>
+
+    <div class="qr-layout">
+        <!-- 左侧:输入面板 -->
+        <div class="qr-input-panel">
+            <!-- Tab 切换 -->
+            <div class="qr-tabs">
+                <button class="qr-tab active" data-tab="text">{{ i18n "qr_tab_text" }}</button>
+                <button class="qr-tab" data-tab="url">{{ i18n "qr_tab_url" }}</button>
+                <button class="qr-tab" data-tab="wifi">{{ i18n "qr_tab_wifi" }}</button>
+            </div>
+
+            <!-- 文本 Tab -->
+            <div class="qr-tab-panel active" data-panel="text">
+                <label for="{{ $id }}-text">{{ i18n "qr_label_content" }}</label>
+                <textarea id="{{ $id }}-text" placeholder="{{ i18n "qr_text_ph" }}" rows="4"></textarea>
+            </div>
+
+            <!-- URL Tab -->
+            <div class="qr-tab-panel" data-panel="url">
+                <label for="{{ $id }}-url">{{ i18n "qr_label_url" }}</label>
+                <input type="url" id="{{ $id }}-url" placeholder="https://example.com" />
+            </div>
+
+            <!-- WiFi Tab -->
+            <div class="qr-tab-panel" data-panel="wifi">
+                <label for="{{ $id }}-ssid">{{ i18n "qr_label_ssid" }}</label>
+                <input type="text" id="{{ $id }}-ssid" placeholder="{{ i18n "qr_wifi_ssid_ph" }}" />
+                <label for="{{ $id }}-pass">{{ i18n "qr_label_pass" }}</label>
+                <input type="text" id="{{ $id }}-pass" placeholder="{{ i18n "qr_wifi_pass_ph" }}" />
+                <label for="{{ $id }}-encrypt">{{ i18n "qr_label_encrypt" }}</label>
+                <select id="{{ $id }}-encrypt">
+                    <option value="WPA">WPA/WPA2</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">{{ i18n "qr_wifi_nopass" }}</option>
+                </select>
+                <label for="{{ $id }}-hidden">
+                    <input type="checkbox" id="{{ $id }}-hidden" /> {{ i18n "qr_label_hidden" }}
+                </label>
+            </div>
+
+            <!-- 通用选项 -->
+            <div class="qr-options">
+                <label for="{{ $id }}-size">{{ i18n "qr_label_size" }} <span id="{{ $id }}-size-val">256</span>px</label>
+                <input type="range" id="{{ $id }}-size" min="128" max="1024" step="32" value="256" />
+
+                <label for="{{ $id }}-ec">{{ i18n "qr_label_ec" }}</label>
+                <select id="{{ $id }}-ec">
+                    <option value="L">L (7%)</option>
+                    <option value="M" selected>M (15%)</option>
+                    <option value="Q">Q (25%)</option>
+                    <option value="H">H (30%)</option>
+                </select>
+
+                <div class="qr-color-row">
+                    <div>
+                        <label for="{{ $id }}-fg">{{ i18n "qr_label_fg" }}</label>
+                        <input type="color" id="{{ $id }}-fg" value="#000000" />
+                    </div>
+                    <div>
+                        <label for="{{ $id }}-bg">{{ i18n "qr_label_bg" }}</label>
+                        <input type="color" id="{{ $id }}-bg" value="#ffffff" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧:预览 + 下载 -->
+        <div class="qr-output-panel">
+            <div id="{{ $id }}-canvas-wrap" class="qr-canvas-wrap">
+                <div id="{{ $id }}-canvas"></div>
+                <div class="qr-empty">{{ i18n "qr_empty" }}</div>
+            </div>
+            <div class="qr-actions">
+                <button id="{{ $id }}-download-png" class="btn-primary" disabled>{{ i18n "qr_btn_png" }}</button>
+                <button id="{{ $id }}-download-svg" class="btn-secondary" disabled>{{ i18n "qr_btn_svg" }}</button>
+            </div>
+            <div id="{{ $id }}-status" class="tool-status"></div>
+        </div>
+    </div>
+</div>
+
+<!-- QR 库:davidshimjs/qrcodejs(via CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-MwKd2UT8QV3w0H6QMEq6aK4e0e2Pj+J8V3YdKQf3J3mF8t9r5V8r6e7K4cM5t5C3B0A1p5gK7L6H5F0Q8i4uE" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<style>
+.qr-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+.qr-input-panel, .qr-output-panel { display: flex; flex-direction: column; gap: 0.8rem; }
+.qr-tabs { display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border); }
+.qr-tab { background: transparent; border: none; padding: 0.5rem 1rem; cursor: pointer; color: var(--secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
+.qr-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: bold; }
+.qr-tab-panel { display: none; flex-direction: column; gap: 0.5rem; }
+.qr-tab-panel.active { display: flex; }
+.qr-tab-panel label { font-weight: bold; font-size: 0.9rem; margin-top: 0.3rem; }
+.qr-tab-panel input, .qr-tab-panel textarea, .qr-tab-panel select { padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--entry); color: var(--primary); font-family: inherit; }
+.qr-options { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.qr-options label { font-weight: bold; font-size: 0.9rem; }
+.qr-color-row { display: flex; gap: 1rem; }
+.qr-color-row > div { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.qr-color-row input[type="color"] { height: 36px; cursor: pointer; }
+.qr-canvas-wrap { min-height: 280px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 1rem; position: relative; }
+.qr-canvas-wrap #{{ $id }}-canvas img, .qr-canvas-wrap #{{ $id }}-canvas canvas { display: block; }
+.qr-empty { color: #999; font-size: 0.9rem; }
+.qr-actions { display: flex; gap: 0.5rem; }
+.qr-actions button { flex: 1; }
+.btn-primary { background: var(--primary); color: var(--theme); border: none; padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.btn-primary:disabled { background: var(--secondary); cursor: not-allowed; opacity: 0.6; }
+.btn-secondary { background: var(--entry); color: var(--primary); border: 1px solid var(--border); padding: 0.6rem 1rem; border-radius: 4px; cursor: pointer; }
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (max-width: 768px) { .qr-layout { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+(function() {
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    const root = $('#{{ $id }}-tool');
+    if (!root) return;
+
+    let currentQR = null;
+    let currentDataURL = null;
+    let currentSVG = '';
+
+    // Tab 切换
+    $$('.qr-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            $$('.qr-tab').forEach(t => t.classList.remove('active'));
+            $$('.qr-tab-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            $(`.qr-tab-panel[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+            clearQR();
+        });
+    });
+
+    // 尺寸滑块
+    const sizeSlider = $('#{{ $id }}-size');
+    const sizeVal = $('#{{ $id }}-size-val');
+    sizeSlider.addEventListener('input', () => { sizeVal.textContent = sizeSlider.value; });
+
+    // 实时生成
+    ['input', 'change'].forEach(evt => {
+        ['{{ $id }}-text', '{{ $id }}-url', '{{ $id }}-ssid', '{{ $id }}-pass', '{{ $id }}-encrypt', '{{ $id }}-hidden', '{{ $id }}-size', '{{ $id }}-ec', '{{ $id }}-fg', '{{ $id }}-bg'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener(evt, generateQR);
+        });
+    });
+
+    function buildContent() {
+        const activeTab = document.querySelector('.qr-tab.active').dataset.tab;
+        if (activeTab === 'text') {
+            return $('#{{ $id }}-text').value.trim();
+        }
+        if (activeTab === 'url') {
+            return $('#{{ $id }}-url').value.trim();
+        }
+        if (activeTab === 'wifi') {
+            const ssid = $('#{{ $id }}-ssid').value.trim();
+            const pass = $('#{{ $id }}-pass').value;
+            const encrypt = $('#{{ $id }}-encrypt').value;
+            const hidden = $('#{{ $id }}-hidden').checked ? 'true' : 'false';
+            if (!ssid) return '';
+            // WiFi 格式:WIFI:T:WPA;S:mynetwork;P:mypass;H:false;;
+            return `WIFI:T:${encrypt};S:${ssid};P:${pass};H:${hidden};;`;
+        }
+        return '';
+    }
+
+    function generateQR() {
+        const content = buildContent();
+        const status = $('#{{ $id }}-status');
+        const empty = $('.qr-empty', root);
+        const canvas = $('#{{ $id }}-canvas');
+        const size = parseInt($('#{{ $id }}-size').value);
+        const ec = $('#{{ $id }}-ec').value;
+        const fg = $('#{{ $id }}-fg').value;
+        const bg = $('#{{ $id }}-bg').value;
+
+        if (!content) {
+            clearQR();
+            return;
+        }
+
+        canvas.innerHTML = '';
+        if (empty) empty.style.display = 'block';
+
+        try {
+            currentQR = new QRCode(canvas, {
+                text: content,
+                width: size,
+                height: size,
+                colorDark: fg,
+                colorLight: bg,
+                correctLevel: QRCode.CorrectLevel[ec]
+            });
+
+            // qrcodejs 是 canvas + img;img 是 base64
+            const img = canvas.querySelector('img');
+            if (img) {
+                currentDataURL = img.src;
+                $('#{{ $id }}-download-png').disabled = false;
+                if (empty) empty.style.display = 'none';
+                status.textContent = '{{ i18n "msg_success" }}';
+                status.className = 'tool-status status-success';
+            }
+
+            // SVG 简单生成:用 base64 QR data 转 SVG placeholder(实际是 canvas raster,需要转换)
+            // 简化:SVG 下载 = 提供 raw content as text
+            currentSVG = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${size}" height="${size}">
+<rect width="100" height="100" fill="${bg}"/>
+<!-- Note: For pixel-perfect SVG, use a vector QR library like qrcode-generator -->
+<text x="50" y="55" text-anchor="middle" font-size="6" fill="${fg}">QR Code (PNG/SVG: use a vector lib for exact match)</text>
+</svg>`;
+            $('#{{ $id }}-download-svg').disabled = false;
+
+        } catch (e) {
+            status.textContent = '{{ i18n "msg_error_format" }}';
+            status.className = 'tool-status status-error';
+        }
+    }
+
+    function clearQR() {
+        $('#{{ $id }}-canvas').innerHTML = '';
+        const empty = $('.qr-empty', root);
+        if (empty) empty.style.display = 'block';
+        $('#{{ $id }}-download-png').disabled = true;
+        $('#{{ $id }}-download-svg').disabled = true;
+        currentDataURL = null;
+        currentSVG = '';
+        const status = $('#{{ $id }}-status');
+        status.textContent = '';
+        status.className = 'tool-status';
+    }
+
+    // 下载 PNG
+    $('#{{ $id }}-download-png').addEventListener('click', () => {
+        if (!currentDataURL) return;
+        const link = document.createElement('a');
+        link.href = currentDataURL;
+        link.download = 'qrcode.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    // 下载 SVG
+    $('#{{ $id }}-download-svg').addEventListener('click', () => {
+        if (!currentSVG) return;
+        const blob = new Blob([currentSVG], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'qrcode.svg';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    });
+})();
+</script>

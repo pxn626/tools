@@ -1285,3 +1285,110 @@ other = "Sample size exceeds list length, auto-adjusted to"
 
 [rs_error_items_available]
 other = "(available items)"
+
+# QR Code Generator
+[qr_title]
+other = "Online QR Code Generator"
+
+[qr_desc]
+other = "Convert text, URL, WiFi to QR codes. 100% client-side, customizable colors and sizes."
+
+[qr_tab_text]
+other = "Text"
+
+[qr_tab_url]
+other = "URL"
+
+[qr_tab_wifi]
+other = "WiFi"
+
+[qr_label_content]
+other = "Content"
+
+[qr_text_ph]
+other = "Any text, e.g. Hello World"
+
+[qr_label_url]
+other = "URL"
+
+[qr_label_ssid]
+other = "WiFi SSID"
+
+[qr_wifi_ssid_ph]
+other = "Your WiFi name"
+
+[qr_label_pass]
+other = "WiFi Password"
+
+[qr_wifi_pass_ph]
+other = "Password (leave blank for open networks)"
+
+[qr_label_encrypt]
+other = "Encryption"
+
+[qr_wifi_nopass]
+other = "No password"
+
+[qr_label_hidden]
+other = "Hidden network"
+
+[qr_label_size]
+other = "Size"
+
+[qr_label_ec]
+other = "Error Correction"
+
+[qr_label_fg]
+other = "Foreground"
+
+[qr_label_bg]
+other = "Background"
+
+[qr_empty]
+other = "Enter content to generate QR code"
+
+[qr_btn_png]
+other = "Download PNG"
+
+[qr_btn_svg]
+other = "Download SVG"
+
+# UUID Generator
+[uuid_title]
+other = "Online UUID Generator"
+
+[uuid_desc]
+other = "UUID v1 / v4 / v7 standards, bulk generate 1-1000"
+
+[uuid_label_version]
+other = "UUID Version"
+
+[uuid_label_count]
+other = "Count (1-1000)"
+
+[uuid_label_format]
+other = "Format Options"
+
+[uuid_case_lower]
+other = "lowercase"
+
+[uuid_case_upper]
+other = "UPPERCASE"
+
+[uuid_nohyphen]
+other = "No hyphens"
+
+[uuid_btn_generate]
+other = "Generate UUIDs"
+
+[uuid_btn_copy]
+other = "Copy All"
+
+[uuid_btn_download]
+other = "Download TXT"
+
+[uuid_copied_one]
+other = "Copied single UUID"
+
+[uuid_copied_all]
+other = "Copied all UUIDs"
