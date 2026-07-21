@@ -2,7 +2,6 @@
 title: "Free Cron Expression Generator - Visual Schedule Builder"
 description: "Free cron expression generator. Build schedules visually with minute, hour, day, weekday, and month controls. See the next 10 execution times instantly. No signup."
 seo_description: "Free visual cron expression generator: pick minute, hour, day, weekday, month → get the cron string + next 10 execution times. No signup, browser-only."
-slug: cron-expression-generator
 categories:
     - "Developer Tools"
     - "DevOps"
@@ -13,9 +12,6 @@ tags:
     - "scheduler"
     - "scheduled task"
     - "online tool"
-date: 2026-07-21
-draft: false
-weight: 10
 ---
 
 <!-- WebApplication schema -->
