@@ -1,0 +1,506 @@
+<!-- JWT Decoder — Header / Payload / Signature 全解析 + 签名验证 + 时间戳校验 -->
+<div class="tool-container" id="jd-tool">
+  <style>
+    #jd-tool { max-width: 880px; margin: 24px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    #jd-tool .jd-card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+    #jd-tool .jd-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #jd-tool .jd-input-group { margin-bottom: 16px; }
+    #jd-tool label { display: block; font-weight: 600; margin-bottom: 6px; color: #1f2937; font-size: 14px; }
+    #jd-tool .jd-token-input { width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 13px; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; min-height: 90px; box-sizing: border-box; background: #f9fafb; }
+    #jd-tool .jd-token-input:focus { outline: none; border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    #jd-tool .jd-secret-input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 13px; font-family: 'Consolas', 'Monaco', monospace; box-sizing: border-box; }
+    #jd-tool .jd-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+    #jd-tool .jd-btn { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+    #jd-tool .jd-btn-primary { background: #2563eb; color: #fff; }
+    #jd-tool .jd-btn-primary:hover { background: #1d4ed8; }
+    #jd-tool .jd-btn-secondary { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+    #jd-tool .jd-btn-secondary:hover { background: #e5e7eb; }
+    #jd-tool .jd-presets { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px 0; }
+    #jd-tool .jd-preset { padding: 5px 10px; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.2s; user-select: none; }
+    #jd-tool .jd-preset:hover { background: #dbeafe; border-color: #93c5fd; }
+    #jd-tool .jd-preset.active { background: #2563eb; color: #fff; border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
+    #jd-tool .jd-section { margin-top: 18px; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+    #jd-tool .jd-section-head { padding: 10px 14px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    #jd-tool .jd-section-title { font-weight: 700; font-size: 14px; color: #1f2937; display: flex; align-items: center; gap: 8px; }
+    #jd-tool .jd-section-badge { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+    #jd-tool .jd-badge-ok { background: #d1fae5; color: #065f46; }
+    #jd-tool .jd-badge-warn { background: #fef3c7; color: #92400e; }
+    #jd-tool .jd-badge-err { background: #fee2e2; color: #991b1b; }
+    #jd-tool .jd-badge-info { background: #dbeafe; color: #1e40af; }
+    #jd-tool .jd-section-body { padding: 14px; }
+    #jd-tool .jd-json { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; font-family: 'Consolas', 'Monaco', monospace; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.5; }
+    #jd-tool .jd-json-key { color: #93c5fd; }
+    #jd-tool .jd-json-str { color: #86efac; }
+    #jd-tool .jd-json-num { color: #fcd34d; }
+    #jd-tool .jd-json-bool { color: #f9a8d4; }
+    #jd-tool .jd-sig-display { font-family: 'Consolas', 'Monaco', monospace; font-size: 11px; word-break: break-all; background: #f3f4f6; padding: 10px; border-radius: 6px; color: #475569; max-height: 100px; overflow-y: auto; }
+    #jd-tool .jd-claim-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e5e7eb; font-size: 13px; }
+    #jd-tool .jd-claim-row:last-child { border-bottom: none; }
+    #jd-tool .jd-claim-key { font-family: 'Consolas', 'Monaco', monospace; color: #1e40af; font-weight: 600; }
+    #jd-tool .jd-claim-val { color: #475569; text-align: right; word-break: break-all; max-width: 60%; }
+    #jd-tool .jd-tip { font-size: 13px; color: #475569; margin-top: 12px; padding: 10px; background: #fef9c3; border-radius: 6px; border-left: 3px solid #eab308; }
+    #jd-tool .jd-error { padding: 12px; background: #fee2e2; border-left: 3px solid #dc2626; border-radius: 6px; color: #991b1b; font-size: 13px; margin-top: 12px; display: none; }
+    #jd-tool .jd-error.active { display: block; }
+    #jd-tool .jd-status { font-size: 13px; color: #6b7280; margin-top: 4px; }
+    #jd-tool .jd-checkbox-row { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 12px; }
+    #jd-tool .jd-checkbox-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: #2563eb; cursor: pointer; flex-shrink: 0; }
+    #jd-tool .jd-checkbox-row label { margin: 0; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px; }
+    @media (prefers-color-scheme: dark) {
+      #jd-tool .jd-card { background: #1e293b; border-color: #334155; }
+      #jd-tool label { color: #cbd5e1; }
+      #jd-tool .jd-token-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+      #jd-tool .jd-token-input:focus { background: #0f172a; border-color: #60a5fa; }
+      #jd-tool .jd-secret-input { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+      #jd-tool .jd-btn-secondary { background: #334155; color: #cbd5e1; border-color: #475569; }
+      #jd-tool .jd-btn-secondary:hover { background: #475569; }
+      #jd-tool .jd-preset { background: #334155; border-color: #475569; color: #cbd5e1; }
+      #jd-tool .jd-preset:hover { background: #1e3a8a; border-color: #3b82f6; color: #dbeafe; }
+      #jd-tool .jd-section { border-color: #334155; }
+      #jd-tool .jd-section-head { background: #0f172a; border-bottom-color: #334155; }
+      #jd-tool .jd-section-title { color: #e2e8f0; }
+      #jd-tool .jd-claim-key { color: #93c5fd; }
+      #jd-tool .jd-claim-val { color: #cbd5e1; }
+      #jd-tool .jd-claim-row { border-bottom-color: #334155; }
+      #jd-tool .jd-tip { background: #422006; color: #fde68a; border-left-color: #eab308; }
+      #jd-tool .jd-sig-display { background: #0f172a; color: #94a3b8; }
+      #jd-tool .jd-checkbox-row { background: #0f172a; border-color: #334155; }
+      #jd-tool .jd-checkbox-row label { color: #cbd5e1; }
+    }
+    @media (max-width: 600px) {
+      #jd-tool { margin: 12px auto; }
+      #jd-tool .jd-card { padding: 16px; }
+      #jd-tool .jd-row { grid-template-columns: 1fr; }
+      #jd-tool .jd-section-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+
+  <div class="jd-card">
+    <div class="jd-input-group">
+      <label for="jd-token">JWT Token(粘贴到下面)</label>
+      <textarea id="jd-token" class="jd-token-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"></textarea>
+    </div>
+
+    <div class="jd-presets">
+      <span class="jd-preset" onclick="jdLoadPreset(this, 'standard')">标准 HS256 示例</span>
+      <span class="jd-preset" onclick="jdLoadPreset(this, 'expired')">已过期(exp=-3600)</span>
+      <span class="jd-preset" onclick="jdLoadPreset(this, 'aud')">带 aud / iss</span>
+      <span class="jd-preset" onclick="jdLoadPreset(this, 'custom')">空 Header 自定义 alg</span>
+    </div>
+
+    <div class="jd-actions">
+      <button type="button" class="jd-btn jd-btn-primary" onclick="jdDecode()">解析</button>
+      <button type="button" class="jd-btn jd-btn-secondary" onclick="jdClear()">清空</button>
+    </div>
+
+    <div id="jd-error" class="jd-error"></div>
+
+    <!-- Header -->
+    <div id="jd-header-section" class="jd-section" style="display:none;">
+      <div class="jd-section-head">
+        <span class="jd-section-title">📋 Header</span>
+        <span id="jd-header-badge" class="jd-section-badge jd-badge-info"></span>
+      </div>
+      <div class="jd-section-body">
+        <pre id="jd-header-json" class="jd-json"></pre>
+      </div>
+    </div>
+
+    <!-- Payload -->
+    <div id="jd-payload-section" class="jd-section" style="display:none;">
+      <div class="jd-section-head">
+        <span class="jd-section-title">📦 Payload(Claims)</span>
+        <span id="jd-payload-badge" class="jd-section-badge jd-badge-info"></span>
+      </div>
+      <div class="jd-section-body">
+        <div id="jd-claims-table"></div>
+        <pre id="jd-payload-json" class="jd-json" style="margin-top:12px;"></pre>
+        <div id="jd-time-hint" class="jd-tip" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Signature -->
+    <div id="jd-sig-section" class="jd-section" style="display:none;">
+      <div class="jd-section-head">
+        <span class="jd-section-title">🔏 Signature</span>
+        <span id="jd-sig-badge" class="jd-section-badge jd-badge-info"></span>
+      </div>
+      <div class="jd-section-body">
+        <div class="jd-checkbox-row">
+          <input type="checkbox" id="jd-verify-toggle">
+          <label for="jd-verify-toggle">验证 HS256 签名(输入密钥)</label>
+        </div>
+        <div id="jd-secret-row" class="jd-input-group" style="display:none;">
+          <input type="text" id="jd-secret" class="jd-secret-input" placeholder="HMAC 共享密钥(HS256)">
+        </div>
+        <div id="jd-sig-display" class="jd-sig-display"></div>
+        <div id="jd-verify-result" class="jd-tip" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    function $(id) { return document.getElementById(id); }
+
+    function b64UrlDecode(str) {
+      str = String(str || '').replace(/-/g, '+').replace(/_/g, '/');
+      while (str.length % 4) str += '=';
+      try {
+        var bin = atob(str);
+        // UTF-8 decode
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return decodeURIComponent(escape(String.fromCharCode.apply(null, bytes)));
+      } catch (e) {
+        throw new Error('Base64Url 解码失败: ' + e.message);
+      }
+    }
+
+    function syntaxHighlight(json) {
+      json = String(json).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (m) {
+        var cls = 'jd-json-num';
+        if (/^"/.test(m)) {
+          cls = /:$/.test(m) ? 'jd-json-key' : 'jd-json-str';
+        } else if (/true|false/.test(m)) {
+          cls = 'jd-json-bool';
+        } else if (/null/.test(m)) {
+          cls = 'jd-json-bool';
+        }
+        return '<span class="' + cls + '">' + m + '</span>';
+      });
+    }
+
+    function showError(msg) {
+      var e = $('jd-error');
+      e.textContent = '❌ ' + msg;
+      e.classList.add('active');
+      ['jd-header-section', 'jd-payload-section', 'jd-sig-section'].forEach(function(id){
+        $(id).style.display = 'none';
+      });
+    }
+
+    function clearError() {
+      $('jd-error').classList.remove('active');
+    }
+
+    function fmtTime(unixSec) {
+      if (!unixSec || isNaN(unixSec)) return '--';
+      var d = new Date(unixSec * 1000);
+      return d.toISOString().replace('T', ' ').replace(/\.\d+Z$/, ' UTC');
+    }
+
+    function fmtRelative(unixSec) {
+      if (!unixSec || isNaN(unixSec)) return '--';
+      var now = Math.floor(Date.now() / 1000);
+      var diff = unixSec - now;
+      var absDiff = Math.abs(diff);
+      var unit = absDiff >= 86400 ? '天' : absDiff >= 3600 ? '小时' : absDiff >= 60 ? '分钟' : '秒';
+      var val = absDiff >= 86400 ? Math.floor(absDiff/86400) : absDiff >= 3600 ? Math.floor(absDiff/3600) : absDiff >= 60 ? Math.floor(absDiff/60) : absDiff;
+      return diff > 0 ? '还有 ' + val + ' ' + unit : val + ' ' + unit + '前';
+    }
+
+    function claimDesc(key) {
+      var map = {
+        'iss': 'Issuer — 签发方',
+        'sub': 'Subject — 主体(用户 ID)',
+        'aud': 'Audience — 受众',
+        'exp': 'Expiration — 过期时间',
+        'nbf': 'Not Before — 生效时间',
+        'iat': 'Issued At — 签发时间',
+        'jti': 'JWT ID — 唯一标识',
+        'scope': 'Scope — 权限范围',
+        'roles': 'Roles — 角色列表',
+        'tenant': 'Tenant — 租户',
+        'email': 'Email — 用户邮箱',
+        'name': 'Name — 用户名'
+      };
+      return map[key] || '';
+    }
+
+    function decodeAndShow(parts) {
+      // Header
+      var headerObj;
+      try {
+        var headerStr = b64UrlDecode(parts[0]);
+        headerObj = JSON.parse(headerStr);
+      } catch (e) {
+        showError('Header JSON 解析失败:' + e.message);
+        return;
+      }
+      var headerJson = JSON.stringify(headerObj, null, 2);
+      $('jd-header-json').innerHTML = syntaxHighlight(headerJson);
+      var alg = (headerObj.alg || 'unknown').toUpperCase();
+      var typ = (headerObj.typ || 'JWT').toUpperCase();
+      var hb = $('jd-header-badge');
+      hb.textContent = alg + ' · ' + typ;
+      hb.className = 'jd-section-badge jd-badge-info';
+      $('jd-header-section').style.display = 'block';
+
+      // Payload
+      var payloadObj;
+      try {
+        var payloadStr = b64UrlDecode(parts[1]);
+        payloadObj = JSON.parse(payloadStr);
+      } catch (e) {
+        showError('Payload JSON 解析失败:' + e.message);
+        return;
+      }
+      var payloadJson = JSON.stringify(payloadObj, null, 2);
+      $('jd-payload-json').innerHTML = syntaxHighlight(payloadJson);
+
+      // Build claims table with interpretation
+      var claimRows = '';
+      var now = Math.floor(Date.now() / 1000);
+      var hasExp = false, hasNbf = false;
+      var expStatus = 'unknown', nbfStatus = 'unknown';
+      Object.keys(payloadObj).forEach(function(k){
+        var v = payloadObj[k];
+        var valStr = typeof v === 'object' ? JSON.stringify(v) : String(v);
+        var extra = '';
+        if (k === 'exp' && typeof v === 'number') {
+          hasExp = true;
+          expStatus = v < now ? 'expired' : 'valid';
+          extra = ' · ' + fmtRelative(v) + (v < now ? '(已过期)' : '(有效)');
+          valStr = v + ' (' + fmtTime(v) + ')';
+        } else if (k === 'nbf' && typeof v === 'number') {
+          hasNbf = true;
+          nbfStatus = v > now ? 'notyet' : 'valid';
+          extra = ' · ' + fmtRelative(v) + (v > now ? '(尚未生效)' : '(已生效)');
+          valStr = v + ' (' + fmtTime(v) + ')';
+        } else if (k === 'iat' && typeof v === 'number') {
+          valStr = v + ' (' + fmtTime(v) + ' · ' + fmtRelative(v) + ')';
+        }
+        var desc = claimDesc(k);
+        claimRows += '<div class="jd-claim-row">' +
+                      '<span class="jd-claim-key">' + k + (desc ? ' <span style="font-weight:400;color:#6b7280;font-size:11px;">— ' + desc + '</span>' : '') + '</span>' +
+                      '<span class="jd-claim-val">' + valStr + extra + '</span>' +
+                      '</div>';
+      });
+      $('jd-claims-table').innerHTML = claimRows;
+
+      // Payload badge
+      var pb = $('jd-payload-badge');
+      var claimCount = Object.keys(payloadObj).length;
+      if (hasExp && expStatus === 'expired') {
+        pb.textContent = '⚠️ 已过期 · ' + claimCount + ' claims';
+        pb.className = 'jd-section-badge jd-badge-err';
+      } else if (hasNbf && nbfStatus === 'notyet') {
+        pb.textContent = '⚠️ 尚未生效 · ' + claimCount + ' claims';
+        pb.className = 'jd-section-badge jd-badge-warn';
+      } else if (hasExp) {
+        pb.textContent = '✓ 有效 · ' + claimCount + ' claims';
+        pb.className = 'jd-section-badge jd-badge-ok';
+      } else {
+        pb.textContent = claimCount + ' claims · 无 exp';
+        pb.className = 'jd-section-badge jd-badge-info';
+      }
+      $('jd-payload-section').style.display = 'block';
+
+      // Time hint
+      var hint = '';
+      if (hasExp && expStatus === 'expired') {
+        hint = '⏰ 此 token 已过期 ' + Math.floor((now - payloadObj.exp) / 60) + ' 分钟,服务端验证会拒绝。';
+      } else if (hasExp) {
+        var remain = payloadObj.exp - now;
+        hint = '✓ 此 token 剩余有效 ' + fmtRelative(payloadObj.exp).replace('还有 ', '') + '(到 ' + fmtTime(payloadObj.exp) + ' 过期)。';
+      } else if (hasNbf && nbfStatus === 'notyet') {
+        hint = '⏰ 此 token 将在 ' + fmtRelative(payloadObj.nbf).replace('还有 ', '') + ' 后生效。';
+      } else {
+        hint = 'ℹ 此 token 未声明 exp / nbf,有效期由服务端策略控制。';
+      }
+      if (hint) {
+        $('jd-time-hint').textContent = hint;
+        $('jd-time-hint').style.display = 'block';
+      }
+
+      // Signature
+      $('jd-sig-display').textContent = parts[2] || '(空)';
+      var sb = $('jd-sig-badge');
+      if (alg === 'HS256') {
+        sb.textContent = 'HS256 · 可验证';
+        sb.className = 'jd-section-badge jd-badge-info';
+        $('jd-verify-toggle').parentNode.style.display = 'flex';
+      } else if (alg === 'HS384' || alg === 'HS512') {
+        sb.textContent = alg + ' · 可验证';
+        sb.className = 'jd-section-badge jd-badge-info';
+        $('jd-verify-toggle').parentNode.style.display = 'flex';
+      } else if (alg === 'NONE') {
+        sb.textContent = '⚠️ alg: none · 不安全';
+        sb.className = 'jd-section-badge jd-badge-err';
+        $('jd-verify-toggle').parentNode.style.display = 'none';
+      } else {
+        sb.textContent = alg + ' · 不对称算法,需公钥验证';
+        sb.className = 'jd-section-badge jd-badge-warn';
+        $('jd-verify-toggle').parentNode.style.display = 'none';
+      }
+      $('jd-sig-section').style.display = 'block';
+    }
+
+    function verifyHs256(token, secret) {
+      var parts = token.split('.');
+      if (parts.length !== 3) return { ok: false, msg: 'Token 格式错误(应 3 段)' };
+      var header = parts[0];
+      var payload = parts[1];
+      var sig = parts[2];
+      // Convert secret string to UTF-8 bytes
+      var enc = new TextEncoder();
+      var keyBytes = enc.encode(secret);
+      // Header + payload as UTF-8 bytes
+      var signingInput = (header + '.' + payload);
+      var dataBytes = enc.encode(signingInput);
+      // Try SubtleCrypto
+      if (typeof crypto !== 'undefined' && crypto.subtle) {
+        return crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']).then(function(key){
+          return crypto.subtle.sign('HMAC', key, dataBytes);
+        }).then(function(buf){
+          var arr = new Uint8Array(buf);
+          var bin = '';
+          for (var i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+          var b64 = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          if (b64 === sig) return { ok: true };
+          return { ok: false, msg: '签名不匹配 — 密钥错误或 token 被篡改' };
+        });
+      }
+      // Fallback: not supported
+      return Promise.resolve({ ok: false, msg: '当前浏览器不支持 Web Crypto API,无法验证签名' });
+    }
+
+    window.jdDecode = function() {
+      clearError();
+      var token = $('jd-token').value.trim();
+      if (!token) { showError('请粘贴 JWT token'); return; }
+      var parts = token.split('.');
+      if (parts.length !== 3) {
+        showError('JWT 格式错误: 应为 3 段(Header.Payload.Signature),实际 ' + parts.length + ' 段');
+        return;
+      }
+      decodeAndShow(parts);
+      // Auto-verify if toggle on
+      if ($('jd-verify-toggle').checked) {
+        jdVerify();
+      } else {
+        $('jd-verify-result').style.display = 'none';
+      }
+    };
+
+    window.jdVerify = function() {
+      var token = $('jd-token').value.trim();
+      var secret = $('jd-secret').value;
+      var vr = $('jd-verify-result');
+      if (!token) { vr.style.display = 'none'; return; }
+      if (!secret) { vr.textContent = '⚠️ 请输入 HMAC 共享密钥'; vr.style.background = '#fef3c7'; vr.style.color = '#92400e'; vr.style.borderLeftColor = '#eab308'; vr.style.display = 'block'; return; }
+      var result = verifyHs256(token, secret);
+      if (result && typeof result.then === 'function') {
+        result.then(function(r){
+          if (r.ok) {
+            vr.textContent = '✅ 签名验证通过 — 密钥正确,token 未被篡改';
+            vr.style.background = '#d1fae5'; vr.style.color = '#065f46'; vr.style.borderLeftColor = '#10b981';
+          } else {
+            vr.textContent = '❌ ' + r.msg;
+            vr.style.background = '#fee2e2'; vr.style.color = '#991b1b'; vr.style.borderLeftColor = '#dc2626';
+          }
+          vr.style.display = 'block';
+        });
+      } else {
+        vr.textContent = '❌ ' + result.msg;
+        vr.style.background = '#fee2e2'; vr.style.color = '#991b1b'; vr.style.borderLeftColor = '#dc2626';
+        vr.style.display = 'block';
+      }
+    };
+
+    window.jdClear = function() {
+      $('jd-token').value = '';
+      $('jd-secret').value = '';
+      $('jd-verify-toggle').checked = false;
+      $('jd-secret-row').style.display = 'none';
+      clearError();
+      ['jd-header-section', 'jd-payload-section', 'jd-sig-section'].forEach(function(id){
+        $(id).style.display = 'none';
+      });
+    };
+
+    window.jdLoadPreset = function(btn, kind) {
+      // Mark active
+      var presets = btn.parentNode.querySelectorAll('.jd-preset');
+      presets.forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      // Build token based on kind
+      var headerB64, payloadB64, sig;
+      function b64url(obj) {
+        var json = JSON.stringify(obj);
+        var b64 = btoa(unescape(encodeURIComponent(json)));
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      }
+      var header = { alg: 'HS256', typ: 'JWT' };
+      var payload = {};
+      var secret = 'my-secret-key';
+      var now = Math.floor(Date.now() / 1000);
+      if (kind === 'standard') {
+        payload = { sub: '1234567890', name: 'John Doe', iat: 1516239022 };
+      } else if (kind === 'expired') {
+        payload = { sub: 'user-1', name: 'Alice', iat: now - 7200, exp: now - 3600 };
+      } else if (kind === 'aud') {
+        payload = { iss: 'https://api.example.com', aud: 'web-app', sub: 'u-42', name: 'Bob', roles: ['admin', 'editor'], iat: now, exp: now + 86400 };
+      } else if (kind === 'custom') {
+        header = { alg: 'HS256', typ: 'JWT', kid: 'key-2024-01' };
+        payload = { sub: 'test-user', iat: now, exp: now + 3600 };
+      }
+      headerB64 = b64url(header);
+      payloadB64 = b64url(payload);
+      // Compute HS256 signature using SubtleCrypto
+      var signingInput = headerB64 + '.' + payloadB64;
+      var enc = new TextEncoder();
+      if (typeof crypto !== 'undefined' && crypto.subtle) {
+        crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']).then(function(key){
+          return crypto.subtle.sign('HMAC', key, enc.encode(signingInput));
+        }).then(function(buf){
+          var arr = new Uint8Array(buf);
+          var bin = '';
+          for (var i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+          sig = btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          $('jd-token').value = signingInput + '.' + sig;
+        });
+      } else {
+        // Fallback: provide a pre-computed standard sample
+        $('jd-token').value = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+      }
+    };
+
+    // Toggle secret input visibility
+    $('jd-verify-toggle').addEventListener('change', function() {
+      $('jd-secret-row').style.display = this.checked ? 'block' : 'none';
+      if (!this.checked) {
+        $('jd-verify-result').style.display = 'none';
+      } else if ($('jd-token').value.trim()) {
+        jdVerify();
+      }
+    });
+
+    // Auto-parse on token input (debounced)
+    var autoTimer;
+    $('jd-token').addEventListener('input', function() {
+      clearTimeout(autoTimer);
+      var val = $('jd-token').value.trim();
+      if (val.split('.').length === 3) {
+        autoTimer = setTimeout(function(){
+          if ($('jd-token').value.trim().split('.').length === 3) {
+            jdDecode();
+            // Clear preset selection on manual input
+            var presets = document.querySelectorAll('#jd-tool .jd-preset');
+            presets.forEach(function(p){ p.classList.remove('active'); });
+          }
+        }, 400);
+      }
+    });
+
+    // Secret input — verify on change
+    $('jd-secret').addEventListener('input', function() {
+      if ($('jd-verify-toggle').checked) {
+        clearTimeout(autoTimer);
+        autoTimer = setTimeout(jdVerify, 300);
+      }
+    });
+  })();
+  </script>
+</div>
