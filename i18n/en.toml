@@ -1285,3 +1285,45 @@ other = "Sample size exceeds list length, auto-adjusted to"
 
 [rs_error_items_available]
 other = "(available items)"
+
+[cpw_title]
+other = "Color Picker / WCAG Contrast Checker"
+
+[cpw_desc]
+other = "Pick foreground and background colors, see live WCAG 2.1 contrast ratio and AA / AAA compliance."
+
+[cpw_label_fg]
+other = "Foreground (text)"
+
+[cpw_label_bg]
+other = "Background"
+
+[cpw_preview_text]
+other = "Sample body text preview for visual contrast."
+
+[cpw_table_text]
+other = "Text type"
+
+[cpw_text_normal]
+other = "Normal text (≤18pt)"
+
+[cpw_text_large]
+other = "Large text (≥18pt or ≥14pt bold)"
+
+[cpw_presets_title]
+other = "WCAG-safe preset pairs"
+
+[cpw_btn_copy_ratio]
+other = "Copy contrast"
+
+[cpw_btn_apply]
+other = "Apply"
+
+[cpw_msg_copied]
+other = "Copied to clipboard"
+
+[cpw_status_pass]
+other = "Pass"
+
+[cpw_status_fail]
+other = "Fail"

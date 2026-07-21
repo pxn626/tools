@@ -1729,3 +1729,45 @@ other = "抽样数量超过列表长度，已自动调整为"
 
 [rs_error_items_available]
 other = "（可用项目数）"
+
+[cpw_title]
+other = "颜色拾取器 / WCAG 对比度检查"
+
+[cpw_desc]
+other = "选择前景色和背景色,实时查看 WCAG 2.1 对比度与 AA / AAA 合规判定。"
+
+[cpw_label_fg]
+other = "前景色 (文字)"
+
+[cpw_label_bg]
+other = "背景色"
+
+[cpw_preview_text]
+other = "这是普通文本预览,用于直观感受颜色对比。"
+
+[cpw_table_text]
+other = "文本类型"
+
+[cpw_text_normal]
+other = "普通文本 (≤18pt)"
+
+[cpw_text_large]
+other = "大文本 (≥18pt 或 ≥14pt 粗体)"
+
+[cpw_presets_title]
+other = "WCAG 安全预设组合"
+
+[cpw_btn_copy_ratio]
+other = "复制对比度结果"
+
+[cpw_btn_apply]
+other = "应用"
+
+[cpw_msg_copied]
+other = "已复制到剪贴板"
+
+[cpw_status_pass]
+other = "通过"
+
+[cpw_status_fail]
+other = "未通过"

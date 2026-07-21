@@ -1,0 +1,857 @@
+<!-- Color Picker / WCAG Contrast Checker -->
+{{ $id := .Get "id" | default "cpw" }}
+<div class="color-picker-wcag-tool" id="{{ $id }}-tool">
+<style>
+    .color-picker-wcag-tool {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text: #1e293b;
+        --muted: #64748b;
+        --border: #e2e8f0;
+        --radius: 12px;
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --aa-pass-bg: #f0fdf4;
+        --aa-pass-border: #86efac;
+        --aa-fail-bg: #fef2f2;
+        --aa-fail-border: #fca5a5;
+    }
+
+    [data-theme="dark"] .color-picker-wcag-tool {
+        --bg: #0f172a;
+        --card-bg: #1e293b;
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --border: #334155;
+        --aa-pass-bg: #052e16;
+        --aa-pass-border: #14532d;
+        --aa-fail-bg: #450a0a;
+        --aa-fail-border: #7f1d1d;
+    }
+
+    .color-picker-wcag-tool * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .color-picker-wcag-tool {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 20px 0;
+    }
+
+    .cpw-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 24px;
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .cpw-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
+
+    .cpw-desc {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 20px;
+    }
+
+    .cpw-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+        .cpw-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .cpw-color-card {
+        background: var(--card-bg);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+    }
+
+    .cpw-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        gap: 12px;
+    }
+
+    .cpw-role-badge {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .cpw-color-input {
+        width: 56px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        background: transparent;
+    }
+
+    .cpw-format-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .cpw-format-row label {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .cpw-format-row input {
+        padding: 8px 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 13px;
+        font-family: "Consolas", "Monaco", monospace;
+        background: var(--card-bg);
+        color: var(--text);
+        transition: border-color 0.2s;
+    }
+
+    .cpw-format-row input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .cpw-sliders {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .cpw-sliders label {
+        display: grid;
+        grid-template-columns: 24px 1fr 40px;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .cpw-sliders input[type="range"] {
+        width: 100%;
+        accent-color: var(--primary);
+    }
+
+    .cpw-sliders label span {
+        text-align: right;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 11px;
+        color: var(--text);
+    }
+
+    .cpw-format-readout {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 12px;
+        background: var(--bg);
+        border-radius: 8px;
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 12px;
+    }
+
+    .cpw-format-readout code {
+        color: var(--text);
+    }
+
+    /* Result panel */
+    .cpw-result {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .cpw-preview {
+        padding: 24px;
+        border-radius: var(--radius);
+        border: 2px solid var(--border);
+        transition: all 0.25s ease;
+        text-align: center;
+    }
+
+    .cpw-preview-large {
+        display: block;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .cpw-preview-normal {
+        display: block;
+        font-size: 1rem;
+    }
+
+    .cpw-ratio {
+        text-align: center;
+        padding: 12px;
+        background: var(--bg);
+        border-radius: var(--radius);
+    }
+
+    .cpw-ratio-val {
+        font-size: 2.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .cpw-ratio-sep {
+        font-size: 1.5rem;
+        color: var(--muted);
+        margin: 0 4px;
+    }
+
+    .cpw-copy {
+        padding: 10px 16px;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .cpw-copy:hover {
+        background: var(--primary-hover);
+    }
+
+    .cpw-compliance {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .cpw-compliance th,
+    .cpw-compliance td {
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .cpw-compliance th {
+        font-weight: 600;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .cpw-compliance td.cpw-cell {
+        text-align: center;
+        font-weight: 600;
+        font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .cpw-compliance td.cpw-pass {
+        background: var(--aa-pass-bg);
+        color: var(--success);
+    }
+
+    .cpw-compliance td.cpw-fail {
+        background: var(--aa-fail-bg);
+        color: var(--danger);
+    }
+
+    /* Presets */
+    .cpw-presets {
+        margin-top: 24px;
+    }
+
+    .cpw-presets h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 12px;
+    }
+
+    .cpw-preset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 8px;
+    }
+
+    .cpw-preset {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        transition: all 0.2s;
+        text-align: left;
+    }
+
+    .cpw-preset:hover {
+        border-color: var(--primary);
+        transform: translateY(-1px);
+    }
+
+    .cpw-preset-swatch {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .cpw-preset-info {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .cpw-preset-name {
+        font-weight: 600;
+    }
+
+    .cpw-preset-ratio {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "Consolas", "Monaco", monospace;
+    }
+
+    .cpw-status {
+        margin-top: 12px;
+        font-size: 13px;
+        color: var(--muted);
+        min-height: 18px;
+    }
+</style>
+
+<div class="cpw-container">
+    <!-- Header -->
+    <div class="cpw-header">
+        <h3 class="cpw-title">{{ i18n "cpw_title" | default "颜色拾取器 / WCAG 对比度检查" }}</h3>
+        <p class="cpw-desc">{{ i18n "cpw_desc" | default "选择前景色和背景色,实时查看 WCAG 2.1 对比度与 AA / AAA 合规判定。" }}</p>
+    </div>
+
+    <!-- Main grid: pickers + result -->
+    <div class="cpw-grid">
+
+        <!-- Pickers column -->
+        <div class="cpw-pickers">
+
+            <!-- Foreground card -->
+            <div class="cpw-color-card" data-role="fg" style="margin-bottom: 16px;">
+                <div class="cpw-card-head">
+                    <span class="cpw-role-badge">{{ i18n "cpw_label_fg" | default "前景色 (文字)" }}</span>
+                    <input type="color" class="cpw-color-input" id="{{ $id }}-fg-color" value="#1F2937" />
+                </div>
+                <div class="cpw-format-row">
+                    <label>HEX
+                        <input type="text" class="cpw-hex" id="{{ $id }}-fg-hex" maxlength="7" />
+                    </label>
+                    <label>RGB
+                        <input type="text" class="cpw-rgb" id="{{ $id }}-fg-rgb" placeholder="rgb(...)" />
+                    </label>
+                </div>
+                <div class="cpw-sliders">
+                    <label>H <input type="range" class="cpw-hue" id="{{ $id }}-fg-h" min="0" max="360" value="220" /><span id="{{ $id }}-fg-h-val">220</span></label>
+                    <label>S <input type="range" class="cpw-sat" id="{{ $id }}-fg-s" min="0" max="100" value="24" /><span id="{{ $id }}-fg-s-val">24</span></label>
+                    <label>L <input type="range" class="cpw-lit" id="{{ $id }}-fg-l" min="0" max="100" value="17" /><span id="{{ $id }}-fg-l-val">17</span></label>
+                </div>
+                <div class="cpw-format-readout">
+                    <code id="{{ $id }}-fg-hex-readout">HEX: #1F2937</code>
+                    <code id="{{ $id }}-fg-rgb-readout">RGB: rgb(31, 41, 55)</code>
+                    <code id="{{ $id }}-fg-hsl-readout">HSL: hsl(220, 24%, 17%)</code>
+                    <code id="{{ $id }}-fg-hsv-readout">HSV: hsv(220, 43%, 22%)</code>
+                </div>
+            </div>
+
+            <!-- Background card -->
+            <div class="cpw-color-card" data-role="bg">
+                <div class="cpw-card-head">
+                    <span class="cpw-role-badge">{{ i18n "cpw_label_bg" | default "背景色" }}</span>
+                    <input type="color" class="cpw-color-input" id="{{ $id }}-bg-color" value="#FFFFFF" />
+                </div>
+                <div class="cpw-format-row">
+                    <label>HEX
+                        <input type="text" class="cpw-hex" id="{{ $id }}-bg-hex" maxlength="7" />
+                    </label>
+                    <label>RGB
+                        <input type="text" class="cpw-rgb" id="{{ $id }}-bg-rgb" placeholder="rgb(...)" />
+                    </label>
+                </div>
+                <div class="cpw-sliders">
+                    <label>H <input type="range" class="cpw-hue" id="{{ $id }}-bg-h" min="0" max="360" value="0" /><span id="{{ $id }}-bg-h-val">0</span></label>
+                    <label>S <input type="range" class="cpw-sat" id="{{ $id }}-bg-s" min="0" max="100" value="0" /><span id="{{ $id }}-bg-s-val">0</span></label>
+                    <label>L <input type="range" class="cpw-lit" id="{{ $id }}-bg-l" min="0" max="100" value="100" /><span id="{{ $id }}-bg-l-val">100</span></label>
+                </div>
+                <div class="cpw-format-readout">
+                    <code id="{{ $id }}-bg-hex-readout">HEX: #FFFFFF</code>
+                    <code id="{{ $id }}-bg-rgb-readout">RGB: rgb(255, 255, 255)</code>
+                    <code id="{{ $id }}-bg-hsl-readout">HSL: hsl(0, 0%, 100%)</code>
+                    <code id="{{ $id }}-bg-hsv-readout">HSV: hsv(0, 0%, 100%)</code>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Result column -->
+        <div class="cpw-result">
+            <div class="cpw-preview" id="{{ $id }}-preview">
+                <span class="cpw-preview-large">Aa</span>
+                <span class="cpw-preview-normal">{{ i18n "cpw_preview_text" | default "这是普通文本预览,用于直观感受颜色对比。" }}</span>
+            </div>
+            <div class="cpw-ratio">
+                <span class="cpw-ratio-val" id="{{ $id }}-ratio-val">12.63</span>
+                <span class="cpw-ratio-sep">:</span>
+                <span>1</span>
+            </div>
+            <button class="cpw-copy" id="{{ $id }}-copy-ratio">📋 {{ i18n "cpw_btn_copy_ratio" | default "复制对比度结果" }}</button>
+
+            <table class="cpw-compliance">
+                <thead>
+                    <tr>
+                        <th>{{ i18n "cpw_table_text" | default "文本类型" }}</th>
+                        <th style="text-align:center;">AA</th>
+                        <th style="text-align:center;">AAA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="{{ $id }}-row-normal">
+                        <td>{{ i18n "cpw_text_normal" | default "普通文本 (≤18pt)" }}</td>
+                        <td class="cpw-cell" id="{{ $id }}-normal-aa">—</td>
+                        <td class="cpw-cell" id="{{ $id }}-normal-aaa">—</td>
+                    </tr>
+                    <tr id="{{ $id }}-row-large">
+                        <td>{{ i18n "cpw_text_large" | default "大文本 (≥18pt 或 ≥14pt 粗体)" }}</td>
+                        <td class="cpw-cell" id="{{ $id }}-large-aa">—</td>
+                        <td class="cpw-cell" id="{{ $id }}-large-aaa">—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Presets -->
+    <div class="cpw-presets">
+        <h4>{{ i18n "cpw_presets_title" | default "WCAG 安全预设组合" }}</h4>
+        <div class="cpw-preset-grid" id="{{ $id }}-preset-grid"></div>
+    </div>
+
+    <!-- Status -->
+    <div id="{{ $id }}-status" class="cpw-status"></div>
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const ID = {{ $id }};
+    const $ = function (key) { return document.getElementById(ID + "-" + key); };
+
+    // ---------- Color math ----------
+    function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+    function hexToRgb(hex) {
+        if (typeof hex !== "string") return null;
+        let h = hex.trim().replace(/^#/, "");
+        if (h.length === 3) h = h.split("").map(c => c + c).join("");
+        if (!/^[0-9a-fA-F]{6}$/.test(h)) return null;
+        return {
+            r: parseInt(h.slice(0, 2), 16),
+            g: parseInt(h.slice(2, 4), 16),
+            b: parseInt(h.slice(4, 6), 16)
+        };
+    }
+
+    function rgbToHex(rgb) {
+        const toHex = (v) => clamp(Math.round(v), 0, 255).toString(16).padStart(2, "0");
+        return ("#" + toHex(rgb.r) + toHex(rgb.g) + toHex(rgb.b)).toUpperCase();
+    }
+
+    function rgbToHsl(rgb) {
+        const r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const l = (max + min) / 2;
+        let h, s;
+        if (max === min) {
+            h = 0; s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                default: h = (r - g) / d + 4;
+            }
+            h *= 60;
+        }
+        return { h: Math.round(h), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+
+    function hslToRgb(hsl) {
+        const h = ((hsl.h % 360) + 360) % 360 / 360;
+        const s = clamp(hsl.s, 0, 100) / 100;
+        const l = clamp(hsl.l, 0, 100) / 100;
+
+        if (s === 0) {
+            const v = Math.round(l * 255);
+            return { r: v, g: v, b: v };
+        }
+        const hue2rgb = (p, q, t) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        };
+        const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        const p = 2 * l - q;
+        return {
+            r: Math.round(hue2rgb(p, q, h + 1 / 3) * 255),
+            g: Math.round(hue2rgb(p, q, h) * 255),
+            b: Math.round(hue2rgb(p, q, h - 1 / 3) * 255)
+        };
+    }
+
+    function rgbToHsv(rgb) {
+        const r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const d = max - min;
+        let h, s;
+        const v = max;
+        s = max === 0 ? 0 : d / max;
+        if (max === min) {
+            h = 0;
+        } else {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                default: h = (r - g) / d + 4;
+            }
+            h *= 60;
+        }
+        return { h: Math.round(h), s: Math.round(s * 100), v: Math.round(v * 100) };
+    }
+
+    function rgbToStr(rgb) {
+        return "rgb(" + Math.round(rgb.r) + ", " + Math.round(rgb.g) + ", " + Math.round(rgb.b) + ")";
+    }
+
+    function parseRgbString(str) {
+        const m = (str || "").trim().match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+        if (!m) return null;
+        return {
+            r: clamp(parseInt(m[1], 10), 0, 255),
+            g: clamp(parseInt(m[2], 10), 0, 255),
+            b: clamp(parseInt(m[3], 10), 0, 255)
+        };
+    }
+
+    // ---------- WCAG algorithm ----------
+    function srgbToLinear(c) {
+        const s = c / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    }
+
+    function relativeLuminance(rgb) {
+        return 0.2126 * srgbToLinear(rgb.r)
+             + 0.7152 * srgbToLinear(rgb.g)
+             + 0.0722 * srgbToLinear(rgb.b);
+    }
+
+    function contrastRatio(a, b) {
+        const L1 = relativeLuminance(a);
+        const L2 = relativeLuminance(b);
+        const lighter = Math.max(L1, L2);
+        const darker = Math.min(L1, L2);
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    function compliance(ratio) {
+        return {
+            normalAA: ratio >= 4.5,
+            normalAAA: ratio >= 7,
+            largeAA: ratio >= 3,
+            largeAAA: ratio >= 4.5
+        };
+    }
+
+    // ---------- State ----------
+    const state = {
+        fg: hexToRgb("#1F2937") || { r: 31, g: 41, b: 55 },
+        bg: hexToRgb("#FFFFFF") || { r: 255, g: 255, b: 255 },
+        programmatic: false
+    };
+
+    // ---------- syncAll: state machine, no loops ----------
+    function setVal(el, v) {
+        if (!el) return;
+        if (el.value !== v) el.value = v;
+    }
+
+    function syncAll(source) {
+        if (state.programmatic) return;
+        state.programmatic = true;
+        try {
+            const role = source && source.indexOf("fg-") === 0 ? "fg" : "bg";
+            const incoming = source || "init";
+
+            // 1) Parse entry → canonical {r,g,b}
+            let newRgb = null;
+
+            if (incoming === role + "-color" || incoming === "init") {
+                const el = $(role + "-color");
+                if (el && el.value) newRgb = hexToRgb(el.value);
+            } else if (incoming === role + "-hex") {
+                const el = $(role + "-hex");
+                if (el) {
+                    let v = el.value.trim();
+                    if (v && v[0] !== "#") v = "#" + v;
+                    newRgb = hexToRgb(v);
+                    if (!newRgb) {
+                        $("status").textContent = 'Invalid HEX: "' + el.value + '"';
+                        return;
+                    }
+                }
+            } else if (incoming === role + "-rgb") {
+                const el = $(role + "-rgb");
+                if (el) {
+                    newRgb = parseRgbString(el.value);
+                    if (!newRgb) {
+                        $("status").textContent = 'Invalid RGB: "' + el.value + '"';
+                        return;
+                    }
+                }
+            } else if (incoming === role + "-h" || incoming === role + "-s" || incoming === role + "-l") {
+                const h = parseInt($(role + "-h").value, 10);
+                const s = parseInt($(role + "-s").value, 10);
+                const l = parseInt($(role + "-l").value, 10);
+                newRgb = hslToRgb({ h: h, s: s, l: l });
+            } else if (incoming === "preset") {
+                // state already set; just fall through
+                newRgb = state[role];
+            }
+
+            if (newRgb) state[role] = newRgb;
+
+            // 2) Compute derivations
+            const fg = state.fg, bg = state.bg;
+            const fgHex = rgbToHex(fg), bgHex = rgbToHex(bg);
+            const fgHsl = rgbToHsl(fg), bgHsl = rgbToHsl(bg);
+            const fgHsv = rgbToHsv(fg), bgHsv = rgbToHsv(bg);
+            const ratio = contrastRatio(fg, bg);
+            const comp = compliance(ratio);
+
+            // 3) Write all inputs (idempotent — setVal skips no-op writes)
+            // Color inputs
+            setVal($("fg-color"), fgHex);
+            setVal($("bg-color"), bgHex);
+
+            // Text inputs
+            setVal($("fg-hex"), fgHex);
+            setVal($("bg-hex"), bgHex);
+            setVal($("fg-rgb"), rgbToStr(fg));
+            setVal($("bg-rgb"), rgbToStr(bg));
+
+            // Sliders
+            setVal($("fg-h"), fgHsl.h);
+            setVal($("fg-s"), fgHsl.s);
+            setVal($("fg-l"), fgHsl.l);
+            setVal($("bg-h"), bgHsl.h);
+            setVal($("bg-s"), bgHsl.s);
+            setVal($("bg-l"), bgHsl.l);
+
+            // Slider value labels
+            $("fg-h-val").textContent = fgHsl.h;
+            $("fg-s-val").textContent = fgHsl.s;
+            $("fg-l-val").textContent = fgHsl.l;
+            $("bg-h-val").textContent = bgHsl.h;
+            $("bg-s-val").textContent = bgHsl.s;
+            $("bg-l-val").textContent = bgHsl.l;
+
+            // Readouts
+            $("fg-hex-readout").textContent = "HEX: " + fgHex;
+            $("fg-rgb-readout").textContent = "RGB: " + rgbToStr(fg);
+            $("fg-hsl-readout").textContent = "HSL: hsl(" + fgHsl.h + ", " + fgHsl.s + "%, " + fgHsl.l + "%)";
+            $("fg-hsv-readout").textContent = "HSV: hsv(" + fgHsv.h + ", " + fgHsv.s + "%, " + fgHsv.v + "%)";
+            $("bg-hex-readout").textContent = "HEX: " + bgHex;
+            $("bg-rgb-readout").textContent = "RGB: " + rgbToStr(bg);
+            $("bg-hsl-readout").textContent = "HSL: hsl(" + bgHsl.h + ", " + bgHsl.s + "%, " + bgHsl.l + "%)";
+            $("bg-hsv-readout").textContent = "HSV: hsv(" + bgHsv.h + ", " + bgHsv.s + "%, " + bgHsv.v + "%)";
+
+            // Preview
+            const preview = $("preview");
+            preview.style.backgroundColor = bgHex;
+            preview.style.color = fgHex;
+
+            // Ratio display
+            $("ratio-val").textContent = ratio.toFixed(2);
+
+            // Compliance table
+            const passText = '✓ {{ i18n "cpw_status_pass" | default "通过" }}';
+            const failText = '✗ {{ i18n "cpw_status_fail" | default "未通过" }}';
+            const renderCell = (el, ok) => {
+                el.classList.remove("cpw-pass", "cpw-fail");
+                el.classList.add(ok ? "cpw-pass" : "cpw-fail");
+                el.textContent = ok ? passText : failText;
+            };
+            renderCell($("normal-aa"), comp.normalAA);
+            renderCell($("normal-aaa"), comp.normalAAA);
+            renderCell($("large-aa"), comp.largeAA);
+            renderCell($("large-aaa"), comp.largeAAA);
+
+            // Clear any prior error status (success path)
+            if (incoming !== role + "-hex" && incoming !== role + "-rgb") {
+                $("status").textContent = "";
+            } else {
+                $("status").textContent = "";
+            }
+        } finally {
+            state.programmatic = false;
+        }
+    }
+
+    // ---------- Event binding ----------
+    function bind(key, handler) {
+        const el = $(key);
+        if (!el) return;
+        el.addEventListener("input", function () {
+            if (state.programmatic) return;
+            handler();
+        });
+        // Also bind 'change' for color picker (some browsers fire only 'change')
+        el.addEventListener("change", function () {
+            if (state.programmatic) return;
+            handler();
+        });
+    }
+
+    ["fg-color", "fg-hex", "fg-rgb", "fg-h", "fg-s", "fg-l",
+     "bg-color", "bg-hex", "bg-rgb", "bg-h", "bg-s", "bg-l"].forEach(function (k) {
+        bind(k, function () { syncAll(k); });
+    });
+
+    // ---------- Copy button ----------
+    const copyBtn = $("copy-ratio");
+    if (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+            const ratio = $("ratio-val").textContent;
+            const text = "Contrast ratio: " + ratio + ":1";
+            const fallback = function () {
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.style.position = "fixed";
+                ta.style.left = "-9999px";
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand("copy"); } catch (e) {}
+                document.body.removeChild(ta);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(fallback);
+            } else {
+                fallback();
+            }
+            $("status").textContent = '{{ i18n "cpw_msg_copied" | default "已复制到剪贴板" }}';
+            setTimeout(function () { $("status").textContent = ""; }, 2000);
+        });
+    }
+
+    // ---------- Presets ----------
+    // Ratios verified against W3C reference algorithm
+    // (https://www.w3.org/TR/WCAG21/#dfn-relative-luminance)
+    const presets = [
+        { label: "Black / White",      labelZh: "黑 / 白(极限)",   fg: "#000000", bg: "#FFFFFF", ratio: 21.00 },
+        { label: "Dark gray / White",  labelZh: "深灰 / 白",       fg: "#1F2937", bg: "#FFFFFF", ratio: 14.68 },
+        { label: "White / Dark gray",  labelZh: "白 / 深灰",       fg: "#FFFFFF", bg: "#1F2937", ratio: 14.68 },
+        { label: "White / Indigo",     labelZh: "白 / 靛蓝",       fg: "#FFFFFF", bg: "#4F46E5", ratio: 6.29  },
+        { label: "White / Deep green", labelZh: "白 / 深绿",       fg: "#FFFFFF", bg: "#064E3B", ratio: 9.72  },
+        { label: "White / Wine",       labelZh: "白 / 酒红",       fg: "#FFFFFF", bg: "#7F1D1D", ratio: 10.02 },
+        { label: "White / Mid gray",   labelZh: "白 / 中灰(仅 AA)",fg: "#FFFFFF", bg: "#6B7280", ratio: 4.83  },
+        { label: "Cream / Black",      labelZh: "浅黄 / 黑",       fg: "#FEF3C7", bg: "#000000", ratio: 18.86 },
+        { label: "Brand green (FAIL)", labelZh: "品牌绿 / 白(反例)",fg: "#FFFFFF", bg: "#10B981", ratio: 2.54  },
+        { label: "Brand violet / W",   labelZh: "品牌紫 / 白",     fg: "#7C3AED", bg: "#FFFFFF", ratio: 5.70  }
+    ];
+
+    const grid = $("preset-grid");
+    if (grid) {
+        presets.forEach(function (p) {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "cpw-preset";
+            const isZh = (document.documentElement.lang || "").toLowerCase().indexOf("zh") === 0;
+            const name = isZh ? p.labelZh : p.label;
+            const swatch = document.createElement("span");
+            swatch.className = "cpw-preset-swatch";
+            swatch.style.background = p.bg;
+            swatch.style.color = p.fg;
+            swatch.textContent = "Aa";
+            const info = document.createElement("span");
+            info.className = "cpw-preset-info";
+            const nm = document.createElement("span");
+            nm.className = "cpw-preset-name";
+            nm.textContent = name;
+            const rt = document.createElement("span");
+            rt.className = "cpw-preset-ratio";
+            rt.textContent = p.ratio.toFixed(2) + ":1";
+            info.appendChild(nm);
+            info.appendChild(rt);
+            btn.appendChild(swatch);
+            btn.appendChild(info);
+            btn.addEventListener("click", function () {
+                const fgRgb = hexToRgb(p.fg);
+                const bgRgb = hexToRgb(p.bg);
+                if (!fgRgb || !bgRgb) return;
+                state.fg = fgRgb;
+                state.bg = bgRgb;
+                syncAll("preset");
+            });
+            grid.appendChild(btn);
+        });
+    }
+
+    // ---------- Init ----------
+    syncAll("init");
+})();
+</script>
+</div>
