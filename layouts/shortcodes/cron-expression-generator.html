@@ -1,7 +1,8 @@
 <!--
-  Cron Expression Generator - 在线 Cron 表达式生成/解析工具
+  Cron Expression Generator - 可视化 Cron 表达式构建器
   Slug: cron-expression-generator
   标准 5 字段 cron:分 时 日 月 周
+  与 cron-parser 互补:本工具为构建器(可视化 → 表达式)
 -->
 <div class="ceg-tool">
     <style>
@@ -14,16 +15,18 @@
             --ceg-text: #1e293b;
             --ceg-muted: #64748b;
             --ceg-border: #e2e8f0;
-            --ceg-radius: 12px;
+            --ceg-radius: 10px;
+            --ceg-radius-sm: 6px;
             --ceg-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
             --ceg-error: #ef4444;
             --ceg-error-bg: #fef2f2;
             --ceg-error-border: #fecaca;
             --ceg-success: #10b981;
             --ceg-success-bg: #f0fdf4;
-            --ceg-success-border: #bbf7d0;
             --ceg-code-bg: #f1f5f9;
             --ceg-warn: #f59e0b;
+            --ceg-warn-bg: #fffbeb;
+            --ceg-warn-border: #fde68a;
         }
 
         [data-theme="dark"] .ceg-tool {
@@ -38,15 +41,12 @@
             --ceg-error-bg: #450a0a;
             --ceg-error-border: #7f1d1d;
             --ceg-success-bg: #064e3b;
-            --ceg-success-border: #065f46;
             --ceg-code-bg: #0f172a;
+            --ceg-warn-bg: #422006;
+            --ceg-warn-border: #78350f;
         }
 
-        .ceg-tool *,
-        .ceg-tool *::before,
-        .ceg-tool *::after {
-            box-sizing: border-box;
-        }
+        .ceg-tool *, .ceg-tool *::before, .ceg-tool *::after { box-sizing: border-box; }
 
         .ceg-tool {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
@@ -61,454 +61,333 @@
             border: 1px solid var(--ceg-border);
             border-radius: var(--ceg-radius);
             box-shadow: var(--ceg-shadow);
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-
-        /* 标题区 */
-        .ceg-header {
+            padding: 20px;
             margin-bottom: 16px;
         }
 
-        .ceg-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--ceg-text);
-            margin: 0 0 8px 0;
-        }
+        .ceg-header { margin-bottom: 12px; }
+        .ceg-title { font-size: 1.4rem; font-weight: 700; margin: 0 0 6px 0; color: var(--ceg-text); }
+        .ceg-desc { font-size: 0.92rem; color: var(--ceg-muted); margin: 0; }
 
-        .ceg-desc {
-            font-size: 0.95rem;
-            color: var(--ceg-muted);
-            margin: 0;
-        }
-
-        /* 字段说明 */
-        .ceg-fields {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin: 16px 0 20px 0;
-            padding: 14px;
-            background: var(--ceg-code-bg);
-            border-radius: 8px;
-        }
-
-        .ceg-field-cell {
-            text-align: center;
-            padding: 6px 4px;
-            border-radius: 6px;
-            background: var(--ceg-card);
-            border: 1px solid var(--ceg-border);
-        }
-
-        .ceg-field-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--ceg-primary);
-        }
-
-        .ceg-field-range {
-            font-size: 0.75rem;
-            color: var(--ceg-muted);
-            margin-top: 2px;
-            font-family: 'Consolas', 'Monaco', monospace;
-        }
-
-        /* 预设卡片区 */
-        .ceg-preset-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .ceg-preset-card {
-            background: var(--ceg-card);
-            border: 1px solid var(--ceg-border);
-            border-radius: 10px;
-            padding: 14px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-            font: inherit;
-            color: inherit;
-        }
-
-        .ceg-preset-card:hover {
-            border-color: var(--ceg-primary);
-            background: var(--ceg-primary-soft);
-            transform: translateY(-1px);
-            box-shadow: var(--ceg-shadow);
-        }
-
-        .ceg-preset-card:focus {
-            outline: 2px solid var(--ceg-primary);
-            outline-offset: 2px;
-        }
-
-        .ceg-preset-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--ceg-text);
-            margin-bottom: 4px;
-        }
-
-        .ceg-preset-expr {
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: var(--ceg-primary);
-            background: var(--ceg-code-bg);
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 6px;
-        }
-
-        .ceg-preset-desc {
-            font-size: 0.8rem;
-            color: var(--ceg-muted);
-        }
-
-        /* 输入区 */
-        .ceg-input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-
-        .ceg-input {
-            flex: 1;
-            min-width: 240px;
-            padding: 12px 16px;
-            border: 2px solid var(--ceg-border);
-            border-radius: 8px;
-            font-size: 1rem;
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            outline: none;
-            background: var(--ceg-card);
-            color: var(--ceg-text);
-            transition: border-color 0.2s;
-        }
-
-        .ceg-input:focus {
-            border-color: var(--ceg-primary);
-        }
-
-        .ceg-input.is-error {
-            border-color: var(--ceg-error);
-        }
-
-        .ceg-input.is-ok {
-            border-color: var(--ceg-success);
-        }
-
-        .ceg-btn {
-            padding: 12px 24px;
+        /* Tabs */
+        .ceg-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--ceg-border); margin-bottom: 16px; }
+        .ceg-tab {
+            padding: 8px 16px;
+            background: none;
             border: none;
-            border-radius: 8px;
+            border-bottom: 2px solid transparent;
+            color: var(--ceg-muted);
             font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, opacity 0.2s;
-            font-family: inherit;
-        }
-
-        .ceg-btn-primary {
-            background: var(--ceg-primary);
-            color: #fff;
-        }
-
-        .ceg-btn-primary:hover {
-            background: var(--ceg-primary-hover);
-        }
-
-        .ceg-btn-secondary {
-            background: var(--ceg-card);
-            color: var(--ceg-text);
-            border: 1px solid var(--ceg-border);
-        }
-
-        .ceg-btn-secondary:hover {
-            background: var(--ceg-code-bg);
-        }
-
-        /* 错误提示 */
-        .ceg-error {
-            padding: 12px 14px;
-            background: var(--ceg-error-bg);
-            border: 1px solid var(--ceg-error-border);
-            border-radius: 8px;
-            color: var(--ceg-error);
-            font-size: 0.9rem;
-            margin-bottom: 14px;
-            display: none;
-        }
-
-        .ceg-error.is-show {
-            display: block;
-        }
-
-        .ceg-error::before {
-            content: "⚠ ";
-            font-weight: 700;
-        }
-
-        /* 快速预设(行内 chip) */
-        .ceg-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .ceg-chip {
-            padding: 6px 12px;
-            background: var(--ceg-primary-soft);
-            border: 1px solid var(--ceg-primary);
-            border-radius: 999px;
-            font-size: 0.82rem;
-            color: var(--ceg-primary);
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.15s;
-            font-family: inherit;
         }
+        .ceg-tab:hover { color: var(--ceg-text); }
+        .ceg-tab.is-active { color: var(--ceg-primary); border-bottom-color: var(--ceg-primary); }
 
-        .ceg-chip:hover {
-            background: var(--ceg-primary);
-            color: #fff;
-        }
-
-        .ceg-chip:focus {
-            outline: 2px solid var(--ceg-primary);
-            outline-offset: 2px;
-        }
-
-        /* 结果区 */
-        .ceg-result {
-            display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px dashed var(--ceg-border);
-        }
-
-        .ceg-result.is-show {
-            display: block;
-        }
-
-        .ceg-result-label {
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--ceg-muted);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .ceg-description {
-            background: var(--ceg-success-bg);
-            border: 1px solid var(--ceg-success-border);
-            border-radius: 8px;
-            padding: 14px 16px;
-            font-size: 1rem;
-            color: var(--ceg-text);
-            margin-bottom: 18px;
-            line-height: 1.7;
-        }
-
-        .ceg-description strong {
-            color: var(--ceg-primary);
-        }
-
-        .ceg-next-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .ceg-next-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
+        /* Field cards */
+        .ceg-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .ceg-field {
             background: var(--ceg-code-bg);
             border: 1px solid var(--ceg-border);
-            border-radius: 8px;
-            font-size: 0.9rem;
+            border-radius: var(--ceg-radius-sm);
+            padding: 12px;
         }
+        .ceg-field-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .ceg-field-name { font-weight: 600; font-size: 0.9rem; color: var(--ceg-text); }
+        .ceg-field-range { font-size: 0.75rem; color: var(--ceg-muted); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+        .ceg-modes { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+        .ceg-mode {
+            flex: 1;
+            min-width: 0;
+            padding: 4px 8px;
+            font-size: 0.78rem;
+            background: var(--ceg-card);
+            border: 1px solid var(--ceg-border);
+            border-radius: 4px;
+            color: var(--ceg-muted);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+        }
+        .ceg-mode:hover { border-color: var(--ceg-primary); color: var(--ceg-text); }
+        .ceg-mode.is-active { background: var(--ceg-primary); border-color: var(--ceg-primary); color: #fff; }
+        .ceg-field-input {
+            width: 100%;
+            padding: 6px 10px;
+            font-size: 0.88rem;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            background: var(--ceg-card);
+            border: 1px solid var(--ceg-border);
+            border-radius: 4px;
+            color: var(--ceg-text);
+            outline: none;
+        }
+        .ceg-field-input:focus { border-color: var(--ceg-primary); }
+        .ceg-field-input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .ceg-field-input-row { display: flex; gap: 6px; align-items: center; }
+        .ceg-field-input-row .ceg-field-input { flex: 1; }
+        .ceg-field-hint { font-size: 0.72rem; color: var(--ceg-muted); margin-top: 4px; }
 
-        .ceg-next-idx {
-            display: inline-flex;
+        /* Hint (date×weekday) */
+        .ceg-conflict {
+            display: none;
+            padding: 10px 14px;
+            background: var(--ceg-warn-bg);
+            border: 1px solid var(--ceg-warn-border);
+            border-radius: var(--ceg-radius-sm);
+            color: var(--ceg-text);
+            font-size: 0.85rem;
+            margin: 12px 0;
+        }
+        .ceg-conflict.is-show { display: block; }
+
+        /* Presets */
+        .ceg-presets-title { font-size: 0.9rem; font-weight: 600; margin: 0 0 8px 0; color: var(--ceg-text); }
+        .ceg-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+        .ceg-preset-chip {
+            padding: 5px 12px;
+            background: var(--ceg-primary-soft);
+            border: 1px solid var(--ceg-primary);
+            border-radius: 14px;
+            color: var(--ceg-primary);
+            font-size: 0.8rem;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ceg-preset-chip:hover { background: var(--ceg-primary); color: #fff; }
+
+        /* Result */
+        .ceg-result-bar {
+            display: flex;
             align-items: center;
-            justify-content: center;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
+            gap: 10px;
+            padding: 14px 18px;
+            background: var(--ceg-card);
+            border: 2px solid var(--ceg-primary);
+            border-radius: var(--ceg-radius);
+            margin: 16px 0;
+        }
+        .ceg-result-label { font-size: 0.82rem; color: var(--ceg-muted); flex-shrink: 0; }
+        .ceg-result-expr {
+            flex: 1;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--ceg-text);
+            word-break: break-all;
+        }
+        .ceg-copy-btn {
+            padding: 6px 14px;
             background: var(--ceg-primary);
+            border: none;
+            border-radius: 4px;
             color: #fff;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-right: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s;
             flex-shrink: 0;
         }
+        .ceg-copy-btn:hover { background: var(--ceg-primary-hover); }
+        .ceg-copy-btn.is-copied { background: var(--ceg-success); }
 
-        .ceg-next-time {
-            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            font-weight: 500;
-            flex: 1;
+        /* Description */
+        .ceg-desc-block {
+            padding: 12px 16px;
+            background: var(--ceg-code-bg);
+            border-radius: var(--ceg-radius-sm);
+            font-size: 0.92rem;
+            color: var(--ceg-text);
+            margin-bottom: 12px;
         }
-
-        .ceg-next-rel {
-            font-size: 0.8rem;
-            color: var(--ceg-muted);
-            white-space: nowrap;
-            margin-left: 10px;
+        .ceg-next-list { list-style: none; padding: 0; margin: 0; font-size: 0.88rem; }
+        .ceg-next-list li {
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--ceg-border);
+            color: var(--ceg-text);
         }
+        .ceg-next-list li:last-child { border-bottom: none; }
 
-        /* 响应式 */
-        @media (max-width: 720px) {
-            .ceg-fields {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .ceg-input-row {
-                flex-direction: column;
-            }
-            .ceg-btn {
-                width: 100%;
-            }
-            .ceg-next-item {
-                flex-wrap: wrap;
-            }
-            .ceg-next-rel {
-                width: 100%;
-                margin-left: 34px;
-                margin-top: 4px;
-            }
+        /* Advanced mode */
+        .ceg-advanced-input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+            background: var(--ceg-card);
+            border: 2px solid var(--ceg-border);
+            border-radius: var(--ceg-radius-sm);
+            color: var(--ceg-text);
+            outline: none;
         }
+        .ceg-advanced-input:focus { border-color: var(--ceg-primary); }
+        .ceg-hint { font-size: 0.82rem; color: var(--ceg-muted); margin: 6px 0 0 0; }
 
-        @media (max-width: 420px) {
-            .ceg-fields {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .ceg-card {
-                padding: 16px;
-            }
+        /* Error */
+        .ceg-error {
+            display: none;
+            padding: 10px 14px;
+            background: var(--ceg-error-bg);
+            border: 1px solid var(--ceg-error-border);
+            border-radius: var(--ceg-radius-sm);
+            color: var(--ceg-error);
+            font-size: 0.85rem;
+            margin: 8px 0;
+        }
+        .ceg-error.is-show { display: block; }
+
+        /* Buttons row */
+        .ceg-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .ceg-btn {
+            padding: 6px 14px;
+            background: var(--ceg-card);
+            border: 1px solid var(--ceg-border);
+            border-radius: 4px;
+            color: var(--ceg-text);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .ceg-btn:hover { border-color: var(--ceg-primary); color: var(--ceg-primary); }
+
+        .ceg-panel { display: none; }
+        .ceg-panel.is-active { display: block; }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .ceg-fields { grid-template-columns: 1fr; }
+            .ceg-result-bar { flex-direction: column; align-items: stretch; }
+            .ceg-result-expr { text-align: center; }
         }
     </style>
 
-    <!-- ===== 卡片 1:工具介绍 + 字段说明 ===== -->
     <div class="ceg-card">
         <div class="ceg-header">
-            <h2 class="ceg-title">在线 Cron 表达式生成器</h2>
-            <p class="ceg-desc">
-                输入标准 5 字段 Cron 表达式(分 时 日 月 周),即时查看人类可读描述与未来 N 次执行时间。
-                支持 <code>*</code> <code>,</code> <code>-</code> <code>/</code> 等通配符,纯前端解析,数据不上传。
-            </p>
+            <h2 class="ceg-title">{{ T "ceg_title" }}</h2>
+            <p class="ceg-desc">{{ T "ceg_desc" }}</p>
         </div>
 
-        <div class="ceg-fields" aria-label="cron 字段说明">
-            <div class="ceg-field-cell">
-                <div class="ceg-field-name">分钟</div>
-                <div class="ceg-field-range">0-59</div>
+        <div class="ceg-tabs" role="tablist">
+            <button type="button" class="ceg-tab is-active" data-panel="builder" role="tab">{{ T "ceg_tab_builder" }}</button>
+            <button type="button" class="ceg-tab" data-panel="advanced" role="tab">{{ T "ceg_tab_advanced" }}</button>
+        </div>
+
+        <!-- Builder panel -->
+        <div id="ceg-panel-builder" class="ceg-panel is-active" role="tabpanel">
+            <div class="ceg-fields">
+                <!-- Minute -->
+                <div class="ceg-field" data-field="minute">
+                    <div class="ceg-field-head">
+                        <span class="ceg-field-name">{{ T "cron_field_minute" }}</span>
+                        <span class="ceg-field-range">0-59</span>
+                    </div>
+                    <div class="ceg-modes">
+                        <button type="button" class="ceg-mode is-active" data-mode="every">{{ T "ceg_mode_every" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="every_n">{{ T "ceg_mode_every_n" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="specific">{{ T "ceg_mode_specific" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="range">{{ T "ceg_mode_range" }}</button>
+                    </div>
+                    <input type="text" class="ceg-field-input" data-input="value" disabled placeholder="*">
+                    <div class="ceg-field-hint">{{ T "ceg_field_minute_hint" }}</div>
+                </div>
+
+                <!-- Hour -->
+                <div class="ceg-field" data-field="hour">
+                    <div class="ceg-field-head">
+                        <span class="ceg-field-name">{{ T "cron_field_hour" }}</span>
+                        <span class="ceg-field-range">0-23</span>
+                    </div>
+                    <div class="ceg-modes">
+                        <button type="button" class="ceg-mode is-active" data-mode="every">{{ T "ceg_mode_every" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="every_n">{{ T "ceg_mode_every_n" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="specific">{{ T "ceg_mode_specific" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="range">{{ T "ceg_mode_range" }}</button>
+                    </div>
+                    <input type="text" class="ceg-field-input" data-input="value" disabled placeholder="*">
+                    <div class="ceg-field-hint">{{ T "ceg_field_hour_hint" }}</div>
+                </div>
+
+                <!-- Day -->
+                <div class="ceg-field" data-field="day">
+                    <div class="ceg-field-head">
+                        <span class="ceg-field-name">{{ T "cron_field_day" }}</span>
+                        <span class="ceg-field-range">1-31</span>
+                    </div>
+                    <div class="ceg-modes">
+                        <button type="button" class="ceg-mode is-active" data-mode="every">{{ T "ceg_mode_every" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="every_n">{{ T "ceg_mode_every_n" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="specific">{{ T "ceg_mode_specific" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="range">{{ T "ceg_mode_range" }}</button>
+                    </div>
+                    <input type="text" class="ceg-field-input" data-input="value" disabled placeholder="*">
+                    <div class="ceg-field-hint">{{ T "ceg_field_day_hint" }}</div>
+                </div>
+
+                <!-- Month -->
+                <div class="ceg-field" data-field="month">
+                    <div class="ceg-field-head">
+                        <span class="ceg-field-name">{{ T "cron_field_month" }}</span>
+                        <span class="ceg-field-range">1-12</span>
+                    </div>
+                    <div class="ceg-modes">
+                        <button type="button" class="ceg-mode is-active" data-mode="every">{{ T "ceg_mode_every" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="every_n">{{ T "ceg_mode_every_n" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="specific">{{ T "ceg_mode_specific" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="range">{{ T "ceg_mode_range" }}</button>
+                    </div>
+                    <input type="text" class="ceg-field-input" data-input="value" disabled placeholder="*">
+                    <div class="ceg-field-hint">{{ T "ceg_field_month_hint" }}</div>
+                </div>
+
+                <!-- Weekday -->
+                <div class="ceg-field" data-field="weekday">
+                    <div class="ceg-field-head">
+                        <span class="ceg-field-name">{{ T "cron_field_weekday" }}</span>
+                        <span class="ceg-field-range">0-6</span>
+                    </div>
+                    <div class="ceg-modes">
+                        <button type="button" class="ceg-mode is-active" data-mode="every">{{ T "ceg_mode_every" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="every_n">{{ T "ceg_mode_every_n" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="specific">{{ T "ceg_mode_specific" }}</button>
+                        <button type="button" class="ceg-mode" data-mode="range">{{ T "ceg_mode_range" }}</button>
+                    </div>
+                    <input type="text" class="ceg-field-input" data-input="value" disabled placeholder="*">
+                    <div class="ceg-field-hint">{{ T "ceg_field_weekday_hint" }}</div>
+                </div>
             </div>
-            <div class="ceg-field-cell">
-                <div class="ceg-field-name">小时</div>
-                <div class="ceg-field-range">0-23</div>
+
+            <div id="ceg-conflict" class="ceg-conflict" role="status">
+                ⚠️ {{ T "ceg_conflict_hint" }}
             </div>
-            <div class="ceg-field-cell">
-                <div class="ceg-field-name">日期</div>
-                <div class="ceg-field-range">1-31</div>
-            </div>
-            <div class="ceg-field-cell">
-                <div class="ceg-field-name">月份</div>
-                <div class="ceg-field-range">1-12</div>
-            </div>
-            <div class="ceg-field-cell">
-                <div class="ceg-field-name">星期</div>
-                <div class="ceg-field-range">0-6</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- ===== 卡片 2:常用预设(点击填充) ===== -->
-    <div class="ceg-card">
-        <div class="ceg-header">
-            <h3 class="ceg-title" style="font-size:1.15rem;">常用预设</h3>
-            <p class="ceg-desc">点击下方任意预设卡片,自动填入输入框并解析。</p>
-        </div>
-        <div class="ceg-preset-grid" id="ceg-preset-grid">
-            <button type="button" class="ceg-preset-card" data-cron="*/5 * * * *" aria-label="每 5 分钟执行一次">
-                <div class="ceg-preset-name">每 5 分钟</div>
-                <code class="ceg-preset-expr">*/5 * * * *</code>
-                <div class="ceg-preset-desc">每隔 5 分钟执行一次,适合心跳检测、状态监控。</div>
-            </button>
-            <button type="button" class="ceg-preset-card" data-cron="0 * * * *" aria-label="每小时整点执行">
-                <div class="ceg-preset-name">每小时整点</div>
-                <code class="ceg-preset-expr">0 * * * *</code>
-                <div class="ceg-preset-desc">每小时第 0 分钟执行,适合每小时汇总、缓存刷新。</div>
-            </button>
-            <button type="button" class="ceg-preset-card" data-cron="0 0 * * *" aria-label="每天午夜执行">
-                <div class="ceg-preset-name">每天午夜</div>
-                <code class="ceg-preset-expr">0 0 * * *</code>
-                <div class="ceg-preset-desc">每天 00:00 执行,适合日志归档、数据库备份。</div>
-            </button>
-            <button type="button" class="ceg-preset-card" data-cron="0 9 * * 1" aria-label="每周一上午 9 点">
-                <div class="ceg-preset-name">每周一上午 9 点</div>
-                <code class="ceg-preset-expr">0 9 * * 1</code>
-                <div class="ceg-preset-desc">每周一上午 09:00 执行,适合周报生成、运营推送。</div>
-            </button>
-            <button type="button" class="ceg-preset-card" data-cron="0 0 1 * *" aria-label="每月 1 号午夜">
-                <div class="ceg-preset-name">每月 1 号午夜</div>
-                <code class="ceg-preset-expr">0 0 1 * *</code>
-                <div class="ceg-preset-desc">每月 1 号 00:00 执行,适合月度账单、统计报表。</div>
-            </button>
-        </div>
-    </div>
-
-    <!-- ===== 卡片 3:输入 + 解析 + 结果 ===== -->
-    <div class="ceg-card">
-        <div class="ceg-header">
-            <h3 class="ceg-title" style="font-size:1.15rem;">解析表达式</h3>
-            <p class="ceg-desc">在下方输入 Cron 表达式并点击「解析」,或按 Enter 键。</p>
+            <h3 class="ceg-presets-title">{{ T "ceg_presets_title" }}</h3>
+            <div class="ceg-presets" id="ceg-presets"></div>
         </div>
 
-        <div class="ceg-input-row">
-            <input
-                type="text"
-                id="ceg-input"
-                class="ceg-input"
-                placeholder="*/5 * * * *"
-                autocomplete="off"
-                spellcheck="false"
-                aria-label="cron 表达式输入">
-            <button type="button" id="ceg-parse-btn" class="ceg-btn ceg-btn-primary">解析</button>
+        <!-- Advanced panel -->
+        <div id="ceg-panel-advanced" class="ceg-panel" role="tabpanel">
+            <input type="text" id="ceg-advanced-input" class="ceg-advanced-input"
+                   placeholder="* * * * *" value="0 9 * * 1-5">
+            <p class="ceg-hint">{{ T "ceg_advanced_hint" }}</p>
         </div>
 
-        <div class="ceg-chips" id="ceg-chips" aria-label="快速预设">
-            <button type="button" class="ceg-chip" data-cron="*/5 * * * *">每 5 分</button>
-            <button type="button" class="ceg-chip" data-cron="0 * * * *">每时整点</button>
-            <button type="button" class="ceg-chip" data-cron="0 0 * * *">每日午夜</button>
-            <button type="button" class="ceg-chip" data-cron="0 9 * * 1">每周一</button>
-            <button type="button" class="ceg-chip" data-cron="0 0 1 * *">每月 1 号</button>
+        <!-- Result bar (always visible) -->
+        <div class="ceg-result-bar">
+            <span class="ceg-result-label">{{ T "ceg_result_expression" }}</span>
+            <span id="ceg-expr" class="ceg-result-expr">* * * * *</span>
+            <button type="button" id="ceg-copy-btn" class="ceg-copy-btn">{{ T "ceg_btn_copy" }}</button>
         </div>
 
-        <div id="ceg-error" class="ceg-error" role="alert" aria-live="polite"></div>
+        <div id="ceg-error" class="ceg-error" role="alert"></div>
 
-        <div id="ceg-result" class="ceg-result" aria-live="polite">
-            <div class="ceg-result-label">人类可读描述</div>
-            <div id="ceg-description" class="ceg-description"></div>
+        <div class="ceg-desc-block" id="ceg-description"></div>
 
-            <div class="ceg-result-label">未来 5 次执行时间</div>
-            <ul id="ceg-next-list" class="ceg-next-list"></ul>
-        </div>
+        <ul id="ceg-next-list" class="ceg-next-list"></ul>
 
-        <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" id="ceg-copy-btn" class="ceg-btn ceg-btn-secondary" disabled>复制表达式</button>
-            <button type="button" id="ceg-clear-btn" class="ceg-btn ceg-btn-secondary">清空</button>
+        <div class="ceg-actions">
+            <button type="button" id="ceg-reset-btn" class="ceg-btn">{{ T "ceg_reset" }}</button>
         </div>
     </div>
 
@@ -516,391 +395,455 @@
     (function () {
         'use strict';
 
-        // ===== 工具常量 =====
-        var WEEKDAY_NAMES = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-        var MONTH_NAMES = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
-        var FIELD_RANGES = [
-            { name: 'minute', min: 0, max: 59 },
-            { name: 'hour',   min: 0, max: 23 },
-            { name: 'day',    min: 1, max: 31 },
-            { name: 'month',  min: 1, max: 12 },
-            { name: 'weekday',min: 0, max: 6  }
+        // ===== i18n =====
+        var i18n = {
+            weekday: ['{{ T "cron_sun" }}', '{{ T "cron_mon" }}', '{{ T "cron_tue" }}',
+                      '{{ T "cron_wed" }}', '{{ T "cron_thu" }}', '{{ T "cron_fri" }}', '{{ T "cron_sat" }}'],
+            month:   ['{{ T "cron_jan" }}', '{{ T "cron_feb" }}', '{{ T "cron_mar" }}', '{{ T "cron_apr" }}',
+                      '{{ T "cron_may" }}', '{{ T "cron_jun" }}', '{{ T "cron_jul" }}', '{{ T "cron_aug" }}',
+                      '{{ T "cron_sep" }}', '{{ T "cron_oct" }}', '{{ T "cron_nov" }}', '{{ T "cron_dec" }}'],
+            invalidCron: '{{ T "ceg_msg_invalid_input" }}',
+            copied:      '{{ T "ceg_msg_copied" }}'
+        };
+
+        // ===== Field configuration =====
+        var FIELDS = [
+            { name: 'minute',  min: 0, max: 59 },
+            { name: 'hour',    min: 0, max: 23 },
+            { name: 'day',     min: 1, max: 31 },
+            { name: 'month',   min: 1, max: 12 },
+            { name: 'weekday', min: 0, max: 6  }
+        ];
+
+        // ===== 12 preset chips =====
+        var PRESETS = [
+            '*/5 * * * *',
+            '*/10 * * * *',
+            '*/15 * * * *',
+            '*/30 * * * *',
+            '0 * * * *',
+            '0 0 * * *',
+            '0 9 * * *',
+            '30 14 * * *',
+            '0 9 * * 1-5',
+            '0 9 * * 1',
+            '0 0 1 * *',
+            '0 0 1 1 *'
         ];
 
         // ===== DOM =====
         var root = document.querySelector('.ceg-tool');
         if (!root) return;
 
-        var inputEl = root.querySelector('#ceg-input');
-        var parseBtn = root.querySelector('#ceg-parse-btn');
-        var copyBtn = root.querySelector('#ceg-copy-btn');
-        var clearBtn = root.querySelector('#ceg-clear-btn');
-        var errorEl = root.querySelector('#ceg-error');
-        var resultEl = root.querySelector('#ceg-result');
-        var descEl = root.querySelector('#ceg-description');
+        var exprEl     = root.querySelector('#ceg-expr');
+        var copyBtn    = root.querySelector('#ceg-copy-btn');
+        var resetBtn   = root.querySelector('#ceg-reset-btn');
+        var errorEl    = root.querySelector('#ceg-error');
+        var descEl     = root.querySelector('#ceg-description');
         var nextListEl = root.querySelector('#ceg-next-list');
-        var presetCards = root.querySelectorAll('.ceg-preset-card');
-        var chips = root.querySelectorAll('.ceg-chip');
+        var conflictEl = root.querySelector('#ceg-conflict');
+        var presetsEl  = root.querySelector('#ceg-presets');
+        var advInput   = root.querySelector('#ceg-advanced-input');
+        var fieldEls   = root.querySelectorAll('.ceg-field');
 
-        // ===== 解析单个字段 =====
-        // 返回 Set<number>;失败抛 Error
-        function parseField(raw, min, max) {
-            raw = String(raw).trim();
-            if (raw === '') {
-                throw new Error('字段不能为空');
-            }
+        // ===== State =====
+        // For each field: { mode, value }
+        var state = {};
+        FIELDS.forEach(function (f) { state[f.name] = { mode: 'every', value: '' }; });
+        var activePanel = 'builder';
+
+        // ===== Cron field parsing (inlined from cron-parser) =====
+        function parseField(field, min, max) {
+            if (field === '*') return Array.from({ length: max - min + 1 }, function (_, i) { return min + i; });
             var result = new Set();
-            var parts = raw.split(',');
-            for (var i = 0; i < parts.length; i++) {
-                var part = parts[i].trim();
-                if (part === '') {
-                    throw new Error('列表中存在空段');
-                }
-
-                var stepMatch = part.match(/^(.+)\/(\d+)$/);
-                var stepStr = null;
-                var baseRange = part;
-
-                if (stepMatch) {
-                    baseRange = stepMatch[1].trim();
-                    stepStr = parseInt(stepMatch[2], 10);
-                    if (stepStr <= 0 || isNaN(stepStr)) {
-                        throw new Error('步进值必须 > 0: ' + part);
+            var parts = field.split(',');
+            for (var pi = 0; pi < parts.length; pi++) {
+                var part = parts[pi];
+                if (part.indexOf('/') >= 0) {
+                    var slashParts = part.split('/');
+                    var range = slashParts[0];
+                    var step = parseInt(slashParts[1], 10);
+                    var start = min, end = max;
+                    if (range !== '*') {
+                        if (range.indexOf('-') >= 0) {
+                            var dashParts = range.split('-');
+                            start = parseInt(dashParts[0], 10);
+                            end = parseInt(dashParts[1], 10);
+                        } else {
+                            start = parseInt(range, 10);
+                            end = parseInt(range, 10);
+                        }
                     }
-                }
-
-                var start, end;
-                // 在去掉步进后,baseRange 可能是 "*"、"N" 或 "N-M"
-                var rangeInBase = baseRange.match(/^(\d+)-(\d+)$/);
-                if (baseRange === '*') {
-                    start = min; end = max;
-                } else if (rangeInBase) {
-                    start = parseInt(rangeInBase[1], 10);
-                    end = parseInt(rangeInBase[2], 10);
-                    if (isNaN(start) || isNaN(end) || start > end) {
-                        throw new Error('范围非法: ' + part);
+                    for (var s = start; s <= end; s += step) {
+                        if (s >= min && s <= max) result.add(s);
+                    }
+                } else if (part.indexOf('-') >= 0) {
+                    var dashP = part.split('-');
+                    var ds = parseInt(dashP[0], 10);
+                    var de = parseInt(dashP[1], 10);
+                    for (var d = ds; d <= de; d++) {
+                        if (d >= min && d <= max) result.add(d);
                     }
                 } else {
-                    var single = parseInt(baseRange, 10);
-                    if (isNaN(single)) {
-                        throw new Error('非法值: ' + part);
-                    }
-                    start = single;
-                    // N/N 这种语法(N 带步进)语义模糊,这里保守按"从 N 到 max 步进"
-                    end = (stepStr != null) ? max : single;
-                }
-
-                if (start < min || end > max) {
-                    throw new Error('值超出范围 [' + min + '-' + max + ']: ' + part);
-                }
-
-                if (stepStr == null) {
-                    for (var v = start; v <= end; v++) result.add(v);
-                } else {
-                    for (var w = start; w <= end; w += stepStr) result.add(w);
+                    var val = parseInt(part, 10);
+                    if (!isNaN(val) && val >= min && val <= max) result.add(val);
                 }
             }
-            return result;
+            return Array.from(result).sort(function (a, b) { return a - b; });
         }
 
-        // ===== 校验整段 cron =====
-        function validateCron(cronStr) {
-            var s = String(cronStr || '').trim();
-            if (s === '') {
-                return { ok: false, error: '请输入 Cron 表达式' };
-            }
-            // 标准 5 字段;允许中间多余空白
-            var parts = s.split(/\s+/);
-            if (parts.length !== 5) {
-                return {
-                    ok: false,
-                    error: '需要 5 个字段(分 时 日 月 周),当前为 ' + parts.length + ' 个'
-                };
-            }
+        // ===== Validate cron (inlined) =====
+        function validateCron(cron) {
+            var parts = cron.trim().split(/\s+/);
+            if (parts.length !== 5) return { valid: false, error: i18n.invalidCron };
             try {
-                var fields = [];
                 for (var i = 0; i < 5; i++) {
-                    var r = FIELD_RANGES[i];
-                    fields.push(parseField(parts[i], r.min, r.max));
+                    parseField(parts[i], FIELDS[i].min, FIELDS[i].max);
                 }
-                return { ok: true, fields: fields, parts: parts };
+                return { valid: true };
             } catch (e) {
-                return { ok: false, error: '解析失败: ' + e.message };
+                return { valid: false, error: i18n.invalidCron };
             }
         }
 
-        // ===== 计算未来 N 次执行时间 =====
-        function getNextRuns(fields, count) {
-            var minutes  = fields[0];
-            var hours    = fields[1];
-            var days     = fields[2];
-            var months   = fields[3];
-            var weekdays = fields[4];
+        // ===== Describe cron (compact for builder result) =====
+        function describeCron(cron) {
+            var parts = cron.trim().split(/\s+/);
+            var minute = parts[0], hour = parts[1], day = parts[2], month = parts[3], weekday = parts[4];
+
+            if (cron === '* * * * *')  return '{{ T "cron_desc_every_minute" }}';
+            if (cron === '0 * * * *')  return '{{ T "cron_desc_every_hour" }}';
+            if (cron === '0 0 * * *')  return '{{ T "cron_desc_every_day" }}';
+            if (cron === '0 0 * * 0')  return '{{ T "cron_desc_every_week" }}';
+            if (cron === '0 0 1 * *')  return '{{ T "cron_desc_every_month" }}';
+            if (cron === '0 0 1 1 *')  return '{{ T "cron_desc_every_year" }}';
+
+            var segs = [];
+            if (minute === '*') {
+                segs.push('{{ T "cron_desc_every" }}' + '{{ T "cron_desc_minute" }}');
+            } else if (minute.indexOf('/') >= 0) {
+                var stepMin = minute.split('/')[1];
+                segs.push('{{ T "cron_desc_every" }}' + stepMin + '{{ T "cron_desc_minute" }}');
+            } else if (minute.indexOf(',') >= 0) {
+                segs.push('{{ T "cron_desc_at" }}' + minute + '{{ T "cron_desc_minute" }}');
+            } else {
+                segs.push('{{ T "cron_desc_at" }}' + minute + '{{ T "cron_desc_minute" }}');
+            }
+
+            if (hour !== '*') {
+                if (hour.indexOf('/') >= 0) {
+                    var stepH = hour.split('/')[1];
+                    segs.push('{{ T "cron_desc_every" }}' + stepH + '{{ T "cron_desc_hour" }}');
+                } else if (hour.indexOf(',') >= 0 || hour.indexOf('-') >= 0) {
+                    segs.push('{{ T "cron_desc_at_hour" }}' + hour);
+                } else {
+                    segs.push('{{ T "cron_desc_at_hour" }}' + hour);
+                }
+            }
+
+            if (weekday !== '*') {
+                var wds = parseField(weekday, 0, 6);
+                var names = wds.map(function (d) { return i18n.weekday[d]; }).join(', ');
+                segs.push('{{ T "cron_desc_on" }}' + names);
+            }
+            if (month !== '*') {
+                var ms = parseField(month, 1, 12);
+                var mnames = ms.map(function (m) { return i18n.month[m - 1]; }).join(', ');
+                segs.push('{{ T "cron_desc_in_month" }}' + mnames);
+            }
+            if (day !== '*') {
+                segs.push('{{ T "cron_desc_on_day" | default "日期 " }}' + day);
+            }
+            return segs.join(' · ');
+        }
+
+        // ===== Get next runs (inlined) =====
+        function getNextRuns(cron, count) {
+            count = count || 5;
+            var parts = cron.trim().split(/\s+/);
+            var minutes  = parseField(parts[0], 0, 59);
+            var hours    = parseField(parts[1], 0, 23);
+            var days     = parseField(parts[2], 1, 31);
+            var months   = parseField(parts[3], 1, 12);
+            var weekdays = parseField(parts[4], 0, 6);
 
             var runs = [];
-            // 从下一分钟开始扫描
-            var d = new Date();
-            d.setSeconds(0, 0);
-            d.setMinutes(d.getMinutes() + 1);
-
-            // 安全上限:扫描 366 天
-            var safety = 366 * 24 * 60;
-
-            while (runs.length < count && safety-- > 0) {
-                var mon = d.getMonth() + 1;
-                var day = d.getDate();
-                var wd = d.getDay();
-                var hr = d.getHours();
-                var mn = d.getMinutes();
-
-                if (months.has(mon) &&
-                    days.has(day) &&
-                    hours.has(hr) &&
-                    minutes.has(mn) &&
-                    weekdays.has(wd)) {
-                    runs.push(new Date(d));
+            var date = new Date();
+            date.setSeconds(0, 0);
+            date.setMinutes(date.getMinutes() + 1);
+            var guard = 0;
+            while (runs.length < count && guard < 50000) {
+                guard++;
+                var mn = date.getMonth() + 1;
+                var dy = date.getDate();
+                var wd = date.getDay();
+                var hr = date.getHours();
+                var mi = date.getMinutes();
+                if (months.indexOf(mn) >= 0 &&
+                    (weekdays.indexOf(wd) >= 0 || parts[4] === '*') &&
+                    (days.indexOf(dy) >= 0 || parts[2] === '*') &&
+                    hours.indexOf(hr) >= 0 &&
+                    minutes.indexOf(mi) >= 0) {
+                    runs.push(new Date(date));
                 }
-                d.setMinutes(d.getMinutes() + 1);
+                date.setMinutes(date.getMinutes() + 1);
             }
             return runs;
         }
 
-        // ===== 格式化时间 =====
         function formatDate(d) {
-            var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
-            var y = d.getFullYear();
-            var M = pad(d.getMonth() + 1);
-            var D = pad(d.getDate());
-            var h = pad(d.getHours());
-            var m = pad(d.getMinutes());
-            var wd = WEEKDAY_NAMES[d.getDay()];
-            return y + '-' + M + '-' + D + ' ' + h + ':' + m + ' (' + wd + ')';
+            var lang = document.documentElement.lang || 'zh';
+            var opts = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            try { return d.toLocaleString(lang, opts); }
+            catch (e) { return d.toString(); }
         }
 
-        function relativeFromNow(d) {
-            var diff = d.getTime() - Date.now();
-            var sec = Math.floor(diff / 1000);
-            if (sec < 60)  return '即将执行';
-            var min = Math.floor(sec / 60);
-            if (min < 60)  return min + ' 分钟后';
-            var hr = Math.floor(min / 60);
-            if (hr < 24)   return hr + ' 小时 ' + (min % 60) + ' 分后';
-            var day = Math.floor(hr / 24);
-            return day + ' 天 ' + (hr % 24) + ' 小时后';
+        // ===== Build field (NEW) =====
+        // Build a single cron field from current state.
+        function buildField(fieldName) {
+            var f = state[fieldName];
+            var cfg = FIELDS.filter(function (x) { return x.name === fieldName; })[0];
+            if (!cfg) return '*';
+            if (f.mode === 'every') return '*';
+            if (f.mode === 'every_n') {
+                var n = parseInt(f.value, 10);
+                if (isNaN(n) || n < 1) return '*';
+                if (n > cfg.max) return String(cfg.max);
+                return '*/' + n;
+            }
+            if (f.mode === 'specific') {
+                // f.value: comma-separated numbers
+                if (!f.value || !f.value.trim()) return '*';
+                var tokens = f.value.split(',').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 0; });
+                if (tokens.length === 0) return '*';
+                return tokens.join(',');
+            }
+            if (f.mode === 'range') {
+                // f.value: "start-end"
+                if (!f.value || !f.value.trim()) return '*';
+                var dashParts = f.value.split('-');
+                if (dashParts.length !== 2) return '*';
+                var s = parseInt(dashParts[0], 10);
+                var e = parseInt(dashParts[1], 10);
+                if (isNaN(s) || isNaN(e)) return '*';
+                return s + '-' + e;
+            }
+            return '*';
         }
 
-        // ===== 人类可读描述生成 =====
-        function rangeToText(values, type) {
-            var arr = Array.from(values).sort(function (a, b) { return a - b; });
-            if (type === 'weekday') {
-                return arr.map(function (n) { return WEEKDAY_NAMES[n]; }).join('、');
-            }
-            if (type === 'month') {
-                return arr.map(function (n) { return MONTH_NAMES[n - 1]; }).join('、');
-            }
-            return arr.join('、');
+        // ===== Build full cron expression =====
+        function buildCron() {
+            return FIELDS.map(function (f) { return buildField(f.name); }).join(' ');
         }
 
-        function describeCron(parts) {
-            var minute = parts[0];
-            var hour   = parts[1];
-            var day    = parts[2];
-            var month  = parts[3];
-            var weekday = parts[4];
-
-            // 常见组合的快捷描述
-            if (minute === '*' && hour === '*' && day === '*' && month === '*' && weekday === '*') {
-                return '每<strong>分钟</strong>执行一次';
-            }
-            if (minute === '0' && hour === '*' && day === '*' && month === '*' && weekday === '*') {
-                return '每<strong>小时</strong>整点执行';
-            }
-            if (minute === '0' && hour === '0' && day === '*' && month === '*' && weekday === '*') {
-                return '每天<strong>午夜 00:00</strong> 执行';
-            }
-            if (minute === '0' && hour === '0' && day === '*' && month === '*' && weekday === '0') {
-                return '每个<strong>星期日</strong>午夜执行';
-            }
-            if (minute === '0' && hour === '0' && day === '1' && month === '*' && weekday === '*') {
-                return '每月 <strong>1 号</strong> 00:00 执行';
-            }
-            if (minute === '0' && hour === '0' && day === '1' && month === '1' && weekday === '*') {
-                return '每年 <strong>1 月 1 日</strong> 00:00 执行';
-            }
-
-            // 一般性描述
-            var segs = [];
-
-            // 分钟段
-            if (minute === '*') {
-                segs.push('每分钟');
-            } else if (/^\*\/\d+$/.test(minute)) {
-                segs.push('每 ' + minute.split('/')[1] + ' 分钟');
-            } else {
-                segs.push('第 ' + minute + ' 分钟');
-            }
-
-            // 小时段
-            if (hour !== '*') {
-                if (/^\*\/\d+$/.test(hour)) {
-                    segs.push('每 ' + hour.split('/')[1] + ' 小时');
+        // ===== Load from cron (NEW) =====
+        // Parse a cron string and populate state.
+        function loadFromCron(cron) {
+            var v = validateCron(cron);
+            if (!v.valid) return false;
+            var parts = cron.trim().split(/\s+/);
+            for (var i = 0; i < 5; i++) {
+                var f = FIELDS[i];
+                var raw = parts[i];
+                var entry = state[f.name];
+                if (raw === '*') {
+                    entry.mode = 'every';
+                    entry.value = '';
+                } else if (raw.indexOf('/') === 0) {
+                    entry.mode = 'every_n';
+                    entry.value = raw.substring(2);
+                } else if (raw.indexOf(',') >= 0) {
+                    entry.mode = 'specific';
+                    entry.value = raw;
+                } else if (raw.indexOf('-') >= 0) {
+                    entry.mode = 'range';
+                    entry.value = raw;
                 } else {
-                    segs.push(hour + ' 时');
+                    entry.mode = 'specific';
+                    entry.value = raw;
                 }
             }
-
-            // 日期
-            if (day !== '*') {
-                segs.push('日期为 ' + day);
-            }
-
-            // 月份
-            if (month !== '*') {
-                try {
-                    var ms = parseField(month, 1, 12);
-                    segs.push(rangeToText(ms, 'month') + '份');
-                } catch (e) { segs.push(month + ' 月'); }
-            }
-
-            // 星期
-            if (weekday !== '*') {
-                try {
-                    var ws = parseField(weekday, 0, 6);
-                    segs.push(rangeToText(ws, 'weekday'));
-                } catch (e) { segs.push('星期 ' + weekday); }
-            }
-
-            return segs.join(' · ');
+            return true;
         }
 
-        // ===== 渲染 =====
-        function showError(msg) {
-            errorEl.textContent = msg;
-            errorEl.classList.add('is-show');
-            inputEl.classList.add('is-error');
-            inputEl.classList.remove('is-ok');
-            resultEl.classList.remove('is-show');
-            copyBtn.disabled = true;
-        }
-
-        function clearError() {
-            errorEl.classList.remove('is-show');
-            inputEl.classList.remove('is-error');
-        }
-
-        function renderResult(parts) {
-            clearError();
-            inputEl.classList.add('is-ok');
-
-            descEl.innerHTML = describeCron(parts);
-
-            var fields = [];
-            for (var i = 0; i < 5; i++) {
-                var r = FIELD_RANGES[i];
-                fields.push(parseField(parts[i], r.min, r.max));
-            }
-            var runs = getNextRuns(fields, 5);
-            if (runs.length === 0) {
-                nextListEl.innerHTML =
-                    '<li class="ceg-next-item"><span class="ceg-next-time">未来一年无匹配</span></li>';
-            } else {
-                nextListEl.innerHTML = runs.map(function (d, i) {
-                    return '<li class="ceg-next-item">' +
-                        '<span class="ceg-next-idx">' + (i + 1) + '</span>' +
-                        '<span class="ceg-next-time">' + formatDate(d) + '</span>' +
-                        '<span class="ceg-next-rel">' + relativeFromNow(d) + '</span>' +
-                        '</li>';
-                }).join('');
-            }
-
-            resultEl.classList.add('is-show');
-            copyBtn.disabled = false;
-        }
-
-        function parseNow() {
-            var v = inputEl.value;
-            var r = validateCron(v);
-            if (!r.ok) {
-                showError(r.error);
-                return;
-            }
-            renderResult(r.parts);
-        }
-
-        function setCron(c) {
-            inputEl.value = c;
-            parseNow();
-        }
-
-        // ===== 事件绑定 =====
-        parseBtn.addEventListener('click', parseNow);
-
-        inputEl.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                parseNow();
-            }
-        });
-
-        // 输入实时清错(失焦时不自动解析,避免干扰)
-        inputEl.addEventListener('input', function () {
-            clearError();
-        });
-
-        copyBtn.addEventListener('click', function () {
-            var text = inputEl.value.trim();
-            if (!text) return;
-            var done = function () {
-                var orig = copyBtn.textContent;
-                copyBtn.textContent = '已复制 ✓';
-                copyBtn.disabled = true;
-                setTimeout(function () {
-                    copyBtn.textContent = orig;
-                    copyBtn.disabled = false;
-                }, 1500);
-            };
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(done, function () {
-                    fallbackCopy(text); done();
+        // ===== Render UI from state =====
+        function renderFields() {
+            fieldEls.forEach(function (el) {
+                var fieldName = el.getAttribute('data-field');
+                var entry = state[fieldName];
+                // Mode buttons
+                var modes = el.querySelectorAll('.ceg-mode');
+                modes.forEach(function (m) {
+                    if (m.getAttribute('data-mode') === entry.mode) m.classList.add('is-active');
+                    else m.classList.remove('is-active');
                 });
-            } else {
-                fallbackCopy(text); done();
-            }
-        });
-
-        function fallbackCopy(text) {
-            var ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            try { document.execCommand('copy'); } catch (e) {}
-            document.body.removeChild(ta);
-        }
-
-        clearBtn.addEventListener('click', function () {
-            inputEl.value = '';
-            inputEl.classList.remove('is-error', 'is-ok');
-            errorEl.classList.remove('is-show');
-            resultEl.classList.remove('is-show');
-            copyBtn.disabled = true;
-            inputEl.focus();
-        });
-
-        // 预设卡片 + chip 统一处理
-        function bindTrigger(el) {
-            el.addEventListener('click', function () {
-                var c = el.getAttribute('data-cron');
-                if (c) setCron(c);
+                // Input
+                var input = el.querySelector('[data-input="value"]');
+                if (entry.mode === 'every') {
+                    input.value = '';
+                    input.disabled = true;
+                    input.placeholder = '*';
+                } else if (entry.mode === 'every_n') {
+                    input.disabled = false;
+                    input.value = entry.value || '1';
+                    input.placeholder = '1';
+                } else if (entry.mode === 'specific') {
+                    input.disabled = false;
+                    input.value = entry.value || '';
+                    input.placeholder = '0,15,30,45';
+                } else if (entry.mode === 'range') {
+                    input.disabled = false;
+                    input.value = entry.value || '';
+                    input.placeholder = '9-17';
+                }
             });
         }
-        presetCards.forEach(bindTrigger);
-        chips.forEach(bindTrigger);
 
-        // 首次进入页面不自动解析(避免无意义弹错),只设置 placeholder 即可
-        // 如需预填示例,取消下行注释:
-        // setCron('*/5 * * * *');
+        // ===== Render presets =====
+        function renderPresets() {
+            presetsEl.innerHTML = '';
+            PRESETS.forEach(function (cron) {
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'ceg-preset-chip';
+                btn.setAttribute('data-cron', cron);
+                btn.textContent = cron;
+                btn.title = cron;
+                btn.addEventListener('click', function () {
+                    if (loadFromCron(cron)) {
+                        renderFields();
+                        update();
+                    }
+                });
+                presetsEl.appendChild(btn);
+            });
+        }
+
+        // ===== Update result =====
+        function update() {
+            var cron = buildCron();
+            exprEl.textContent = cron;
+
+            var v = validateCron(cron);
+            if (!v.valid) {
+                errorEl.textContent = v.error;
+                errorEl.classList.add('is-show');
+                descEl.textContent = '';
+                nextListEl.innerHTML = '';
+                copyBtn.disabled = true;
+                return;
+            }
+
+            errorEl.classList.remove('is-show');
+            copyBtn.disabled = false;
+
+            // Description
+            descEl.textContent = describeCron(cron);
+
+            // Next 5 runs
+            var runs = getNextRuns(cron, 5);
+            nextListEl.innerHTML = runs.map(function (d) {
+                return '<li>🕐 ' + formatDate(d) + '</li>';
+            }).join('');
+
+            // Day × Weekday OR semantics reminder
+            var dayNotStar = state.day.mode !== 'every';
+            var weekdayNotStar = state.weekday.mode !== 'every';
+            if (dayNotStar && weekdayNotStar) {
+                conflictEl.classList.add('is-show');
+            } else {
+                conflictEl.classList.remove('is-show');
+            }
+        }
+
+        // ===== Wire events =====
+        // Tab switching
+        root.querySelectorAll('.ceg-tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var target = tab.getAttribute('data-panel');
+                activePanel = target;
+                root.querySelectorAll('.ceg-tab').forEach(function (t) { t.classList.toggle('is-active', t === tab); });
+                root.querySelectorAll('.ceg-panel').forEach(function (p) {
+                    p.classList.toggle('is-active', p.id === 'ceg-panel-' + target);
+                });
+            });
+        });
+
+        // Field mode + input
+        fieldEls.forEach(function (el) {
+            var fieldName = el.getAttribute('data-field');
+            el.querySelectorAll('.ceg-mode').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    state[fieldName].mode = btn.getAttribute('data-mode');
+                    renderFields();
+                    update();
+                });
+            });
+            var input = el.querySelector('[data-input="value"]');
+            input.addEventListener('input', function () {
+                state[fieldName].value = input.value;
+                update();
+            });
+        });
+
+        // Advanced input
+        advInput.addEventListener('input', function () {
+            var cron = advInput.value;
+            if (validateCron(cron).valid) {
+                loadFromCron(cron);
+                renderFields();
+                update();
+            } else {
+                errorEl.textContent = i18n.invalidCron;
+                errorEl.classList.add('is-show');
+            }
+        });
+
+        // Copy button
+        copyBtn.addEventListener('click', function () {
+            var cron = exprEl.textContent;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(cron).then(function () {
+                    var original = copyBtn.textContent;
+                    copyBtn.textContent = '{{ T "ceg_btn_copied" }}';
+                    copyBtn.classList.add('is-copied');
+                    setTimeout(function () {
+                        copyBtn.textContent = original;
+                        copyBtn.classList.remove('is-copied');
+                    }, 1500);
+                });
+            } else {
+                // Fallback
+                var ta = document.createElement('textarea');
+                ta.value = cron;
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(ta);
+                copyBtn.textContent = '{{ T "ceg_btn_copied" }}';
+                setTimeout(function () {
+                    copyBtn.textContent = '{{ T "ceg_btn_copy" }}';
+                }, 1500);
+            }
+        });
+
+        // Reset
+        resetBtn.addEventListener('click', function () {
+            FIELDS.forEach(function (f) { state[f.name] = { mode: 'every', value: '' }; });
+            advInput.value = '';
+            renderFields();
+            update();
+        });
+
+        // ===== Init =====
+        renderPresets();
+        renderFields();
+        // Load default from advanced input
+        if (advInput && advInput.value && validateCron(advInput.value).valid) {
+            loadFromCron(advInput.value);
+            renderFields();
+        }
+        update();
     })();
     </script>
 </div>

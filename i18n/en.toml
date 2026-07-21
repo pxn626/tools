@@ -635,6 +635,73 @@ other = "Nov"
 [cron_dec]
 other = "Dec"
 
+# Cron Expression Generator Tool
+[ceg_title]
+other = "Cron Expression Generator"
+
+[ceg_desc]
+other = "Visually build a standard 5-field cron expression (min hour day month weekday), with 4 modes (every / every-N / specific / range), quick presets, and one-click copy."
+
+[ceg_tab_builder]
+other = "Builder"
+
+[ceg_tab_advanced]
+other = "Advanced"
+
+[ceg_mode_every]
+other = "Every"
+
+[ceg_mode_every_n]
+other = "Every N"
+
+[ceg_mode_specific]
+other = "Specific"
+
+[ceg_mode_range]
+other = "Range"
+
+[ceg_presets_title]
+other = "Quick Presets (click to fill)"
+
+[ceg_result_expression]
+other = "Cron Expression"
+
+[ceg_btn_copy]
+other = "Copy"
+
+[ceg_btn_copied]
+other = "Copied ✓"
+
+[ceg_advanced_hint]
+other = "Type a 5-field expression here (min hour day month weekday). Edits sync back to the builder view."
+
+[ceg_conflict_hint]
+other = "Note: when both day-of-month and day-of-week are specified, most cron engines use OR semantics (trigger if either matches)."
+
+[ceg_msg_invalid_input]
+other = "Invalid input. Please check field ranges and format."
+
+[ceg_msg_copied]
+other = "Copied to clipboard"
+
+[ceg_field_minute_hint]
+other = "0–59 minutes"
+
+[ceg_field_hour_hint]
+other = "0–23 hours"
+
+[ceg_field_day_hint]
+other = "1–31 day of month"
+
+[ceg_field_month_hint]
+other = "1–12 month"
+
+[ceg_field_weekday_hint]
+other = "0–6 (0 = Sunday)"
+
+[ceg_reset]
+other = "Reset"
+
 # Regex Tester Tool
 [regex_title]
 other = "Regex Tester & Explainer"

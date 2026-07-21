@@ -1079,6 +1079,74 @@ other = "11月"
 
 [cron_dec]
 other = "12月"
+
+# Cron Expression Generator Tool
+[ceg_title]
+other = "Cron 表达式生成器"
+
+[ceg_desc]
+other = "可视化构建标准 5 字段 Cron 表达式(分 时 日 月 周),支持 4 种模式(每/每N/指定/范围)、常用预设、一键复制。"
+
+[ceg_tab_builder]
+other = "可视化构建"
+
+[ceg_tab_advanced]
+other = "高级模式"
+
+[ceg_mode_every]
+other = "每"
+
+[ceg_mode_every_n]
+other = "每 N"
+
+[ceg_mode_specific]
+other = "指定"
+
+[ceg_mode_range]
+other = "范围"
+
+[ceg_presets_title]
+other = "常用预设(点击填充)"
+
+[ceg_result_expression]
+other = "Cron 表达式"
+
+[ceg_btn_copy]
+other = "复制"
+
+[ceg_btn_copied]
+other = "已复制 ✓"
+
+[ceg_advanced_hint]
+other = "在此直接输入 5 字段表达式(分 时 日 月 周),修改会同步到可视化构建模式。"
+
+[ceg_conflict_hint]
+other = "提示:同时指定「日期」和「星期」时,大多数 cron 引擎按 OR 语义处理(满足任一即触发),请确认是否符合预期。"
+
+[ceg_msg_invalid_input]
+other = "输入无效,请检查各字段取值范围与格式。"
+
+[ceg_msg_copied]
+other = "已复制到剪贴板"
+
+[ceg_field_minute_hint]
+other = "0-59 分钟"
+
+[ceg_field_hour_hint]
+other = "0-23 小时"
+
+[ceg_field_day_hint]
+other = "1-31 日"
+
+[ceg_field_month_hint]
+other = "1-12 月"
+
+[ceg_field_weekday_hint]
+other = "0-6(0 = 周日)"
+
+[ceg_reset]
+other = "重置"
+
 # Regex Tester Tool
 [regex_title]
 other = "正则表达式测试器"
