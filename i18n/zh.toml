@@ -1930,3 +1930,154 @@ other = "下载"
 
 [pms_mobile_banner]
 other = "超过 50 MB 的文件建议在桌面端处理。"
+
+# UUID v7 Generator Tool (A11)
+[uv7_title]
+other = "UUID v7 生成器"
+
+[uv7_version_pill]
+other = "RFC 9562"
+
+[uv7_intro]
+other = "在浏览器中生成符合 RFC 9562、可按时间排序的 UUID v7。支持批量、解码、导出——纯前端,从不上传。"
+
+[uv7_controls_legend]
+other = "生成选项"
+
+[uv7_count_label]
+other = "数量"
+
+[uv7_ts_offset_label]
+other = "时间戳"
+
+[uv7_ts_now]
+other = "当前(实时)"
+
+[uv7_ts_epoch]
+other = "Unix 起点(1970-01-01)"
+
+[uv7_ts_custom]
+other = "自定义毫秒"
+
+[uv7_ts_custom_label]
+other = "Unix 毫秒(≥ 0)"
+
+[uv7_format_label]
+other = "格式"
+
+[uv7_fmt_hyphen]
+other = "带连字符(标准)"
+
+[uv7_fmt_nohyphen]
+other = "无连字符(32 个十六进制)"
+
+[uv7_fmt_urn]
+other = "URN 形式(urn:uuid:…)"
+
+[uv7_fmt_braces]
+other = "花括号({…})"
+
+[uv7_uppercase]
+other = "大写"
+
+[uv7_monotonic]
+other = "单调递增(RFC 9562 §6.2)"
+
+[uv7_btn_generate]
+other = "生成 UUID v7"
+
+[uv7_output_label]
+other = "已生成的 UUID v7 值"
+
+[uv7_output_placeholder]
+other = "点击「生成」以产生 UUID v7 值。"
+
+[uv7_btn_copy_all]
+other = "全部复制"
+
+[uv7_btn_copy_selected]
+other = "复制选中"
+
+[uv7_btn_export]
+other = "导出为…"
+
+[uv7_btn_export_go]
+other = "下载"
+
+[uv7_decoder_toggle]
+other = "解码 UUID v7(提取时间戳)"
+
+[uv7_decoder_placeholder]
+other = "粘贴一个 UUID v7 进行解码…"
+
+[uv7_btn_decode]
+other = "解码"
+
+[uv7_history_toggle]
+other = "历史记录(仅本浏览器,最近 10 次生成)"
+
+[uv7_history_note]
+other = "存储在 localStorage,从不上传。点击 [Copy] 可复制单条记录。"
+
+[uv7_err_no_crypto]
+other = "本浏览器缺少 crypto.getRandomValues,无法安全生成 UUID。"
+
+[uv7_err_no_input]
+other = "无可复制内容——请先生成一些 UUID。"
+
+[uv7_err_invalid_uuid]
+other = "不是合法的 UUID v7 字符串。"
+
+[uv7_err_invalid_ts]
+other = "自定义时间戳必须是非负整数(Unix 毫秒)。"
+
+[uv7_err_invalid_count]
+other = "数量必须是 1 到 1000 之间的整数。"
+
+[uv7_err_copy_failed]
+other = "复制失败,请手动选择并复制。"
+
+[uv7_msg_generated]
+other = "已生成 {n} 个 UUID v7。"
+
+[uv7_msg_copied_all]
+other = "全部 UUID 已复制到剪贴板。"
+
+[uv7_msg_copied_one]
+other = "UUID 已复制到剪贴板。"
+
+[uv7_msg_no_selection]
+other = "未选中文本——已改为复制第一行。"
+
+[uv7_msg_exported]
+other = "下载已开始。"
+
+[uv7_msg_no_export_data]
+other = "请先生成 UUID,然后再导出。"
+
+[uv7_msg_decoded]
+other = "UUID v7 解码成功。"
+
+[uv7_btn_copy]
+other = "复制"
+
+[uv7_dec_raw]
+other = "原文"
+
+[uv7_dec_timestamp]
+other = "Unix 毫秒"
+
+[uv7_dec_iso]
+other = "ISO 8601"
+
+[uv7_dec_version]
+other = "版本"
+
+[uv7_dec_variant]
+other = "变体"
+
+[uv7_dec_rand_a]
+other = "rand_a(12 位)"
+
+[uv7_dec_rand_b]
+other = "rand_b(62 位)"

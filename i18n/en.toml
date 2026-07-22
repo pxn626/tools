@@ -1486,3 +1486,154 @@ other = "Download"
 
 [pms_mobile_banner]
 other = "Best on desktop for files over 50 MB."
+
+# UUID v7 Generator Tool (A11)
+[uv7_title]
+other = "UUID v7 Generator"
+
+[uv7_version_pill]
+other = "RFC 9562"
+
+[uv7_intro]
+other = "Generate RFC 9562 time-ordered, K-sortable UUID v7 values in your browser. Bulk, decoder, export — 100% client-side, never uploaded."
+
+[uv7_controls_legend]
+other = "Generation options"
+
+[uv7_count_label]
+other = "Count"
+
+[uv7_ts_offset_label]
+other = "Timestamp"
+
+[uv7_ts_now]
+other = "Now (live)"
+
+[uv7_ts_epoch]
+other = "Epoch (1970-01-01)"
+
+[uv7_ts_custom]
+other = "Custom ms"
+
+[uv7_ts_custom_label]
+other = "Unix ms (≥ 0)"
+
+[uv7_format_label]
+other = "Format"
+
+[uv7_fmt_hyphen]
+other = "Hyphenated (canonical)"
+
+[uv7_fmt_nohyphen]
+other = "No hyphens (32 hex)"
+
+[uv7_fmt_urn]
+other = "URN form (urn:uuid:…)"
+
+[uv7_fmt_braces]
+other = "Braces ({…})"
+
+[uv7_uppercase]
+other = "Uppercase"
+
+[uv7_monotonic]
+other = "Monotonic (RFC 9562 §6.2)"
+
+[uv7_btn_generate]
+other = "Generate UUID v7"
+
+[uv7_output_label]
+other = "Generated UUID v7 values"
+
+[uv7_output_placeholder]
+other = "Click Generate to produce UUID v7 values."
+
+[uv7_btn_copy_all]
+other = "Copy all"
+
+[uv7_btn_copy_selected]
+other = "Copy selection"
+
+[uv7_btn_export]
+other = "Export as…"
+
+[uv7_btn_export_go]
+other = "Download"
+
+[uv7_decoder_toggle]
+other = "Decode a UUID v7 (extract timestamp)"
+
+[uv7_decoder_placeholder]
+other = "Paste a UUID v7 to decode…"
+
+[uv7_btn_decode]
+other = "Decode"
+
+[uv7_history_toggle]
+other = "History (this browser only, last 10 generations)"
+
+[uv7_history_note]
+other = "Stored in localStorage; never uploaded. Click [Copy] to grab an entry."
+
+[uv7_err_no_crypto]
+other = "This browser lacks crypto.getRandomValues — UUIDs cannot be generated safely."
+
+[uv7_err_no_input]
+other = "Nothing to copy — generate some UUIDs first."
+
+[uv7_err_invalid_uuid]
+other = "Not a valid UUID v7 string."
+
+[uv7_err_invalid_ts]
+other = "Custom timestamp must be a non-negative integer (Unix milliseconds)."
+
+[uv7_err_invalid_count]
+other = "Count must be an integer between 1 and 1000."
+
+[uv7_err_copy_failed]
+other = "Copy failed — please select and copy manually."
+
+[uv7_msg_generated]
+other = "Generated {n} UUID v7 value(s)."
+
+[uv7_msg_copied_all]
+other = "All UUIDs copied to clipboard."
+
+[uv7_msg_copied_one]
+other = "UUID copied to clipboard."
+
+[uv7_msg_no_selection]
+other = "No text selected — copied the first line instead."
+
+[uv7_msg_exported]
+other = "Download started."
+
+[uv7_msg_no_export_data]
+other = "Generate UUIDs first, then export."
+
+[uv7_msg_decoded]
+other = "UUID v7 decoded successfully."
+
+[uv7_btn_copy]
+other = "Copy"
+
+[uv7_dec_raw]
+other = "Raw"
+
+[uv7_dec_timestamp]
+other = "Unix ms"
+
+[uv7_dec_iso]
+other = "ISO 8601"
+
+[uv7_dec_version]
+other = "Version"
+
+[uv7_dec_variant]
+other = "Variant"
+
+[uv7_dec_rand_a]
+other = "rand_a (12-bit)"
+
+[uv7_dec_rand_b]
+other = "rand_b (62-bit)"

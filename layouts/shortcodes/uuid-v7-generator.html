@@ -1,0 +1,1027 @@
+<!-- ============================================================
+ * UUID v7 Generator — RFC 9562 time-ordered UUID generator
+ * CSS prefix: uv7-* (tool-specific, 3-letter convention)
+ * Shared wrapper: .pdf-tool-shell (matches A10+ pattern)
+ * Theme: light + [data-theme="dark"]
+ * Variables: --uv7-primary, --uv7-bg, --uv7-border, --uv7-text, --uv7-muted
+ * Algorithm: RFC 9562 §5.7 — 48-bit unix_ts_ms | 4-bit ver=7 | 12-bit rand_a | 2-bit var=10 | 62-bit rand_b
+ * RNG: crypto.getRandomValues (CSPRNG only — Math.random never used in generation)
+ * Zero CDN, zero /static/lib/ dependency, 100% inline JS.
+ * ============================================================ -->
+{{ $id := .Get "id" | default "uv7" }}
+
+<div class="pdf-tool-shell uv7-tool" id="{{ $id }}-tool">
+    <style>
+        .uv7-tool {
+            --uv7-primary: #2563eb;
+            --uv7-primary-hover: #1d4ed8;
+            --uv7-accent: #7c3aed;
+            --uv7-bg: #f8fafc;
+            --uv7-card-bg: #ffffff;
+            --uv7-text: #1e293b;
+            --uv7-muted: #64748b;
+            --uv7-border: #e2e8f0;
+            --uv7-radius: 12px;
+            --uv7-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --uv7-success: #10b981;
+            --uv7-warning: #f59e0b;
+            --uv7-danger: #ef4444;
+            --uv7-mono-bg: #f1f5f9;
+            --uv7-soft-primary: rgba(37, 99, 235, 0.08);
+            --uv7-soft-accent: rgba(124, 58, 237, 0.08);
+        }
+
+        [data-theme="dark"] .uv7-tool {
+            --uv7-bg: #0f172a;
+            --uv7-card-bg: #1e293b;
+            --uv7-text: #e2e8f0;
+            --uv7-muted: #94a3b8;
+            --uv7-border: #334155;
+            --uv7-mono-bg: #1e293b;
+            --uv7-soft-primary: rgba(96, 165, 250, 0.12);
+            --uv7-soft-accent: rgba(167, 139, 250, 0.14);
+        }
+
+        .uv7-tool * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .uv7-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--uv7-bg);
+            color: var(--uv7-text);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .uv7-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--uv7-card-bg);
+            border-radius: var(--uv7-radius);
+            box-shadow: var(--uv7-shadow);
+        }
+
+        /* Header */
+        .uv7-header { margin-bottom: 16px; }
+        .uv7-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--uv7-text);
+            margin-bottom: 6px;
+        }
+        .uv7-header h2 .uv7-version-pill {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--uv7-soft-accent);
+            color: var(--uv7-accent);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
+        }
+        .uv7-intro {
+            font-size: 14px;
+            color: var(--uv7-muted);
+        }
+
+        /* Controls */
+        .uv7-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: var(--uv7-bg);
+            border: 1px solid var(--uv7-border);
+            border-radius: 8px;
+        }
+        .uv7-control {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .uv7-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--uv7-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .uv7-input,
+        .uv7-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--uv7-border);
+            border-radius: 8px;
+            background: var(--uv7-card-bg);
+            color: var(--uv7-text);
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 14px;
+            transition: border-color 0.15s;
+        }
+        .uv7-input:focus,
+        .uv7-select:focus {
+            outline: none;
+            border-color: var(--uv7-primary);
+        }
+        .uv7-input.is-error,
+        .uv7-select.is-error { border-color: var(--uv7-danger); }
+
+        .uv7-checkrow {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            grid-column: 1 / -1;
+        }
+        .uv7-checkrow label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--uv7-text);
+            cursor: pointer;
+        }
+        .uv7-checkrow input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--uv7-primary);
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .uv7-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+        .uv7-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .uv7-btn-primary {
+            background: var(--uv7-primary);
+            color: white;
+        }
+        .uv7-btn-primary:hover:not(:disabled) {
+            background: var(--uv7-primary-hover);
+        }
+        .uv7-btn-secondary {
+            background: transparent;
+            color: var(--uv7-text);
+            border: 1px solid var(--uv7-border);
+        }
+        .uv7-btn-secondary:hover:not(:disabled) {
+            border-color: var(--uv7-primary);
+            color: var(--uv7-primary);
+        }
+        .uv7-btn-accent {
+            background: var(--uv7-accent);
+            color: white;
+        }
+        .uv7-btn-accent:hover:not(:disabled) {
+            filter: brightness(1.05);
+        }
+
+        .uv7-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        .uv7-cta-row .uv7-btn { flex: 1 1 auto; min-width: 160px; }
+        .uv7-cta-row .uv7-btn-primary {
+            flex: 1 1 220px;
+            font-size: 15px;
+            padding: 12px 20px;
+        }
+
+        /* Output */
+        .uv7-output-section { margin-bottom: 16px; }
+        .uv7-output {
+            width: 100%;
+            min-height: 220px;
+            padding: 14px;
+            border: 1px solid var(--uv7-border);
+            border-radius: 8px;
+            background: var(--uv7-mono-bg);
+            color: var(--uv7-text);
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            resize: vertical;
+            white-space: pre;
+            overflow: auto;
+            word-break: break-all;
+        }
+        .uv7-output:focus { outline: none; border-color: var(--uv7-primary); }
+        .uv7-output-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        /* Decoder */
+        .uv7-decoder,
+        .uv7-history {
+            margin-bottom: 12px;
+            border: 1px solid var(--uv7-border);
+            border-radius: 8px;
+            background: var(--uv7-bg);
+        }
+        .uv7-decoder > summary,
+        .uv7-history > summary {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--uv7-text);
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .uv7-decoder > summary::-webkit-details-marker,
+        .uv7-history > summary::-webkit-details-marker { display: none; }
+        .uv7-decoder > summary::before,
+        .uv7-history > summary::before {
+            content: '▸';
+            display: inline-block;
+            transition: transform 0.15s;
+            color: var(--uv7-muted);
+        }
+        .uv7-decoder[open] > summary::before,
+        .uv7-history[open] > summary::before {
+            transform: rotate(90deg);
+        }
+        .uv7-decoder-body,
+        .uv7-history-body {
+            padding: 12px 14px 14px;
+            border-top: 1px solid var(--uv7-border);
+        }
+        .uv7-decode-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .uv7-decode-row .uv7-input { flex: 1 1 280px; }
+        .uv7-decode-output {
+            padding: 10px 12px;
+            background: var(--uv7-card-bg);
+            border: 1px solid var(--uv7-border);
+            border-radius: 8px;
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 13px;
+            color: var(--uv7-text);
+            min-height: 1.4em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .uv7-decode-output.is-error {
+            border-color: var(--uv7-danger);
+            color: var(--uv7-danger);
+            background: rgba(239, 68, 68, 0.06);
+        }
+        .uv7-decode-output .uv7-decode-k { color: var(--uv7-muted); }
+        .uv7-decode-output .uv7-decode-v { color: var(--uv7-primary); font-weight: 600; }
+
+        /* History */
+        .uv7-history-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .uv7-history-list:empty { display: none; }
+        .uv7-history-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--uv7-border);
+            font-family: "Consolas", "Monaco", "Courier New", monospace;
+            font-size: 12px;
+        }
+        .uv7-history-item:last-child { border-bottom: none; }
+        .uv7-history-uuid {
+            flex: 1;
+            color: var(--uv7-text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .uv7-history-ts {
+            color: var(--uv7-muted);
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .uv7-history-icon {
+            background: transparent;
+            border: 1px solid var(--uv7-border);
+            color: var(--uv7-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .uv7-history-icon:hover {
+            color: var(--uv7-primary);
+            border-color: var(--uv7-primary);
+        }
+        .uv7-history-note {
+            display: block;
+            padding-top: 8px;
+            font-size: 11px;
+            color: var(--uv7-muted);
+        }
+
+        /* Status */
+        .uv7-status {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            min-height: 1em;
+            display: none;
+        }
+        .uv7-status.is-visible { display: block; }
+        .uv7-status.is-ok {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--uv7-success);
+            border: 1px solid var(--uv7-success);
+        }
+        .uv7-status.is-err {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--uv7-danger);
+            border: 1px solid var(--uv7-danger);
+        }
+        .uv7-status.is-warn {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--uv7-warning);
+            border: 1px solid var(--uv7-warning);
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+            .uv7-container { padding: 16px; }
+            .uv7-controls {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .uv7-cta-row .uv7-btn { flex: 1 1 100%; }
+            .uv7-header h2 { font-size: 1.1rem; }
+        }
+
+        /* Visually hidden (a11y) */
+        .uv7-sr {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+    <div class="uv7-container">
+        <header class="uv7-header">
+            <h2>{{ i18n "uv7_title" }}<span class="uv7-version-pill">{{ i18n "uv7_version_pill" }}</span></h2>
+            <p class="uv7-intro">{{ i18n "uv7_intro" }}</p>
+        </header>
+
+        <fieldset class="uv7-controls">
+            <legend class="uv7-sr">{{ i18n "uv7_controls_legend" }}</legend>
+
+            <div class="uv7-control">
+                <label class="uv7-label" for="{{ $id }}-count">{{ i18n "uv7_count_label" }}</label>
+                <input type="number" class="uv7-input" id="{{ $id }}-count" min="1" max="1000" value="10" />
+            </div>
+
+            <div class="uv7-control">
+                <label class="uv7-label" for="{{ $id }}-ts-offset">{{ i18n "uv7_ts_offset_label" }}</label>
+                <select class="uv7-select" id="{{ $id }}-ts-offset">
+                    <option value="now">{{ i18n "uv7_ts_now" }}</option>
+                    <option value="epoch">{{ i18n "uv7_ts_epoch" }}</option>
+                    <option value="custom">{{ i18n "uv7_ts_custom" }}</option>
+                </select>
+            </div>
+
+            <div class="uv7-control">
+                <label class="uv7-label" for="{{ $id }}-ts-custom" id="{{ $id }}-ts-custom-label">{{ i18n "uv7_ts_custom_label" }}</label>
+                <input type="number" class="uv7-input" id="{{ $id }}-ts-custom" min="0" placeholder="1718390400000" disabled />
+            </div>
+
+            <div class="uv7-control">
+                <label class="uv7-label" for="{{ $id }}-format">{{ i18n "uv7_format_label" }}</label>
+                <select class="uv7-select" id="{{ $id }}-format">
+                    <option value="hyphenated">{{ i18n "uv7_fmt_hyphen" }}</option>
+                    <option value="noHyphen">{{ i18n "uv7_fmt_nohyphen" }}</option>
+                    <option value="urn">{{ i18n "uv7_fmt_urn" }}</option>
+                    <option value="braces">{{ i18n "uv7_fmt_braces" }}</option>
+                </select>
+            </div>
+
+            <div class="uv7-checkrow">
+                <label><input type="checkbox" id="{{ $id }}-uppercase" /> {{ i18n "uv7_uppercase" }}</label>
+                <label><input type="checkbox" id="{{ $id }}-monotonic" /> {{ i18n "uv7_monotonic" }}</label>
+            </div>
+        </fieldset>
+
+        <div class="uv7-cta-row">
+            <button class="uv7-btn uv7-btn-primary" id="{{ $id }}-generate" type="button">
+                {{ i18n "uv7_btn_generate" }}
+            </button>
+        </div>
+
+        <section class="uv7-output-section">
+            <label class="uv7-sr" for="{{ $id }}-output">{{ i18n "uv7_output_label" }}</label>
+            <textarea class="uv7-output" id="{{ $id }}-output" readonly rows="10" placeholder="{{ i18n "uv7_output_placeholder" }}"></textarea>
+            <div class="uv7-output-actions">
+                <button class="uv7-btn uv7-btn-secondary" id="{{ $id }}-copy-all" type="button">{{ i18n "uv7_btn_copy_all" }}</button>
+                <button class="uv7-btn uv7-btn-secondary" id="{{ $id }}-copy-line" type="button">{{ i18n "uv7_btn_copy_selected" }}</button>
+                <select class="uv7-select" id="{{ $id }}-export" style="max-width: 180px;">
+                    <option value="">{{ i18n "uv7_btn_export" }}</option>
+                    <option value="txt">TXT</option>
+                    <option value="csv">CSV</option>
+                    <option value="json">JSON</option>
+                </select>
+                <button class="uv7-btn uv7-btn-secondary" id="{{ $id }}-export-btn" type="button" disabled>{{ i18n "uv7_btn_export_go" }}</button>
+            </div>
+        </section>
+
+        <details class="uv7-decoder">
+            <summary>{{ i18n "uv7_decoder_toggle" }}</summary>
+            <div class="uv7-decoder-body">
+                <div class="uv7-decode-row">
+                    <input type="text" class="uv7-input" id="{{ $id }}-decode-input" placeholder="{{ i18n "uv7_decoder_placeholder" }}" autocomplete="off" spellcheck="false" />
+                    <button class="uv7-btn uv7-btn-secondary" id="{{ $id }}-decode-btn" type="button">{{ i18n "uv7_btn_decode" }}</button>
+                </div>
+                <pre class="uv7-decode-output" id="{{ $id }}-decode-result" aria-live="polite"></pre>
+            </div>
+        </details>
+
+        <details class="uv7-history">
+            <summary>{{ i18n "uv7_history_toggle" }}</summary>
+            <div class="uv7-history-body">
+                <ol class="uv7-history-list" id="{{ $id }}-history"></ol>
+                <small class="uv7-history-note">{{ i18n "uv7_history_note" }}</small>
+            </div>
+        </details>
+
+        <div class="uv7-status" id="{{ $id }}-status" role="status" aria-live="polite"></div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ===== i18n strings (snapshotted via Hugo at build) =====
+        var L = {
+            // Errors
+            errNoCrypto:   '{{ i18n "uv7_err_no_crypto" }}',
+            errNoInput:    '{{ i18n "uv7_err_no_input" }}',
+            errInvalidUUID:'{{ i18n "uv7_err_invalid_uuid" }}',
+            errInvalidTs:  '{{ i18n "uv7_err_invalid_ts" }}',
+            errInvalidCount:'{{ i18n "uv7_err_invalid_count" }}',
+            errCopyFailed: '{{ i18n "uv7_err_copy_failed" }}',
+            // Status
+            generated:     '{{ i18n "uv7_msg_generated" }}',
+            copiedAll:     '{{ i18n "uv7_msg_copied_all" }}',
+            copiedOne:     '{{ i18n "uv7_msg_copied_one" }}',
+            noSelection:   '{{ i18n "uv7_msg_no_selection" }}',
+            exported:      '{{ i18n "uv7_msg_exported" }}',
+            noExportData:  '{{ i18n "uv7_msg_no_export_data" }}',
+            decoded:       '{{ i18n "uv7_msg_decoded" }}',
+            // Button labels
+            copy:          '{{ i18n "uv7_btn_copy" }}',
+            // Decoded field labels
+            decRaw:        '{{ i18n "uv7_dec_raw" }}',
+            decTimestamp:  '{{ i18n "uv7_dec_timestamp" }}',
+            decIso:        '{{ i18n "uv7_dec_iso" }}',
+            decVersion:    '{{ i18n "uv7_dec_version" }}',
+            decVariant:    '{{ i18n "uv7_dec_variant" }}',
+            decRandA:      '{{ i18n "uv7_dec_rand_a" }}',
+            decRandB:      '{{ i18n "uv7_dec_rand_b" }}'
+        };
+
+        // ===== Constants =====
+        var MAX_COUNT = 1000;
+        var HISTORY_MAX = 10;
+        var HISTORY_KEY = 'uv7-history-v1';
+        var TS_48_MAX = 0xFFFFFFFFFFFF; // 2^48 - 1
+
+        // ===== Algorithm — RFC 9562 §5.7 =====
+        /**
+         * Generate one UUID v7 string (canonical hyphenated lowercase).
+         * Optional timestampMs overrides Date.now() (for testing past/future IDs).
+         * Uses crypto.getRandomValues (CSPRNG) — Math.random is NEVER used here.
+         */
+        function generateUUIDv7(timestampMs) {
+            var ts;
+            if (typeof timestampMs === 'number' && Number.isFinite(timestampMs)) {
+                ts = Math.max(0, Math.min(timestampMs, TS_48_MAX));
+            } else {
+                ts = Date.now();
+            }
+            var bytes = new Uint8Array(16);
+            if (typeof crypto === 'undefined' || !crypto.getRandomValues) {
+                throw new Error(L.errNoCrypto);
+            }
+            crypto.getRandomValues(bytes);
+
+            // 48-bit unix_ts_ms (big-endian)
+            bytes[0] = Math.floor(ts / 0x10000000000) & 0xff;
+            bytes[1] = Math.floor(ts / 0x100000000) & 0xff;
+            bytes[2] = Math.floor(ts / 0x1000000) & 0xff;
+            bytes[3] = Math.floor(ts / 0x10000) & 0xff;
+            bytes[4] = Math.floor(ts / 0x100) & 0xff;
+            bytes[5] = ts & 0xff;
+
+            // Version 7 in high 4 bits of byte 6
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            // Variant 10 in high 2 bits of byte 8
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+            var h = [];
+            for (var i = 0; i < 16; i++) {
+                h.push(bytes[i].toString(16).padStart(2, '0'));
+            }
+            return h[0]+h[1]+h[2]+h[3] + '-' +
+                   h[4]+h[5] + '-' +
+                   h[6]+h[7] + '-' +
+                   h[8]+h[9] + '-' +
+                   h[10]+h[11]+h[12]+h[13]+h[14]+h[15];
+        }
+
+        function isUUIDv7(s) {
+            if (typeof s !== 'string') return false;
+            if (s.length !== 36) return false;
+            return /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+        }
+
+        function decodeUUIDv7(s) {
+            if (!isUUIDv7(s)) throw new Error(L.errInvalidUUID);
+            var hex = s.replace(/-/g, '').toLowerCase();
+            var ts = parseInt(hex.slice(0, 12), 16);
+            var variantNibble = parseInt(hex[16], 16);
+            return {
+                raw: s,
+                timestampMs: ts,
+                iso: new Date(ts).toISOString(),
+                version: 7,
+                variant: (variantNibble & 0x8) ? 'RFC 4122 / RFC 9562' : 'reserved',
+                random_a: hex.slice(14, 17),
+                random_b: hex.slice(18, 32)
+            };
+        }
+
+        function applyFormat(u, fmt, upper) {
+            var out = u;
+            switch (fmt) {
+                case 'noHyphen': out = u.replace(/-/g, ''); break;
+                case 'urn':      out = 'urn:uuid:' + u; break;
+                case 'braces':   out = '{' + u + '}'; break;
+                case 'hyphenated':
+                default:         out = u; break;
+            }
+            return upper ? out.toUpperCase() : out;
+        }
+
+        // Bulk generation with optional monotonic counter (RFC 9562 §6.2 — optional)
+        function generateBulk(count, baseTs, useMonotonic) {
+            var arr = [];
+            if (!useMonotonic) {
+                for (var i = 0; i < count; i++) {
+                    arr.push(generateUUIDv7(baseTs === null ? undefined : baseTs));
+                }
+                return arr;
+            }
+            // Monotonic: within same ms, increment rand_a (12-bit) to keep order strict.
+            // Reset on ts change.
+            var lastTs = null;
+            var seq = 0;
+            for (var j = 0; j < count; j++) {
+                var ts = (baseTs === null) ? Date.now() : baseTs;
+                var u;
+                if (ts === lastTs) {
+                    seq = (seq + 1) & 0xFFF;
+                    if (seq === 0) {
+                        // 12-bit overflow — bump ts by 1 ms and reset seq
+                        ts = (ts + 1) & TS_48_MAX;
+                        lastTs = ts;
+                        seq = 1;
+                    }
+                    // Reuse generateUUIDv7 with the same ts; rand bits are CSPRNG,
+                    // but to enforce strict monotonicity we override rand_a.
+                    u = monotonicAt(ts, seq);
+                } else {
+                    lastTs = ts;
+                    seq = 0; // first call within this ms is "sequence 0" but we still need fresh random_b
+                    u = monotonicAt(ts, seq);
+                }
+                arr.push(u);
+            }
+            return arr;
+        }
+
+        // Internal helper used only by monotonic path; sets rand_a = seq deterministically.
+        function monotonicAt(ts, seq12) {
+            var bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            // Inject timestamp
+            bytes[0] = Math.floor(ts / 0x10000000000) & 0xff;
+            bytes[1] = Math.floor(ts / 0x100000000) & 0xff;
+            bytes[2] = Math.floor(ts / 0x1000000) & 0xff;
+            bytes[3] = Math.floor(ts / 0x10000) & 0xff;
+            bytes[4] = Math.floor(ts / 0x100) & 0xff;
+            bytes[5] = ts & 0xff;
+            // Version 7
+            bytes[6] = (bytes[6] & 0x0f) | 0x70;
+            // Force rand_a (low 4 bits of byte 6 are version — already set; rand_a is byte 7 = 8 bits + high 4 bits of byte 6... actually:
+            // Layout: byte 6 = ver(4) + rand_a_high(4); byte 7 = rand_a_low(8). So 12 bits total = (byte6_low nibble << 8) | byte7.
+            var randAHigh = (seq12 >> 8) & 0x0f;
+            var randALow = seq12 & 0xff;
+            bytes[6] = (bytes[6] & 0xf0) | randAHigh;
+            bytes[7] = randALow;
+            // Variant 10
+            bytes[8] = (bytes[8] & 0x3f) | 0x80;
+            var h = [];
+            for (var i = 0; i < 16; i++) h.push(bytes[i].toString(16).padStart(2, '0'));
+            return h[0]+h[1]+h[2]+h[3] + '-' +
+                   h[4]+h[5] + '-' +
+                   h[6]+h[7] + '-' +
+                   h[8]+h[9] + '-' +
+                   h[10]+h[11]+h[12]+h[13]+h[14]+h[15];
+        }
+
+        // Export serializers
+        function toTXT(arr)  { return arr.join('\n'); }
+        function toJSON(arr) { return JSON.stringify(arr, null, 2); }
+        function toCSV(arr)  { return 'uuid\n' + arr.map(function(u){ return '"' + u + '"'; }).join('\n') + '\n'; }
+
+        function downloadBlob(content, filename, mime) {
+            if (!window.URL || !URL.createObjectURL) return false;
+            var blob = new Blob([content], { type: mime || 'text/plain' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 250);
+            return true;
+        }
+
+        // ===== DOM ready =====
+        function whenReady(cb) {
+            if (document.readyState !== 'loading') cb();
+            else document.addEventListener('DOMContentLoaded', cb);
+        }
+
+        whenReady(function() {
+            var root = document.getElementById('{{ $id }}-tool');
+            if (!root) return;
+
+            var dom = {
+                count:        root.querySelector('#{{ $id }}-count'),
+                tsOffset:     root.querySelector('#{{ $id }}-ts-offset'),
+                tsCustom:     root.querySelector('#{{ $id }}-ts-custom'),
+                tsCustomLabel:root.querySelector('#{{ $id }}-ts-custom-label'),
+                format:       root.querySelector('#{{ $id }}-format'),
+                uppercase:    root.querySelector('#{{ $id }}-uppercase'),
+                monotonic:    root.querySelector('#{{ $id }}-monotonic'),
+                generate:     root.querySelector('#{{ $id }}-generate'),
+                output:       root.querySelector('#{{ $id }}-output'),
+                copyAll:      root.querySelector('#{{ $id }}-copy-all'),
+                copyLine:     root.querySelector('#{{ $id }}-copy-line'),
+                export:       root.querySelector('#{{ $id }}-export'),
+                exportBtn:    root.querySelector('#{{ $id }}-export-btn'),
+                decodeInput:  root.querySelector('#{{ $id }}-decode-input'),
+                decodeBtn:    root.querySelector('#{{ $id }}-decode-btn'),
+                decodeResult: root.querySelector('#{{ $id }}-decode-result'),
+                history:      root.querySelector('#{{ $id }}-history'),
+                status:       root.querySelector('#{{ $id }}-status')
+            };
+
+            // Last raw UUIDs (hyphenated lowercase) for export/selection
+            var state = {
+                lastRaw: []
+            };
+
+            function setStatus(msg, level) {
+                if (!msg) {
+                    dom.status.className = 'uv7-status';
+                    dom.status.textContent = '';
+                    return;
+                }
+                dom.status.className = 'uv7-status is-visible is-' + (level || 'warn');
+                dom.status.textContent = msg;
+            }
+
+            function resolveTimestamp() {
+                var mode = dom.tsOffset.value;
+                if (mode === 'now') return null; // null = live
+                if (mode === 'epoch') return 0;
+                if (mode === 'custom') {
+                    var v = parseInt(dom.tsCustom.value, 10);
+                    if (!Number.isFinite(v) || v < 0) {
+                        throw new Error(L.errInvalidTs);
+                    }
+                    return Math.min(v, TS_48_MAX);
+                }
+                return null;
+            }
+
+            function syncCustomTsEnabled() {
+                var enabled = dom.tsOffset.value === 'custom';
+                dom.tsCustom.disabled = !enabled;
+                dom.tsCustom.classList.toggle('is-error', false);
+                if (enabled) {
+                    dom.tsCustom.focus();
+                }
+            }
+
+            function onGenerate() {
+                try {
+                    var rawCount = parseInt(dom.count.value, 10);
+                    if (!Number.isFinite(rawCount)) {
+                        dom.count.classList.add('is-error');
+                        setStatus(L.errInvalidCount, 'err');
+                        return;
+                    }
+                    var count = Math.max(1, Math.min(MAX_COUNT, rawCount));
+                    dom.count.classList.remove('is-error');
+                    var baseTs = resolveTimestamp();
+                    var fmt = dom.format.value;
+                    var upper = dom.uppercase.checked;
+                    var mono = dom.monotonic.checked;
+                    var rawArr = generateBulk(count, baseTs, mono);
+                    state.lastRaw = rawArr.slice();
+                    var out = rawArr.map(function(u) { return applyFormat(u, fmt, upper); });
+                    dom.output.value = out.join('\n');
+                    dom.exportBtn.disabled = rawArr.length === 0;
+                    pushHistory(rawArr);
+                    setStatus(L.generated.replace('{n}', count), 'ok');
+                } catch (e) {
+                    setStatus(e.message || 'Error', 'err');
+                }
+            }
+
+            async function copyText(txt) {
+                if (!txt) return false;
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(txt);
+                        return true;
+                    }
+                } catch (e) { /* fall through */ }
+                // Fallback: textarea + execCommand
+                try {
+                    var ta = document.createElement('textarea');
+                    ta.value = txt;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    var ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    return ok;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            async function onCopyAll() {
+                var txt = dom.output.value;
+                if (!txt) {
+                    setStatus(L.errNoInput, 'warn');
+                    return;
+                }
+                var ok = await copyText(txt);
+                setStatus(ok ? L.copiedAll : L.errCopyFailed, ok ? 'ok' : 'err');
+            }
+
+            async function onCopySelected() {
+                var txt = dom.output.value;
+                if (!txt) {
+                    setStatus(L.errNoInput, 'warn');
+                    return;
+                }
+                var sel = '';
+                if (window.getSelection) {
+                    var s = window.getSelection();
+                    if (s && s.toString && s.toString().trim()) sel = s.toString();
+                }
+                if (!sel) {
+                    // Fallback: copy the first line (most common intent)
+                    var lines = txt.split('\n');
+                    sel = lines[0] || '';
+                    if (!sel) {
+                        setStatus(L.noSelection, 'warn');
+                        return;
+                    }
+                    var ok = await copyText(sel);
+                    setStatus(ok ? L.copiedOne : L.errCopyFailed, ok ? 'ok' : 'err');
+                } else {
+                    var ok2 = await copyText(sel);
+                    setStatus(ok2 ? L.copiedOne : L.errCopyFailed, ok2 ? 'ok' : 'err');
+                }
+            }
+
+            function onExport() {
+                var fmt = dom.export.value;
+                if (!fmt) return;
+                if (!state.lastRaw.length) {
+                    setStatus(L.noExportData, 'warn');
+                    return;
+                }
+                var displayFmt = dom.format.value;
+                var upper = dom.uppercase.checked;
+                var displayArr = state.lastRaw.map(function(u) {
+                    return applyFormat(u, displayFmt, upper);
+                });
+                var ts = (function() {
+                    var d = new Date();
+                    var p = function(n) { return n < 10 ? '0' + n : '' + n; };
+                    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) +
+                        '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+                })();
+                var baseName = 'uuid-v7_' + ts;
+                var content, filename, mime;
+                if (fmt === 'json') {
+                    content = toJSON(displayArr);
+                    filename = baseName + '.json';
+                    mime = 'application/json';
+                } else if (fmt === 'csv') {
+                    content = toCSV(displayArr);
+                    filename = baseName + '.csv';
+                    mime = 'text/csv';
+                } else {
+                    content = toTXT(displayArr);
+                    filename = baseName + '.txt';
+                    mime = 'text/plain';
+                }
+                var ok = downloadBlob(content, filename, mime);
+                setStatus(ok ? L.exported : L.errCopyFailed, ok ? 'ok' : 'err');
+            }
+
+            function onDecode() {
+                var raw = dom.decodeInput.value.trim();
+                dom.decodeResult.classList.remove('is-error');
+                if (!raw) {
+                    dom.decodeResult.textContent = '';
+                    return;
+                }
+                try {
+                    var dec = decodeUUIDv7(raw);
+                    var humanTs = dec.timestampMs.toLocaleString();
+                    var html = '';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decRaw) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + escapeHtml(dec.raw) + '</span>\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decTimestamp) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + dec.timestampMs + '</span>  (' + escapeHtml(humanTs) + ')\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decIso) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + escapeHtml(dec.iso) + '</span>\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decVersion) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + dec.version + '</span>\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decVariant) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + escapeHtml(dec.variant) + '</span>\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decRandA) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + escapeHtml(dec.random_a) + '</span>\n';
+                    html += '<span class="uv7-decode-k">' + escapeHtml(L.decRandB) + ': </span>';
+                    html += '<span class="uv7-decode-v">' + escapeHtml(dec.random_b) + '</span>';
+                    dom.decodeResult.innerHTML = html;
+                    setStatus(L.decoded, 'ok');
+                } catch (e) {
+                    dom.decodeResult.classList.add('is-error');
+                    dom.decodeResult.textContent = e.message || L.errInvalidUUID;
+                    setStatus(L.errInvalidUUID, 'err');
+                }
+            }
+
+            function escapeHtml(s) {
+                return String(s)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            // ===== History (localStorage) =====
+            function readHistory() {
+                try {
+                    var raw = localStorage.getItem(HISTORY_KEY);
+                    if (!raw) return [];
+                    var arr = JSON.parse(raw);
+                    return Array.isArray(arr) ? arr : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+            function writeHistory(arr) {
+                try {
+                    localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(0, HISTORY_MAX)));
+                } catch (e) {
+                    // private mode / quota exceeded — degrade silently
+                }
+            }
+            function pushHistory(arr) {
+                if (!arr || !arr.length) return;
+                var now = Date.now();
+                var existing = readHistory();
+                // Prepend new entries (newest first), each with timestamp
+                var items = [];
+                for (var i = 0; i < arr.length; i++) {
+                    items.push({ u: arr[i], t: now + i });
+                }
+                var merged = items.concat(existing).slice(0, HISTORY_MAX);
+                writeHistory(merged);
+                renderHistory();
+            }
+            function renderHistory() {
+                var items = readHistory();
+                dom.history.innerHTML = '';
+                if (!items.length) return;
+                items.forEach(function(item, idx) {
+                    var li = document.createElement('li');
+                    li.className = 'uv7-history-item';
+                    var ts = new Date(item.t);
+                    var hh = ts.getHours(), mm = ts.getMinutes(), ss = ts.getSeconds();
+                    var p = function(n) { return n < 10 ? '0' + n : '' + n; };
+                    var hhStr = p(hh) + ':' + p(mm) + ':' + p(ss);
+                    li.innerHTML =
+                        '<span class="uv7-history-uuid">' + escapeHtml(item.u) + '</span>' +
+                        '<span class="uv7-history-ts">' + hhStr + '</span>' +
+                        '<button class="uv7-history-icon" type="button" data-idx="' + idx + '" aria-label="' + escapeAttr(L.copy) + '">' + escapeHtml(L.copy) + '</button>';
+                    dom.history.appendChild(li);
+                });
+            }
+            function escapeAttr(s) { return escapeHtml(s); }
+
+            async function onHistoryClick(e) {
+                var t = e.target;
+                if (!t || !t.classList || !t.classList.contains('uv7-history-icon')) return;
+                var idx = parseInt(t.getAttribute('data-idx'), 10);
+                var items = readHistory();
+                if (!items[idx]) return;
+                var ok = await copyText(items[idx].u);
+                setStatus(ok ? L.copiedOne : L.errCopyFailed, ok ? 'ok' : 'err');
+            }
+
+            function clearHistory() {
+                try { localStorage.removeItem(HISTORY_KEY); } catch (e) {}
+                renderHistory();
+            }
+
+            // ===== Event wiring =====
+            dom.generate.addEventListener('click', onGenerate);
+            dom.copyAll.addEventListener('click', onCopyAll);
+            dom.copyLine.addEventListener('click', onCopySelected);
+            dom.exportBtn.addEventListener('click', onExport);
+            dom.export.addEventListener('change', function() {
+                dom.exportBtn.disabled = !dom.export.value;
+            });
+            dom.decodeBtn.addEventListener('click', onDecode);
+            dom.decodeInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); onDecode(); }
+            });
+            dom.tsOffset.addEventListener('change', syncCustomTsEnabled);
+            dom.count.addEventListener('input', function() { dom.count.classList.remove('is-error'); });
+            dom.history.addEventListener('click', onHistoryClick);
+
+            // Render history on load
+            renderHistory();
+
+            // Expose generator on window for ad-hoc console testing (debug only).
+            window.uv7 = window.uv7 || {};
+            window.uv7.generate = generateUUIDv7;
+            window.uv7.decode = decodeUUIDv7;
+            window.uv7.isValid = isUUIDv7;
+            window.uv7.clearHistory = clearHistory;
+        });
+    })();
+    </script>
+</div>
