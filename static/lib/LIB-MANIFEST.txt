@@ -1,0 +1,14 @@
+# PDF Merge/Split Tool — Vendored Libraries
+# Tool: A10 pdf-merge-split
+# Source: https://unpkg.com/ (downloaded 2026-07-22)
+# License: All MIT
+# Do NOT update these without bumping the tool version and re-testing.
+
+0d3d0bb3498eec99a34e74fea01b8c8442736093b5cd4ab3bae31735d9ce98e4112293760604a3bc157f8f9d0d9e0213  static/lib/fflate.min.js
+c1e300070ae5b40ea3591f030def49a796e593eb59421eee8290ac177270480e7759933dff5e0f8d2e4b009347363008  static/lib/pdf-lib.min.js
+1d967f7ee915fbd1bc8304cd8cdef34031b44a9eccb19cb90c337a55f63705eed5f5dbd0a44a51da31761e5c855148d4  static/lib/sortable.min.js
+
+# Format: <sha384-hash>  <file>  <version>  <license>  <source-url>
+c1e30007...  static/lib/pdf-lib.min.js  1.17.1  MIT  https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js
+0d3d0bb3...  static/lib/fflate.min.js   0.8.2   MIT  https://unpkg.com/fflate@0.8.2/umd/index.js
+1d967f7e...  static/lib/sortable.min.js 1.15.6  MIT  https://unpkg.com/sortablejs@1.15.6/Sortable.min.js

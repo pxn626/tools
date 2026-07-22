@@ -1,0 +1,990 @@
+<!-- ============================================================
+ * PDF Merge/Split Tool — A10
+ * CSS prefix: pms-* (tool-specific)
+ * Shared wrapper: .pdf-tool-shell (for A11+ reuse)
+ * Theme: light + [data-theme="dark"]
+ * Variables: --pms-primary, --pms-bg, --pms-border, --pms-text, --pms-muted
+ * ============================================================
+-->
+{{ $id := .Get "id" | default "pms" }}
+
+<!-- Vendored libraries (self-hosted under /static/lib/) -->
+<script src="/lib/pdf-lib.min.js" defer></script>
+<script src="/lib/fflate.min.js" defer></script>
+<script src="/lib/sortable.min.js" defer></script>
+
+<div class="pdf-tool-shell pms-tool" id="{{ $id }}-tool">
+    <style>
+        .pms-tool {
+            --pms-primary: #dc2626;
+            --pms-primary-hover: #b91c1c;
+            --pms-bg: #f8fafc;
+            --pms-card-bg: #ffffff;
+            --pms-text: #1e293b;
+            --pms-muted: #64748b;
+            --pms-border: #e2e8f0;
+            --pms-radius: 12px;
+            --pms-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --pms-success: #10b981;
+            --pms-warning: #f59e0b;
+            --pms-danger: #ef4444;
+            --pms-mono-bg: #f1f5f9;
+            --pms-accent: rgba(220, 38, 38, 0.08);
+        }
+
+        [data-theme="dark"] .pms-tool {
+            --pms-bg: #0f172a;
+            --pms-card-bg: #1e293b;
+            --pms-text: #e2e8f0;
+            --pms-muted: #94a3b8;
+            --pms-border: #334155;
+            --pms-mono-bg: #1e293b;
+            --pms-accent: rgba(248, 113, 113, 0.15);
+        }
+
+        .pms-tool * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .pms-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--pms-bg);
+            color: var(--pms-text);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .pms-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--pms-card-bg);
+            border-radius: var(--pms-radius);
+            box-shadow: var(--pms-shadow);
+        }
+
+        /* Header */
+        .pms-header { margin-bottom: 16px; }
+        .pms-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--pms-text);
+            margin-bottom: 6px;
+        }
+        .pms-intro {
+            font-size: 14px;
+            color: var(--pms-muted);
+        }
+
+        /* Mobile banner */
+        .pms-mobile-banner {
+            display: none;
+            background: var(--pms-warning);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 768px) {
+            .pms-mobile-banner { display: block; }
+        }
+
+        /* Tabs */
+        .pms-tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid var(--pms-border);
+            margin-bottom: 16px;
+        }
+        .pms-tab {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--pms-muted);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.15s;
+        }
+        .pms-tab[aria-selected="true"] {
+            color: var(--pms-primary);
+            border-bottom-color: var(--pms-primary);
+        }
+        .pms-tab:hover { color: var(--pms-text); }
+
+        /* Drop zone */
+        .pms-dropzone {
+            border: 2px dashed var(--pms-border);
+            border-radius: var(--pms-radius);
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--pms-bg);
+            margin-bottom: 16px;
+        }
+        .pms-dropzone:hover,
+        .pms-dropzone.is-dragover {
+            border-color: var(--pms-primary);
+            background: var(--pms-accent);
+        }
+        .pms-dropzone p {
+            color: var(--pms-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+        .pms-dropzone.is-dragover p {
+            color: var(--pms-primary);
+            font-weight: 600;
+        }
+        .pms-file-input { display: none; }
+
+        /* Panels */
+        .pms-panel { display: none; }
+        .pms-panel.is-active { display: block; }
+        .pms-hint {
+            font-size: 13px;
+            color: var(--pms-muted);
+            margin-bottom: 12px;
+        }
+
+        /* File list (merge) */
+        .pms-file-list {
+            list-style: none;
+            margin: 0 0 16px 0;
+            padding: 0;
+        }
+        .pms-file-list:empty {
+            display: none;
+        }
+        .pms-file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--pms-bg);
+            border: 1px solid var(--pms-border);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            cursor: grab;
+        }
+        .pms-file-item.is-error {
+            border-color: var(--pms-danger);
+            background: rgba(239, 68, 68, 0.06);
+        }
+        .pms-file-item.sortable-ghost {
+            opacity: 0.4;
+            background: var(--pms-accent);
+        }
+        .pms-file-item.sortable-chosen {
+            cursor: grabbing;
+        }
+        .pms-file-handle {
+            color: var(--pms-muted);
+            font-size: 18px;
+            line-height: 1;
+            user-select: none;
+        }
+        .pms-file-name {
+            flex: 1;
+            color: var(--pms-text);
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .pms-file-size {
+            color: var(--pms-muted);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .pms-file-error {
+            color: var(--pms-danger);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .pms-file-remove {
+            background: transparent;
+            border: 1px solid var(--pms-border);
+            color: var(--pms-muted);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .pms-file-remove:hover {
+            color: var(--pms-danger);
+            border-color: var(--pms-danger);
+        }
+
+        /* Split panel */
+        .pms-current-file {
+            background: var(--pms-bg);
+            border: 1px solid var(--pms-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .pms-current-file .pms-file-name { flex: 1; }
+
+        .pms-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--pms-text);
+            margin-bottom: 6px;
+        }
+        .pms-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--pms-border);
+            border-radius: 8px;
+            background: var(--pms-card-bg);
+            color: var(--pms-text);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .pms-input:focus { outline: none; border-color: var(--pms-primary); }
+        .pms-input.is-error { border-color: var(--pms-danger); }
+
+        /* Buttons */
+        .pms-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pms-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pms-btn-primary {
+            background: var(--pms-primary);
+            color: white;
+        }
+        .pms-btn-primary:hover:not(:disabled) {
+            background: var(--pms-primary-hover);
+        }
+        .pms-btn-download {
+            background: var(--pms-success);
+            color: white;
+            text-decoration: none;
+        }
+        .pms-btn-download:hover { opacity: 0.9; }
+
+        /* Progress */
+        .pms-progress {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--pms-bg);
+            border: 1px solid var(--pms-border);
+            border-radius: 8px;
+        }
+        .pms-progress-bar {
+            height: 4px;
+            background: var(--pms-border);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 8px;
+        }
+        .pms-progress-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, var(--pms-primary), transparent);
+            width: 40%;
+            animation: pms-indeterminate 1.2s ease-in-out infinite;
+        }
+        @keyframes pms-indeterminate {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+        .pms-progress-text {
+            font-size: 13px;
+            color: var(--pms-muted);
+        }
+
+        /* Status */
+        .pms-status {
+            margin-top: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            min-height: 1em;
+            display: none;
+        }
+        .pms-status.is-visible { display: block; }
+        .pms-status.is-ok {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--pms-success);
+            border: 1px solid var(--pms-success);
+        }
+        .pms-status.is-err {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--pms-danger);
+            border: 1px solid var(--pms-danger);
+        }
+        .pms-status.is-warn {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--pms-warning);
+            border: 1px solid var(--pms-warning);
+        }
+
+        /* Output */
+        .pms-output {
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--pms-bg);
+            border: 1px solid var(--pms-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .pms-output-meta {
+            font-size: 13px;
+            color: var(--pms-muted);
+        }
+
+        /* Privacy footer */
+        .pms-privacy {
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: var(--pms-accent);
+            border-radius: 8px;
+            font-size: 12px;
+            color: var(--pms-muted);
+            line-height: 1.5;
+        }
+    </style>
+
+    <div class="pms-container">
+        <header class="pms-header">
+            <h2>{{ i18n "pms_title" }}</h2>
+            <p class="pms-intro">{{ i18n "pms_intro" }}</p>
+        </header>
+
+        <div class="pms-mobile-banner" role="note">{{ i18n "pms_mobile_banner" }}</div>
+
+        <nav class="pms-tabs" role="tablist">
+            <button class="pms-tab" role="tab" data-mode="merge" aria-selected="true">{{ i18n "pms_tab_merge" }}</button>
+            <button class="pms-tab" role="tab" data-mode="split" aria-selected="false">{{ i18n "pms_tab_split" }}</button>
+        </nav>
+
+        <div class="pms-dropzone" id="{{ $id }}-dropzone" tabindex="0">
+            <input type="file" class="pms-file-input" id="{{ $id }}-file" accept="application/pdf,.pdf" />
+            <p>{{ i18n "pms_drop_or_click" }}</p>
+        </div>
+
+        <!-- MERGE panel -->
+        <section class="pms-panel is-active" data-mode="merge" role="tabpanel">
+            <p class="pms-hint">{{ i18n "pms_merge_hint" }}</p>
+            <ol class="pms-file-list" id="{{ $id }}-merge-list"></ol>
+            <button class="pms-btn pms-btn-primary" id="{{ $id }}-merge-btn" disabled>
+                {{ i18n "pms_btn_merge" }}
+            </button>
+        </section>
+
+        <!-- SPLIT panel -->
+        <section class="pms-panel" data-mode="split" role="tabpanel">
+            <p class="pms-hint">{{ i18n "pms_split_hint" }}</p>
+            <div class="pms-current-file" id="{{ $id }}-split-current" hidden>
+                <span class="pms-file-name" id="{{ $id }}-split-name"></span>
+                <span class="pms-file-size" id="{{ $id }}-split-size"></span>
+                <button class="pms-file-remove" id="{{ $id }}-split-remove" type="button">{{ i18n "pms_remove_file" }}</button>
+            </div>
+            <label class="pms-label" for="{{ $id }}-split-range">{{ i18n "pms_split_range_label" }}</label>
+            <input type="text" class="pms-input" id="{{ $id }}-split-range"
+                   placeholder='{{ i18n "pms_split_range_placeholder" }}' />
+            <button class="pms-btn pms-btn-primary" id="{{ $id }}-split-btn" disabled>
+                {{ i18n "pms_btn_split" }}
+            </button>
+        </section>
+
+        <!-- Progress -->
+        <div class="pms-progress" id="{{ $id }}-progress" hidden>
+            <div class="pms-progress-bar"></div>
+            <span class="pms-progress-text" id="{{ $id }}-progress-text"></span>
+        </div>
+
+        <!-- Output -->
+        <div class="pms-output" id="{{ $id }}-output" hidden>
+            <a class="pms-btn pms-btn-download" id="{{ $id }}-download" download>
+                {{ i18n "pms_output_download_label" }}
+            </a>
+            <span class="pms-output-meta" id="{{ $id }}-output-meta"></span>
+        </div>
+
+        <!-- Status -->
+        <div class="pms-status" id="{{ $id }}-status" role="status" aria-live="polite"></div>
+
+        <!-- Privacy -->
+        <aside class="pms-privacy">{{ i18n "pms_privacy" }}</aside>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // Wait for DOM + deferred library scripts to be ready
+        function whenReady(cb) {
+            if (document.readyState !== 'loading') {
+                // DOM already parsed; defer scripts run after parse so libs available
+                cb();
+            } else {
+                document.addEventListener('DOMContentLoaded', cb);
+            }
+        }
+
+        whenReady(function() {
+            // Libraries should be loaded by now (defer + DOMContentLoaded)
+            if (typeof PDFLib === 'undefined') {
+                console.error('[pms] PDFLib not loaded');
+                return;
+            }
+            if (typeof fflate === 'undefined') {
+                console.error('[pms] fflate not loaded');
+                return;
+            }
+
+            var PDFDocument = PDFLib.PDFDocument;
+
+            // ===== Constants =====
+            var MAX_FILE_BYTES = 200 * 1024 * 1024;   // 200 MB soft cap
+            var MAX_FILES_MERGE = 500;
+            var SUPPORTED_MIME = ['application/pdf'];
+
+            // ===== DOM refs =====
+            var root = document.getElementById('{{ $id }}-tool');
+            if (!root) return;
+
+            var dom = {
+                dropzone:    root.querySelector('#{{ $id }}-dropzone'),
+                fileInput:   root.querySelector('#{{ $id }}-file'),
+                tabs:        root.querySelectorAll('.pms-tab'),
+                panels:      root.querySelectorAll('.pms-panel'),
+                mergeList:   root.querySelector('#{{ $id }}-merge-list'),
+                mergeBtn:    root.querySelector('#{{ $id }}-merge-btn'),
+                splitCurrent:root.querySelector('#{{ $id }}-split-current'),
+                splitName:   root.querySelector('#{{ $id }}-split-name'),
+                splitSize:   root.querySelector('#{{ $id }}-split-size'),
+                splitRemove: root.querySelector('#{{ $id }}-split-remove'),
+                splitRange:  root.querySelector('#{{ $id }}-split-range'),
+                splitBtn:    root.querySelector('#{{ $id }}-split-btn'),
+                progress:    root.querySelector('#{{ $id }}-progress'),
+                progressTxt: root.querySelector('#{{ $id }}-progress-text'),
+                output:      root.querySelector('#{{ $id }}-output'),
+                download:    root.querySelector('#{{ $id }}-download'),
+                outputMeta:  root.querySelector('#{{ $id }}-output-meta'),
+                status:      root.querySelector('#{{ $id }}-status')
+            };
+
+            // ===== State =====
+            var state = {
+                mode: 'merge',     // 'merge' | 'split'
+                mergeFiles: [],    // Array<{file:File, id:string, error:string|null, pageCount:number|null}>
+                splitFile: null,   // {file:File, id:string, error:string|null, pageCount:number|null} | null
+                nextId: 1,
+                sortable: null
+            };
+
+            // ===== i18n strings (inline to avoid Hugo templating into JS) =====
+            var L = {
+                remove:    '{{ i18n "pms_remove_file" }}',
+                notPdf:    '{{ i18n "pms_err_not_pdf" }}',
+                empty:     '{{ i18n "pms_err_empty" }}',
+                tooLarge:  '{{ i18n "pms_err_too_large" }}',
+                corrupt:   '{{ i18n "pms_err_corrupt" }}',
+                encrypted: '{{ i18n "pms_err_encrypted" }}',
+                emptyRange:'{{ i18n "pms_err_empty_range" }}',
+                rangeOob:  '{{ i18n "pms_err_range_oob" }}',
+                noFile:    '{{ i18n "pms_err_no_file_split" }}',
+                mergeLt2:  '{{ i18n "pms_err_merge_lt_2" }}',
+                noBlob:    '{{ i18n "pms_err_no_blob" }}',
+                oom:       '{{ i18n "pms_err_oom" }}',
+                processing:'{{ i18n "pms_status_processing" }}',
+                merging:   '{{ i18n "pms_status_merging" }}',
+                splitting: '{{ i18n "pms_status_splitting" }}',
+                zipping:   '{{ i18n "pms_status_zipping" }}',
+                done:      '{{ i18n "pms_status_done" }}',
+                dragHandle:'{{ i18n "pms_drag_handle_label" }}'
+            };
+
+            // ===== Helpers =====
+            function formatBytes(n) {
+                if (n < 1024) return n + ' B';
+                if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+                if (n < 1024 * 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MB';
+                return (n / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+            }
+
+            function isPdfFile(file) {
+                if (file.type === 'application/pdf') return true;
+                if (file.name && /\.pdf$/i.test(file.name)) return true;
+                return false;
+            }
+
+            function setStatus(msg, level) {
+                if (!msg) {
+                    dom.status.className = 'pms-status';
+                    dom.status.textContent = '';
+                    return;
+                }
+                dom.status.className = 'pms-status is-visible is-' + (level || 'warn');
+                dom.status.textContent = msg;
+            }
+
+            function showProgress(text) {
+                dom.progress.hidden = false;
+                dom.progressTxt.textContent = text || L.processing;
+            }
+
+            function hideProgress() {
+                dom.progress.hidden = true;
+            }
+
+            function setMode(mode) {
+                state.mode = mode;
+                dom.tabs.forEach(function(t) {
+                    var active = t.getAttribute('data-mode') === mode;
+                    t.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+                dom.panels.forEach(function(p) {
+                    var active = p.getAttribute('data-mode') === mode;
+                    if (active) { p.classList.add('is-active'); }
+                    else { p.classList.remove('is-active'); }
+                });
+                // Update file input multiple attr per mode
+                dom.fileInput.multiple = (mode === 'merge');
+                setStatus('', '');
+                dom.output.hidden = true;
+            }
+
+            // ===== File validation =====
+            function validateFile(file) {
+                if (!isPdfFile(file)) return { error: L.notPdf };
+                if (file.size === 0) return { error: L.empty };
+                if (file.size > MAX_FILE_BYTES) return { error: L.tooLarge };
+                return { error: null };
+            }
+
+            // ===== Add files =====
+            function addFiles(fileList) {
+                var files = Array.prototype.slice.call(fileList);
+                if (state.mode === 'merge') {
+                    if (state.mergeFiles.length + files.length > MAX_FILES_MERGE) {
+                        setStatus(L.tooLarge.replace('200 MB', MAX_FILES_MERGE + ' files'), 'err');
+                    }
+                    files.forEach(function(f) {
+                        var v = validateFile(f);
+                        state.mergeFiles.push({
+                            file: f,
+                            id: 'pms-' + (state.nextId++),
+                            error: v.error,
+                            pageCount: null
+                        });
+                    });
+                    renderMergeList();
+                    updateMergeButton();
+                } else {
+                    // split mode: single file only
+                    if (files.length === 0) return;
+                    var f = files[0];
+                    var v = validateFile(f);
+                    state.splitFile = {
+                        file: f,
+                        id: 'pms-' + (state.nextId++),
+                        error: v.error,
+                        pageCount: null
+                    };
+                    renderSplitCurrent();
+                    updateSplitButton();
+                }
+                setStatus('', '');
+                dom.output.hidden = true;
+            }
+
+            function removeMergeFile(id) {
+                state.mergeFiles = state.mergeFiles.filter(function(it) { return it.id !== id; });
+                renderMergeList();
+                updateMergeButton();
+            }
+
+            function clearSplitFile() {
+                state.splitFile = null;
+                dom.splitRange.value = '';
+                renderSplitCurrent();
+                updateSplitButton();
+            }
+
+            // ===== Render =====
+            function renderMergeList() {
+                dom.mergeList.innerHTML = '';
+                state.mergeFiles.forEach(function(it) {
+                    var li = document.createElement('li');
+                    li.className = 'pms-file-item' + (it.error ? ' is-error' : '');
+                    li.setAttribute('data-id', it.id);
+                    li.innerHTML =
+                        '<span class="pms-file-handle" aria-label="' + escapeAttr(L.dragHandle) + '">⋮⋮</span>' +
+                        '<span class="pms-file-name">' + escapeHtml(it.file.name) + '</span>' +
+                        '<span class="pms-file-size">' + formatBytes(it.file.size) + '</span>' +
+                        (it.error ? '<span class="pms-file-error">✗</span>' : '') +
+                        '<button class="pms-file-remove" type="button" data-remove="' + it.id + '">' + escapeHtml(L.remove) + '</button>';
+                    dom.mergeList.appendChild(li);
+                });
+            }
+
+            function renderSplitCurrent() {
+                if (!state.splitFile) {
+                    dom.splitCurrent.hidden = true;
+                    dom.splitName.textContent = '';
+                    dom.splitSize.textContent = '';
+                    return;
+                }
+                dom.splitCurrent.hidden = false;
+                dom.splitName.textContent = state.splitFile.file.name +
+                    (state.splitFile.error ? '  ✗' : '');
+                dom.splitSize.textContent = formatBytes(state.splitFile.file.size);
+            }
+
+            function updateMergeButton() {
+                var ok = state.mergeFiles.length >= 2 &&
+                         state.mergeFiles.every(function(it) { return !it.error; });
+                dom.mergeBtn.disabled = !ok;
+                if (state.mergeFiles.length > 0 && state.mergeFiles.length < 2) {
+                    setStatus(L.mergeLt2, 'warn');
+                } else if (state.mergeFiles.some(function(it) { return it.error; })) {
+                    setStatus(L.corrupt, 'err');
+                } else {
+                    setStatus('', '');
+                }
+            }
+
+            function updateSplitButton() {
+                var ok = state.splitFile && !state.splitFile.error;
+                dom.splitBtn.disabled = !ok;
+            }
+
+            function escapeHtml(s) {
+                return String(s)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function escapeAttr(s) { return escapeHtml(s); }
+
+            // ===== Range parser =====
+            function parsePageRange(input, totalPages) {
+                if (!input || !input.trim()) return { ranges: [], error: L.emptyRange };
+                var tokens = input.split(',').map(function(t) { return t.trim(); }).filter(Boolean);
+                var ranges = [];
+                for (var i = 0; i < tokens.length; i++) {
+                    var tok = tokens[i];
+                    var m = tok.match(/^(\d+)(?:\s*-\s*(\d+)?)?$/);
+                    if (!m) return { ranges: [], error: L.emptyRange };
+                    var a = parseInt(m[1], 10);
+                    var b = m[2] !== undefined ? parseInt(m[2], 10) : a;
+                    if (isNaN(a) || isNaN(b)) return { ranges: [], error: L.emptyRange };
+                    if (a < 1) a = 1;
+                    if (b > totalPages) {
+                        return { ranges: [], error: L.rangeOob.replace('%d', totalPages) };
+                    }
+                    if (a > b) { var t = a; a = b; b = t; }
+                    ranges.push([a, b]);
+                }
+                return { ranges: ranges, error: null };
+            }
+
+            // ===== PDF ops =====
+            async function readFileBytes(file) {
+                return new Promise(function(resolve, reject) {
+                    var r = new FileReader();
+                    r.onload = function() { resolve(new Uint8Array(r.result)); };
+                    r.onerror = function() { reject(new Error('read-failed')); };
+                    r.readAsArrayBuffer(file);
+                });
+            }
+
+            async function tryLoadPdf(bytes) {
+                try {
+                    return await PDFDocument.load(bytes, { updateMetadata: false });
+                } catch (e) {
+                    var msg = (e && e.message) ? e.message.toLowerCase() : '';
+                    if (msg.indexOf('encrypt') !== -1) throw new Error('encrypted');
+                    throw new Error('corrupt');
+                }
+            }
+
+            async function mergePdfs(items, onTick) {
+                var merged = await PDFDocument.create();
+                for (var i = 0; i < items.length; i++) {
+                    if (onTick) onTick(i, items.length);
+                    var bytes = await readFileBytes(items[i].file);
+                    var src = await tryLoadPdf(bytes);
+                    var pageIndices = src.getPageIndices();
+                    var copied = await merged.copyPages(src, pageIndices);
+                    copied.forEach(function(p) { merged.addPage(p); });
+                }
+                if (onTick) onTick(items.length, items.length);
+                // Use object streams for smaller file
+                return await merged.save({ useObjectStreams: true });
+            }
+
+            async function splitPdf(item, ranges, onTick) {
+                var bytes = await readFileBytes(item.file);
+                var src = await tryLoadPdf(bytes);
+                var parts = [];
+                for (var i = 0; i < ranges.length; i++) {
+                    if (onTick) onTick(i, ranges.length);
+                    var range = ranges[i];
+                    var a = range[0], b = range[1];
+                    var out = await PDFDocument.create();
+                    var idxs = [];
+                    for (var p = a; p <= b; p++) idxs.push(p - 1);
+                    var copied = await out.copyPages(src, idxs);
+                    copied.forEach(function(pg) { out.addPage(pg); });
+                    var outBytes = await out.save({ useObjectStreams: true });
+                    var name = makePartName(item.file.name, a, b);
+                    parts.push({ name: name, bytes: outBytes });
+                }
+                if (onTick) onTick(ranges.length, ranges.length);
+                return parts;
+            }
+
+            function makePartName(originalName, a, b) {
+                var base = originalName.replace(/\.pdf$/i, '');
+                if (a === b) return base + '_page' + a + '.pdf';
+                return base + '_pages-' + a + '-' + b + '.pdf';
+            }
+
+            function buildZip(parts, onTick) {
+                if (typeof fflate === 'undefined') throw new Error('fflate-missing');
+                var dict = {};
+                parts.forEach(function(p, i) {
+                    dict[p.name] = p.bytes;
+                    if (onTick) onTick(i + 1, parts.length);
+                });
+                var zipped = fflate.zipSync(dict, { level: 6 });
+                return new Blob([zipped], { type: 'application/zip' });
+            }
+
+            function downloadBlob(blob, filename) {
+                if (!window.URL || !URL.createObjectURL) {
+                    setStatus(L.noBlob, 'err');
+                    return;
+                }
+                var url = URL.createObjectURL(blob);
+                dom.download.href = url;
+                dom.download.download = filename;
+                dom.download.textContent = (dom.download.textContent || '').replace(/^.*?/, '');
+                dom.output.hidden = false;
+                dom.outputMeta.textContent = formatBytes(blob.size);
+                // trigger download
+                dom.download.click();
+                // Revoke after a short delay so the download starts
+                setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+            }
+
+            // ===== Click handlers =====
+            async function onMergeClick() {
+                if (state.mergeFiles.length < 2) {
+                    setStatus(L.mergeLt2, 'err');
+                    return;
+                }
+                var bad = state.mergeFiles.some(function(it) { return it.error; });
+                if (bad) {
+                    setStatus(L.corrupt, 'err');
+                    return;
+                }
+                dom.mergeBtn.disabled = true;
+                dom.splitBtn.disabled = true;
+                showProgress(L.processing);
+                setStatus('', '');
+                try {
+                    var bytes = await mergePdfs(state.mergeFiles, function(i, n) {
+                        showProgress(L.merging.replace('%d', i + 1).replace('%d', n));
+                    });
+                    var blob = new Blob([bytes], { type: 'application/pdf' });
+                    var ts = timestamp();
+                    downloadBlob(blob, 'pdf-merge-split_' + ts + '.pdf');
+                    setStatus(L.done, 'ok');
+                } catch (e) {
+                    if (e && e.message === 'corrupt') setStatus(L.corrupt, 'err');
+                    else if (e && e.message === 'encrypted') setStatus(L.encrypted, 'err');
+                    else if (e && (e.name === 'RangeError' || /memory|allocation/i.test(e.message || '')))
+                        setStatus(L.oom, 'err');
+                    else setStatus((e && e.message) || 'Error', 'err');
+                } finally {
+                    hideProgress();
+                    dom.mergeBtn.disabled = false;
+                    dom.splitBtn.disabled = false;
+                }
+            }
+
+            async function onSplitClick() {
+                if (!state.splitFile || state.splitFile.error) {
+                    setStatus(state.splitFile && state.splitFile.error ? state.splitFile.error : L.noFile, 'err');
+                    return;
+                }
+                var total = state.splitFile.pageCount;
+                if (total === null || total === undefined) {
+                    // Lazy-load to get page count
+                    try {
+                        var bytes = await readFileBytes(state.splitFile.file);
+                        var src = await tryLoadPdf(bytes);
+                        state.splitFile.pageCount = src.getPageCount();
+                        total = state.splitFile.pageCount;
+                    } catch (e) {
+                        if (e && e.message === 'corrupt') setStatus(L.corrupt, 'err');
+                        else if (e && e.message === 'encrypted') setStatus(L.encrypted, 'err');
+                        else setStatus(L.corrupt, 'err');
+                        return;
+                    }
+                }
+                var parsed = parsePageRange(dom.splitRange.value, total);
+                if (parsed.error) {
+                    dom.splitRange.classList.add('is-error');
+                    setStatus(parsed.error, 'err');
+                    return;
+                }
+                dom.splitRange.classList.remove('is-error');
+
+                dom.mergeBtn.disabled = true;
+                dom.splitBtn.disabled = true;
+                showProgress(L.processing);
+                setStatus('', '');
+                try {
+                    var parts = await splitPdf(state.splitFile, parsed.ranges, function(i, n) {
+                        showProgress(L.splitting + ' (' + (i + 1) + '/' + n + ')');
+                    });
+                    if (parts.length === 1) {
+                        // Single output: download as PDF directly
+                        downloadBlob(
+                            new Blob([parts[0].bytes], { type: 'application/pdf' }),
+                            'pdf-merge-split_' + timestamp() + '.pdf'
+                        );
+                        setStatus(L.done, 'ok');
+                    } else {
+                        showProgress(L.zipping);
+                        var zip = buildZip(parts, function() {});
+                        downloadBlob(zip, 'pdf-merge-split_' + timestamp() + '.zip');
+                        setStatus(L.done, 'ok');
+                    }
+                } catch (e) {
+                    if (e && e.message === 'corrupt') setStatus(L.corrupt, 'err');
+                    else if (e && e.message === 'encrypted') setStatus(L.encrypted, 'err');
+                    else if (e && (e.name === 'RangeError' || /memory|allocation/i.test(e.message || '')))
+                        setStatus(L.oom, 'err');
+                    else setStatus((e && e.message) || 'Error', 'err');
+                } finally {
+                    hideProgress();
+                    dom.mergeBtn.disabled = false;
+                    dom.splitBtn.disabled = false;
+                }
+            }
+
+            function timestamp() {
+                var d = new Date();
+                var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+                return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) +
+                       '-' + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
+            }
+
+            // ===== Event wiring =====
+            dom.dropzone.addEventListener('click', function() { dom.fileInput.click(); });
+            dom.dropzone.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    dom.fileInput.click();
+                }
+            });
+            dom.fileInput.addEventListener('change', function() {
+                if (dom.fileInput.files && dom.fileInput.files.length) {
+                    addFiles(dom.fileInput.files);
+                    dom.fileInput.value = '';
+                }
+            });
+            dom.dropzone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dom.dropzone.classList.add('is-dragover');
+            });
+            dom.dropzone.addEventListener('dragleave', function() {
+                dom.dropzone.classList.remove('is-dragover');
+            });
+            dom.dropzone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dom.dropzone.classList.remove('is-dragover');
+                if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+                    addFiles(e.dataTransfer.files);
+                }
+            });
+
+            dom.tabs.forEach(function(t) {
+                t.addEventListener('click', function() { setMode(t.getAttribute('data-mode')); });
+            });
+
+            dom.mergeList.addEventListener('click', function(e) {
+                var target = e.target;
+                if (target && target.getAttribute && target.getAttribute('data-remove')) {
+                    removeMergeFile(target.getAttribute('data-remove'));
+                }
+            });
+
+            dom.splitRemove.addEventListener('click', function() { clearSplitFile(); });
+            dom.splitRange.addEventListener('input', function() {
+                dom.splitRange.classList.remove('is-error');
+                setStatus('', '');
+            });
+
+            dom.mergeBtn.addEventListener('click', onMergeClick);
+            dom.splitBtn.addEventListener('click', onSplitClick);
+
+            // Initialize SortableJS on merge list (after first render via rerender)
+            function initSortable() {
+                if (state.sortable) return; // already initialized
+                if (typeof Sortable === 'undefined') return;
+                state.sortable = Sortable.create(dom.mergeList, {
+                    handle: '.pms-file-item',
+                    animation: 150,
+                    ghostClass: 'sortable-ghost',
+                    chosenClass: 'sortable-chosen',
+                    onUpdate: function(evt) {
+                        // Reorder state.mergeFiles
+                        var moved = state.mergeFiles.splice(evt.oldIndex, 1)[0];
+                        state.mergeFiles.splice(evt.newIndex, 0, moved);
+                    }
+                });
+            }
+
+            // Watch for DOM changes in the merge list so SortableJS can init lazily
+            // and so we can re-render the list after file changes
+            var mergeObserver = new MutationObserver(function() {
+                initSortable();
+            });
+            mergeObserver.observe(dom.mergeList, { childList: true });
+
+            // Initial state: merge mode
+            setMode('merge');
+        });
+    })();
+    </script>
+</div>
