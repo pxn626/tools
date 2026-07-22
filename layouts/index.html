@@ -42,21 +42,4 @@
   </div>
 {{ end }}
 
-<!-- {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
-{{ $paginator := .Paginate $pages }}
-
-{{ if $paginator.Pages }}
-  <div class="post-list">
-    {{ range $paginator.Pages }}
-      <article class="post-entry">
-        <h2 class="post-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
-        <div class="entry-meta">
-          <time>{{ .Date.Format "2006-01-02" }}</time>
-        </div>
-      </article>
-    {{ end }}
-  </div>
-  {{ partial "pagination.html" . }}
-{{ end }}-->
-
-{{ end }} 
+{{ end }}
