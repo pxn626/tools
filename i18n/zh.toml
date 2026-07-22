@@ -1729,3 +1729,104 @@ other = "抽样数量超过列表长度，已自动调整为"
 
 [rs_error_items_available]
 other = "（可用项目数）"
+
+# 随机数据生成器 (A1) — 49 个 keys
+# 中文文案由 content plan §8.2 提供,本文件覆盖 eng plan §4.4 的临时英文占位
+[rdg_title]
+other = "随机数据生成器"
+[rdg_intro]
+other = "用于测试的真实感假数据生成器 — 姓名、邮箱、地址、UUID 等。最多 1,000 行,可种子化,100% 客户端运行。"
+[rdg_label_data_types]
+other = "数据类型"
+[rdg_label_quantity]
+other = "行数"
+[rdg_label_seed]
+other = "种子(可选)"
+[rdg_hint_seed]
+other = "留空生成全新随机数据"
+[rdg_seed_placeholder]
+other = "如 test-fixture-001"
+[rdg_label_format]
+other = "输出格式"
+[rdg_btn_generate]
+other = "生成"
+[rdg_btn_copy]
+other = "复制"
+[rdg_btn_download]
+other = "下载"
+[rdg_btn_clear]
+other = "清空"
+[rdg_type_name]
+other = "姓名"
+[rdg_type_email]
+other = "邮箱"
+[rdg_type_address]
+other = "地址"
+[rdg_type_phone]
+other = "电话"
+[rdg_type_date]
+other = "日期"
+[rdg_type_int]
+other = "整数"
+[rdg_type_float]
+other = "浮点数"
+[rdg_type_uuid]
+other = "UUID"
+[rdg_type_password]
+other = "密码"
+[rdg_type_hexcolor]
+other = "十六进制颜色"
+[rdg_type_ip]
+other = "IP 地址"
+[rdg_int_min]
+other = "最小值"
+[rdg_int_max]
+other = "最大值"
+[rdg_float_min]
+other = "最小值"
+[rdg_float_max]
+other = "最大值"
+[rdg_float_decimals]
+other = "小数位数"
+[rdg_date_from]
+other = "起始"
+[rdg_date_to]
+other = "结束"
+[rdg_pwd_len]
+other = "长度"
+[rdg_pwd_symbols]
+other = "包含符号"
+[rdg_preview_title]
+other = "预览"
+[rdg_truncated_hint]
+other = "(预览仅显示前 50 行 — 下载或复制可获取完整数据集)"
+[rdg_stat_rows]
+other = "行"
+[rdg_stat_columns]
+other = "列"
+[rdg_stat_kb]
+other = "KB"
+[rdg_error_no_types]
+other = "请至少选择一种数据类型。"
+[rdg_status_generated]
+other = "已生成"
+[rdg_status_rows]
+other = "行"
+[rdg_status_copied]
+other = "已复制到剪贴板"
+[rdg_status_copy_failed]
+other = "复制失败"
+[rdg_status_downloaded]
+other = "已下载为"
+[rdg_privacy_notice]
+other = "隐私:100% 客户端运行。打开 DevTools → Network 可验证 0 请求。"
+[rdg_output_columns]
+other = "列"
+[rdg_output_seeded_with]
+other = "(种子:"
+[rdg_output_separator]
+other = ")"
+[rdg_output_ellipsis]
+other = "…"
+[rdg_seed_unset]
+other = "(自动)"

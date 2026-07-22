@@ -1,0 +1,1119 @@
+<!-- Random Data Generator Tool -->
+{{ $id := .Get "id" | default "rdg" }}
+<div class="rdg-tool" id="{{ $id }}-tool">
+    <style>
+        .rdg-tool {
+            --primary-color: #7c3aed;
+            --primary-hover: #6d28d9;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --mono-bg: #f1f5f9;
+            --accent-bg: rgba(124, 58, 237, 0.08);
+        }
+
+        [data-theme="dark"] .rdg-tool {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --mono-bg: #1e293b;
+            --accent-bg: rgba(167, 139, 250, 0.15);
+        }
+
+        .rdg-tool * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .rdg-tool {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .rdg-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .rdg-header { margin-bottom: 20px; }
+        .rdg-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+        .rdg-intro { font-size: 14px; color: var(--text-muted); }
+
+        .rdg-section { margin-bottom: 20px; }
+        .rdg-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+        .rdg-hint { font-weight: 400; color: var(--text-muted); font-size: 12px; }
+        .rdg-badge {
+            display: inline-block;
+            background: var(--mono-bg);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-left: 6px;
+        }
+
+        .rdg-types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+        }
+        .rdg-type-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-color);
+            font-size: 13px;
+            color: var(--text-main);
+            user-select: none;
+        }
+        .rdg-type-chip:hover { border-color: var(--primary-color); }
+        .rdg-type-chip input { cursor: pointer; accent-color: var(--primary-color); }
+        .rdg-type-chip:has(input:checked) {
+            border-color: var(--primary-color);
+            background: var(--accent-bg);
+        }
+        .rdg-type-chip span { font-weight: 500; }
+        .rdg-type-chip:has(input:checked) span { color: var(--primary-color); font-weight: 600; }
+
+        .rdg-config-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .rdg-config-row { grid-template-columns: 1fr; }
+        }
+        .rdg-config-col { display: flex; flex-direction: column; }
+
+        .rdg-slider {
+            width: 100%;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+        .rdg-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            font-family: "Consolas", "Monaco", monospace;
+            font-size: 14px;
+        }
+        .rdg-input:focus { outline: none; border-color: var(--primary-color); }
+        .rdg-input-sm {
+            width: 90px;
+            padding: 6px 8px;
+            font-size: 13px;
+        }
+
+        .rdg-format-row, .rdg-type-opts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+        .rdg-radio {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .rdg-radio input { cursor: pointer; accent-color: var(--primary-color); }
+        .rdg-check-inline {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .rdg-check-inline input { cursor: pointer; accent-color: var(--primary-color); }
+        .rdg-type-opts {
+            padding: 12px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            gap: 14px;
+        }
+        .rdg-type-opts[hidden] { display: none !important; }
+        .rdg-type-opts label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .rdg-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .rdg-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .rdg-btn-primary { background: var(--primary-color); color: white; }
+        .rdg-btn-primary:hover { background: var(--primary-hover); }
+        .rdg-btn-secondary {
+            background: var(--border-color);
+            color: var(--text-main);
+        }
+        .rdg-btn-secondary:hover { background: var(--text-muted); color: white; }
+        .rdg-btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        .rdg-btn-ghost:hover { background: var(--bg-color); color: var(--text-main); }
+        .rdg-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .rdg-output {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .rdg-output[hidden] { display: none !important; }
+        .rdg-output-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .rdg-output-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin: 0;
+        }
+        .rdg-output-stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .rdg-stat {
+            padding: 4px 10px;
+            background: var(--accent-bg);
+            color: var(--primary-color);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .rdg-table-wrap {
+            max-height: 500px;
+            overflow: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .rdg-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .rdg-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-color);
+            color: var(--text-muted);
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .rdg-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+            white-space: nowrap;
+            max-width: 320px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .rdg-table tbody tr:hover { background: var(--bg-color); }
+        .rdg-table tbody tr:last-child td { border-bottom: none; }
+        .rdg-truncated {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+        }
+        .rdg-truncated[hidden] { display: none !important; }
+
+        .rdg-status {
+            font-size: 13px;
+            min-height: 1.6em;
+            padding: 8px 0;
+            color: var(--text-muted);
+        }
+        .rdg-status-ok { color: var(--success-color); }
+        .rdg-status-err { color: var(--danger-color); }
+        .rdg-status-warn { color: var(--warning-color); }
+
+        .rdg-privacy {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            border-left: 3px solid var(--success-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+    </style>
+
+    <div class="rdg-container">
+        <div class="rdg-header">
+            <h2 class="rdg-title">{{ i18n "rdg_title" }}</h2>
+            <p class="rdg-intro">{{ i18n "rdg_intro" }}</p>
+        </div>
+
+        <!-- A. Data type selection -->
+        <div class="rdg-section">
+            <label class="rdg-label">{{ i18n "rdg_label_data_types" }}</label>
+            <div class="rdg-types-grid">
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="name" checked />
+                    <span>{{ i18n "rdg_type_name" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="email" checked />
+                    <span>{{ i18n "rdg_type_email" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="address" />
+                    <span>{{ i18n "rdg_type_address" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="phone" />
+                    <span>{{ i18n "rdg_type_phone" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="date" />
+                    <span>{{ i18n "rdg_type_date" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="int" />
+                    <span>{{ i18n "rdg_type_int" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="float" />
+                    <span>{{ i18n "rdg_type_float" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="uuid" />
+                    <span>{{ i18n "rdg_type_uuid" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="password" />
+                    <span>{{ i18n "rdg_type_password" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="hexcolor" />
+                    <span>{{ i18n "rdg_type_hexcolor" }}</span>
+                </label>
+                <label class="rdg-type-chip">
+                    <input type="checkbox" data-type="ip" />
+                    <span>{{ i18n "rdg_type_ip" }}</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- B. Quantity + Seed + Format -->
+        <div class="rdg-section rdg-config-row">
+            <div class="rdg-config-col">
+                <label class="rdg-label">
+                    {{ i18n "rdg_label_quantity" }}:
+                    <span id="{{ $id }}-qty-val" class="rdg-badge">100</span>
+                </label>
+                <input type="range" id="{{ $id }}-qty" class="rdg-slider"
+                       min="1" max="1000" value="100" />
+            </div>
+
+            <div class="rdg-config-col">
+                <label class="rdg-label" for="{{ $id }}-seed">
+                    {{ i18n "rdg_label_seed" }}
+                    <span class="rdg-hint">({{ i18n "rdg_hint_seed" }})</span>
+                </label>
+                <input type="text" id="{{ $id }}-seed" class="rdg-input"
+                       placeholder="{{ i18n "rdg_seed_placeholder" }}"
+                       autocomplete="off" />
+            </div>
+
+            <div class="rdg-config-col">
+                <label class="rdg-label">{{ i18n "rdg_label_format" }}</label>
+                <div class="rdg-format-row">
+                    <label class="rdg-radio">
+                        <input type="radio" name="{{ $id }}-format" value="csv" checked />
+                        <span>CSV</span>
+                    </label>
+                    <label class="rdg-radio">
+                        <input type="radio" name="{{ $id }}-format" value="json" />
+                        <span>JSON</span>
+                    </label>
+                    <label class="rdg-radio">
+                        <input type="radio" name="{{ $id }}-format" value="txt" />
+                        <span>TXT (TSV)</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- C. Per-type options (shown only when their type is checked) -->
+        <div class="rdg-section">
+            <div class="rdg-type-opts" data-for="int" hidden>
+                <label>{{ i18n "rdg_int_min" }}: <input type="number" id="{{ $id }}-int-min" value="0" class="rdg-input-sm" /></label>
+                <label>{{ i18n "rdg_int_max" }}: <input type="number" id="{{ $id }}-int-max" value="10000" class="rdg-input-sm" /></label>
+            </div>
+            <div class="rdg-type-opts" data-for="float" hidden>
+                <label>{{ i18n "rdg_float_min" }}: <input type="number" id="{{ $id }}-float-min" value="0" step="0.01" class="rdg-input-sm" /></label>
+                <label>{{ i18n "rdg_float_max" }}: <input type="number" id="{{ $id }}-float-max" value="1000" step="0.01" class="rdg-input-sm" /></label>
+                <label>{{ i18n "rdg_float_decimals" }}: <input type="number" id="{{ $id }}-float-decimals" value="2" min="0" max="10" class="rdg-input-sm" /></label>
+            </div>
+            <div class="rdg-type-opts" data-for="date" hidden>
+                <label>{{ i18n "rdg_date_from" }}: <input type="date" id="{{ $id }}-date-from" value="1970-01-01" class="rdg-input-sm" /></label>
+                <label>{{ i18n "rdg_date_to" }}: <input type="date" id="{{ $id }}-date-to" value="2026-12-31" class="rdg-input-sm" /></label>
+            </div>
+            <div class="rdg-type-opts" data-for="password" hidden>
+                <label>{{ i18n "rdg_pwd_len" }}: <input type="number" id="{{ $id }}-pwd-len" value="12" min="6" max="64" class="rdg-input-sm" /></label>
+                <label class="rdg-check-inline">
+                    <input type="checkbox" id="{{ $id }}-pwd-symbols" checked />
+                    <span>{{ i18n "rdg_pwd_symbols" }}</span>
+                </label>
+            </div>
+            <div class="rdg-type-opts" data-for="ip" hidden>
+                <label class="rdg-radio">
+                    <input type="radio" name="{{ $id }}-ip-v" value="v4" checked />
+                    <span>IPv4</span>
+                </label>
+                <label class="rdg-radio">
+                    <input type="radio" name="{{ $id }}-ip-v" value="v6" />
+                    <span>IPv6</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- D. Action buttons -->
+        <div class="rdg-actions">
+            <button id="{{ $id }}-generate" class="rdg-btn rdg-btn-primary" type="button">
+                {{ i18n "rdg_btn_generate" }}
+            </button>
+            <button id="{{ $id }}-copy" class="rdg-btn rdg-btn-secondary" type="button" disabled>
+                {{ i18n "rdg_btn_copy" }}
+            </button>
+            <button id="{{ $id }}-download" class="rdg-btn rdg-btn-secondary" type="button" disabled>
+                {{ i18n "rdg_btn_download" }}
+            </button>
+            <button id="{{ $id }}-clear" class="rdg-btn rdg-btn-ghost" type="button">
+                {{ i18n "rdg_btn_clear" }}
+            </button>
+        </div>
+
+        <!-- E. Preview output (hidden until first generate) -->
+        <div class="rdg-output" id="{{ $id }}-output-section" hidden>
+            <div class="rdg-output-head">
+                <h3 class="rdg-output-title">{{ i18n "rdg_preview_title" }}</h3>
+                <div class="rdg-output-stats" id="{{ $id }}-stats"></div>
+            </div>
+            <div class="rdg-table-wrap">
+                <table class="rdg-table">
+                    <thead id="{{ $id }}-thead"></thead>
+                    <tbody id="{{ $id }}-tbody"></tbody>
+                </table>
+            </div>
+            <p class="rdg-truncated" id="{{ $id }}-truncated" hidden>
+                {{ i18n "rdg_truncated_hint" }}
+            </p>
+        </div>
+
+        <!-- F. Status bar (live region for screen readers) -->
+        <div class="rdg-status" id="{{ $id }}-status" role="status" aria-live="polite"></div>
+
+        <!-- G. Privacy notice (static, visible) -->
+        <div class="rdg-privacy">{{ i18n "rdg_privacy_notice" }}</div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ============================================================
+            // §A. CONSTANTS — Data pools + Mulberry32 PRNG
+            // ============================================================
+
+            // A.1 Mulberry32 — small, fast, seedable PRNG (period 2^32)
+            function mulberry32(seed) {
+                let a = seed >>> 0;
+                return function() {
+                    a |= 0;
+                    a = (a + 0x6D2B79F5) | 0;
+                    let t = a;
+                    t = Math.imul(t ^ (t >>> 15), t | 1);
+                    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+                    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+                };
+            }
+
+            // A.2 FNV-1a hash — map arbitrary string seed to uint32
+            function hashSeed(str) {
+                let h = 2166136261 >>> 0;
+                for (let i = 0; i < str.length; i++) {
+                    h ^= str.charCodeAt(i);
+                    h = Math.imul(h, 16777619);
+                }
+                return h >>> 0;
+            }
+
+            // A.3 First name pool (US-frequency-weighted top ~200, drawn from
+            //     public SSA / Census data — names are NOT real persons)
+            const FIRST_NAMES = [
+                'James','Mary','Robert','Patricia','John','Jennifer','Michael','Linda',
+                'William','Elizabeth','David','Barbara','Richard','Susan','Joseph','Jessica',
+                'Thomas','Sarah','Charles','Karen','Christopher','Nancy','Daniel','Lisa',
+                'Matthew','Margaret','Anthony','Sandra','Mark','Ashley','Donald','Kimberly',
+                'Steven','Emily','Paul','Donna','Andrew','Michelle','Joshua','Carol',
+                'Kenneth','Amanda','Kevin','Melissa','Brian','Deborah','George','Stephanie',
+                'Edward','Rebecca','Ronald','Laura','Timothy','Sharon','Jason','Cynthia',
+                'Jeffrey','Kathleen','Ryan','Amy','Jacob','Angela','Gary','Shirley',
+                'Nicholas','Anna','Eric','Brenda','Jonathan','Pamela','Stephen','Emma',
+                'Larry','Nicole','Justin','Helen','Scott','Samantha','Brandon','Katherine',
+                'Frank','Christine','Benjamin','Debra','Gregory','Rachel','Samuel','Carolyn',
+                'Raymond','Janet','Patrick','Catherine','Alexander','Maria','Jack','Heather',
+                'Dennis','Diane','Jerry','Olivia','Tyler','Julie','Aaron','Joyce',
+                'Jose','Victoria','Adam','Kelly','Nathan','Christina','Henry','Lauren',
+                'Douglas','Joan','Peter','Evelyn','Zachary','Judith','Kyle','Megan',
+                'Noah','Andrea','Ethan','Cheryl','Jeremy','Hannah','Walter','Jacqueline',
+                'Christian','Martha','Keith','Gloria','Roger','Teresa','Terry','Ann',
+                'Austin','Sara','Sean','Madison','Gerald','Frances','Carl','Kathryn',
+                'Harold','Janice','Dylan','Jean','Arthur','Abigail','Lawrence','Alice',
+                'Jordan','Judy','Jacob','Sophia','Ian','Grace','Juan','Denise',
+                'Antonio','Amber','Elijah','Doris','Roy','Marilyn','Luke','Danielle',
+                'Gabriel','Beverly','Albert','Isabella','Howard','Theresa','Alan','Diana',
+                'Wayne','Natalie','Cameron','Brittany','Devin','Charlotte','Evan','Marie',
+                'Dean','Janice','Vincent','Kayla','Philip','Alexis','Bobby','Lori',
+                'Johnny','Tiffany','Bradley','Gloria','Caleb','Victoria','Russell','Sara',
+                'Connor','Janet','Liam','Olivia','Mason','Layla','Owen','Aaliyah',
+                'Aiden','Maya','Jackson','Penelope','Carter','Riley','Sebastian','Zoey',
+                'Henry','Paisley','Daniel','Aurora','Wyatt','Skylar','Leo','Sarah',
+                'Jayden','Madelyn','Ezra','Brooklyn','Levi','Naomi','Lincoln','Elena'
+            ];
+
+            // A.4 Last name pool (US Census top surnames)
+            const LAST_NAMES = [
+                'Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis',
+                'Rodriguez','Martinez','Hernandez','Lopez','Gonzalez','Wilson','Anderson','Thomas',
+                'Taylor','Moore','Jackson','Martin','Lee','Perez','Thompson','White',
+                'Harris','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young',
+                'Allen','King','Wright','Scott','Torres','Nguyen','Hill','Flores',
+                'Green','Adams','Nelson','Baker','Hall','Rivera','Campbell','Mitchell',
+                'Carter','Roberts','Gomez','Phillips','Evans','Turner','Diaz','Parker',
+                'Cruz','Edwards','Collins','Reyes','Stewart','Morris','Morales','Murphy',
+                'Cook','Rogers','Gutierrez','Ortiz','Morgan','Cooper','Peterson','Bailey',
+                'Reed','Kelly','Howard','Ramos','Kim','Cox','Ward','Richardson',
+                'Watson','Brooks','Chavez','Wood','James','Bennett','Gray','Mendoza',
+                'Ruiz','Hughes','Price','Alvarez','Castillo','Sanders','Patel','Myers',
+                'Long','Ross','Foster','Jimenez','Powell','Jenkins','Perry','Russell',
+                'Sullivan','Bell','Coleman','Butler','Henderson','Barnes','Gonzales','Fisher',
+                'Vasquez','Simmons','Romero','Jordan','Patterson','Alexander','Hamilton','Graham',
+                'Reynolds','Griffin','Wallace','Moreno','West','Cole','Hayes','Bryant',
+                'Herrera','Gibson','Ellis','Tran','Medina','Aguilar','Stevens','Murray',
+                'Ford','Castro','Marshall','Owens','Harrison','Fernandez','McDonald','Woods',
+                'Washington','Kennedy','Wells','Vargas','Henry','Chen','Freeman','Webb',
+                'Tucker','Guzman','Burns','Crawford','Olson','Simpson','Porter','Hunter',
+                'Gordon','Mendez','Silva','Shaw','Snyder','Mason','Dixon','Munoz',
+                'Wagner','Black','Robertson','Hunt','Daniels','Palmer','Holmes','Rose'
+            ];
+
+            // A.5 Email domains — weighted with reserved/test domains (~75% RFC2606)
+            //     to keep AdSense compliance and avoid deliverability.
+            const EMAIL_DOMAINS = [
+                'example.com','example.com','example.com','example.com','example.com',
+                'example.com','example.com','example.com','example.com','example.com',
+                'example.com','example.com','example.com','example.com','example.com',
+                'example.com','example.com','example.com','example.com','example.com',
+                'example.com','example.com','example.com','example.com','example.com',
+                'example.com','example.com','example.com','example.com','example.com',
+                'test.example','sample.example','user.test','demo.test','mailtest.local',
+                'mock.email','fakeinbox.dev','noreply.test','temp-mail.io','guerrillamail.com',
+                'mailinator.com','example.test','null.local','invalid.test','placeholder.dev'
+            ];
+
+            // A.6 US street names (100 common) + standard suffixes
+            const STREET_NAMES = [
+                'Main','Oak','Pine','Maple','Cedar','Elm','Washington','Lake','Hill','Park',
+                'Spring','North','South','Center','Church','River','View','Forest','Meadow','Valley',
+                'Highland','Sunset','Ridge','Garden','Birch','Walnut','Cherry','Willow','Aspen','Sycamore',
+                'Lincoln','Jefferson','Madison','Adams','Roosevelt','Wilson','Franklin','Jackson','Harrison','Tyler',
+                'Sunrise','Sunset','Ocean','Bay','Harbor','Lakeview','Hillcrest','Parkview','Riverside','Greenfield',
+                'Cedar','Magnolia','Dogwood','Cypress','Spruce','Poplar','Hickory','Magnolia','Linden','Chestnut',
+                'Briarwood','Brookside','Canterbury','Chester','Drake','Dover','Eaton','Fulton','Glenwood','Heritage',
+                'Inverness','Jamestown','Kenwood','Lancaster','Mansfield','Norwood','Oakwood','Prescott','Quincy','Remington',
+                'Sherwood','Tremont','University','Vermont','Westfield','Yorkshire','Ashford','Belmont','Carlisle','Dexter'
+            ];
+            const STREET_SUFFIXES = ['St','Ave','Blvd','Rd','Ln','Dr','Way','Ct','Pl','Pkwy','Ter','Cir'];
+
+            // A.7 30 representative US cities with state + ZIP prefixes
+            const US_CITIES = [
+                ['New York','NY',['100','101','102','112']],
+                ['Los Angeles','CA',['900','902','910','920']],
+                ['Chicago','IL',['606','608']],
+                ['Houston','TX',['770','772']],
+                ['Phoenix','AZ',['850','852']],
+                ['Philadelphia','PA',['191']],
+                ['San Antonio','TX',['782']],
+                ['San Diego','CA',['921']],
+                ['Dallas','TX',['752']],
+                ['San Jose','CA',['951']],
+                ['Austin','TX',['787']],
+                ['Jacksonville','FL',['322']],
+                ['Fort Worth','TX',['761']],
+                ['Columbus','OH',['432']],
+                ['Indianapolis','IN',['462']],
+                ['Charlotte','NC',['282']],
+                ['Seattle','WA',['981']],
+                ['Denver','CO',['802']],
+                ['Boston','MA',['021']],
+                ['Portland','OR',['972']],
+                ['Nashville','TN',['372']],
+                ['Miami','FL',['331']],
+                ['Atlanta','GA',['303']],
+                ['Minneapolis','MN',['554']],
+                ['Detroit','MI',['482']],
+                ['Las Vegas','NV',['891']],
+                ['Pittsburgh','PA',['152']],
+                ['Sacramento','CA',['958']],
+                ['Orlando','FL',['328']],
+                ['Cleveland','OH',['441']]
+            ];
+
+            // A.8 30 US area codes (NPA — first 3 digits, NANP-valid)
+            const US_AREA_CODES = [
+                '212','213','214','215','312','313','404','469','512','602',
+                '617','702','713','718','720','786','818','832','917','919',
+                '925','949','954','972','978','980','985','989','415','305'
+            ];
+
+            // A.9 Character classes for password generator
+            const PWD_LOWER = 'abcdefghijklmnopqrstuvwxyz';
+            const PWD_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const PWD_DIGIT = '0123456789';
+            const PWD_SYMBOL = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            // ============================================================
+            // §B. GENERATORS — 11 data types
+            // ============================================================
+
+            function genName(rand) {
+                const fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
+                const ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
+                return fn + ' ' + ln;
+            }
+
+            function genEmail(rand, firstName, lastName) {
+                let fn, ln;
+                if (firstName) {
+                    const parts = firstName.split(/\s+/);
+                    fn = parts[0];
+                    ln = parts.slice(1).join(' ') || (lastName || LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)]);
+                } else {
+                    fn = FIRST_NAMES[Math.floor(rand() * FIRST_NAMES.length)];
+                    ln = LAST_NAMES[Math.floor(rand() * LAST_NAMES.length)];
+                }
+                const domain = EMAIL_DOMAINS[Math.floor(rand() * EMAIL_DOMAINS.length)];
+                // Local-part format roll: first.last (40%), first_last (20%),
+                // firstlast (15%), flast (10%), first.last42 (15%)
+                const sepRoll = rand();
+                let local;
+                if (sepRoll < 0.40) local = fn + '.' + ln;
+                else if (sepRoll < 0.60) local = fn + '_' + ln;
+                else if (sepRoll < 0.75) local = fn + ln;
+                else if (sepRoll < 0.85) local = fn[0] + ln;
+                else local = fn + '.' + ln + Math.floor(rand() * 99);
+                return local.toLowerCase().replace(/[^a-z0-9._]/g, '') + '@' + domain;
+            }
+
+            function genAddress(rand) {
+                const num = Math.floor(rand() * 9999) + 1;
+                const street = STREET_NAMES[Math.floor(rand() * STREET_NAMES.length)];
+                const suffix = STREET_SUFFIXES[Math.floor(rand() * STREET_SUFFIXES.length)];
+                const entry = US_CITIES[Math.floor(rand() * US_CITIES.length)];
+                const city = entry[0];
+                const state = entry[1];
+                const zips = entry[2];
+                const zipPrefix = zips[Math.floor(rand() * zips.length)];
+                const zipSuffix = String(Math.floor(rand() * 10000)).padStart(4, '0');
+                return num + ' ' + street + ' ' + suffix + ', ' + city + ', ' + state + ' ' + zipPrefix + zipSuffix;
+            }
+
+            function genPhone(rand) {
+                const ac = US_AREA_CODES[Math.floor(rand() * US_AREA_CODES.length)];
+                const exch = String(Math.floor(rand() * 900) + 100);
+                const sub = String(Math.floor(rand() * 10000)).padStart(4, '0');
+                return '(' + ac + ') ' + exch + '-' + sub;
+            }
+
+            function genDate(rand, fromTs, toTs) {
+                const span = Math.max(1, toTs - fromTs);
+                const ts = Math.floor(rand() * span) + fromTs;
+                const d = new Date(ts);
+                if (isNaN(d.getTime())) return '1970-01-01';
+                return d.toISOString().slice(0, 10);
+            }
+
+            function genInt(rand, min, max) {
+                const lo = Math.ceil(min);
+                const hi = Math.floor(max);
+                if (hi < lo) return lo;
+                return Math.floor(rand() * (hi - lo + 1)) + lo;
+            }
+
+            function genFloat(rand, min, max, decimals) {
+                if (max < min) return min;
+                const v = rand() * (max - min) + min;
+                const factor = Math.pow(10, decimals);
+                return Math.round(v * factor) / factor;
+            }
+
+            function genUUID(rand, hasSeed) {
+                // When seedable (hasSeed===true or seed provided) we use our PRNG
+                // so the output is reproducible. When truly random, prefer the
+                // browser's CSPRNG (more robust UUIDv4).
+                if (!hasSeed && typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                    try { return crypto.randomUUID(); } catch (_) { /* fall through */ }
+                }
+                const hex = '0123456789abcdef';
+                let s = '';
+                for (let i = 0; i < 36; i++) {
+                    if (i === 8 || i === 13 || i === 18 || i === 23) s += '-';
+                    else if (i === 14) s += '4';
+                    else if (i === 19) s += hex[Math.floor(rand() * 4) + 8]; // variant 10xx
+                    else s += hex[Math.floor(rand() * 16)];
+                }
+                return s;
+            }
+
+            function genPassword(rand, len, useSymbols) {
+                const lower = PWD_LOWER;
+                const upper = PWD_UPPER;
+                const digit = PWD_DIGIT;
+                const sym = useSymbols ? PWD_SYMBOL : '';
+                const all = lower + upper + digit + sym;
+                // Guarantee at least one of each selected class
+                const out = [
+                    lower[Math.floor(rand() * lower.length)],
+                    upper[Math.floor(rand() * upper.length)],
+                    digit[Math.floor(rand() * digit.length)]
+                ];
+                if (useSymbols) out.push(sym[Math.floor(rand() * sym.length)]);
+                while (out.length < len) out.push(all[Math.floor(rand() * all.length)]);
+                // Fisher-Yates shuffle so the first 4 chars aren't predictable
+                for (let i = out.length - 1; i > 0; i--) {
+                    const j = Math.floor(rand() * (i + 1));
+                    const tmp = out[i]; out[i] = out[j]; out[j] = tmp;
+                }
+                return out.join('');
+            }
+
+            function genHexColor(rand) {
+                const h = Math.floor(rand() * 360);
+                const s = 70 + Math.floor(rand() * 30);  // 70–100% saturation
+                const l = 40 + Math.floor(rand() * 20);  // 40–60% lightness
+                return hslToHex(h, s, l);
+            }
+
+            function hslToHex(h, s, l) {
+                s /= 100; l /= 100;
+                const k = function(n) { return (n + h / 30) % 12; };
+                const a = s * Math.min(l, 1 - l);
+                const f = function(n) {
+                    const v = l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+                    return Math.round(v * 255).toString(16).padStart(2, '0');
+                };
+                return '#' + f(0) + f(8) + f(4);
+            }
+
+            function genIP(rand, version) {
+                if (version === 'v6') {
+                    const h = function() {
+                        return Math.floor(rand() * 0x10000).toString(16).padStart(4, '0');
+                    };
+                    return h() + ':' + h() + ':' + h() + ':' + h() + ':' +
+                           h() + ':' + h() + ':' + h() + ':' + h();
+                }
+                // IPv4 — 30% RFC1918 private, 70% looks-like-public
+                if (rand() < 0.3) {
+                    const r = Math.floor(rand() * 3);
+                    if (r === 0)
+                        return '10.' + Math.floor(rand() * 256) + '.' +
+                               Math.floor(rand() * 256) + '.' + Math.floor(rand() * 256);
+                    if (r === 1)
+                        return '192.168.' + Math.floor(rand() * 256) + '.' +
+                               Math.floor(rand() * 256);
+                    return '172.' + (16 + Math.floor(rand() * 16)) + '.' +
+                           Math.floor(rand() * 256) + '.' + Math.floor(rand() * 256);
+                }
+                return Math.floor(rand() * 223 + 1) + '.' +
+                       Math.floor(rand() * 256) + '.' +
+                       Math.floor(rand() * 256) + '.' +
+                       Math.floor(rand() * 254 + 1);
+            }
+
+            // ============================================================
+            // §C. ROW BUILDER
+            // ============================================================
+
+            function generateRows(state) {
+                const selectedTypes = state.selectedTypes;
+                const qty = state.qty;
+                const rand = state.rand;
+                const opts = state.options;
+                const rows = [];
+                for (let i = 0; i < qty; i++) {
+                    const row = {};
+                    let nameCache = null;
+                    for (let t = 0; t < selectedTypes.length; t++) {
+                        const type = selectedTypes[t];
+                        if (type === 'name') {
+                            nameCache = genName(rand);
+                            row.name = nameCache;
+                        } else if (type === 'email') {
+                            row.email = genEmail(rand, nameCache);
+                        } else if (type === 'address') {
+                            row.address = genAddress(rand);
+                        } else if (type === 'phone') {
+                            row.phone = genPhone(rand);
+                        } else if (type === 'date') {
+                            row.date = genDate(rand, opts.dateFrom, opts.dateTo);
+                        } else if (type === 'int') {
+                            row.int = genInt(rand, opts.intMin, opts.intMax);
+                        } else if (type === 'float') {
+                            row.float = genFloat(rand, opts.floatMin, opts.floatMax, opts.floatDecimals);
+                        } else if (type === 'uuid') {
+                            row.uuid = genUUID(rand, state.hasSeed);
+                        } else if (type === 'password') {
+                            row.password = genPassword(rand, opts.pwdLen, opts.pwdSymbols);
+                        } else if (type === 'hexcolor') {
+                            row.hexcolor = genHexColor(rand);
+                        } else if (type === 'ip') {
+                            row.ip = genIP(rand, opts.ipVersion);
+                        }
+                    }
+                    rows.push(row);
+                }
+                return rows;
+            }
+
+            // ============================================================
+            // §D. EXPORTERS — CSV / JSON / TXT (TSV)
+            // ============================================================
+
+            function toCSV(rows, columns) {
+                const esc = function(v) {
+                    const s = (v === undefined || v === null) ? '' : String(v);
+                    if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+                    return s;
+                };
+                const head = columns.join(',');
+                const body = rows.map(function(r) {
+                    return columns.map(function(c) { return esc(r[c]); }).join(',');
+                }).join('\n');
+                return head + '\n' + body;
+            }
+
+            function toJSON(rows) {
+                return JSON.stringify(rows, null, 2);
+            }
+
+            function toTSV(rows, columns) {
+                const esc = function(v) {
+                    const s = (v === undefined || v === null) ? '' : String(v);
+                    return s.replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+                };
+                const head = columns.join('\t');
+                const body = rows.map(function(r) {
+                    return columns.map(function(c) { return esc(r[c]); }).join('\t');
+                }).join('\n');
+                return head + '\n' + body;
+            }
+
+            function downloadFile(filename, text, mime) {
+                const blob = new Blob([text], { type: mime });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+            }
+
+            async function copyToClipboard(text) {
+                try {
+                    if (navigator.clipboard && window.isSecureContext) {
+                        await navigator.clipboard.writeText(text);
+                        return true;
+                    }
+                } catch (_) { /* fall through */ }
+                // Fallback: offscreen textarea + execCommand
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.left = '-9999px';
+                ta.setAttribute('readonly', '');
+                document.body.appendChild(ta);
+                ta.select();
+                let ok = false;
+                try { ok = document.execCommand('copy'); } catch (_) { ok = false; }
+                document.body.removeChild(ta);
+                return ok;
+            }
+
+            function escapeHTML(s) {
+                const div = document.createElement('div');
+                div.textContent = s == null ? '' : String(s);
+                return div.innerHTML;
+            }
+
+            // ============================================================
+            // §E. UI WIRING
+            // ============================================================
+
+            const root = document.getElementById('{{ $id }}-tool');
+            if (!root) return;
+
+            const $ = function(id) { return root.querySelector('#{{ $id }}-' + id); };
+
+            const qtySlider       = $('qty');
+            const qtyVal          = $('qty-val');
+            const seedInput       = $('seed');
+            const genBtn          = $('generate');
+            const copyBtn         = $('copy');
+            const downloadBtn     = $('download');
+            const clearBtn        = $('clear');
+            const outputSection   = $('output-section');
+            const thead           = $('thead');
+            const tbody           = $('tbody');
+            const statsBox        = $('stats');
+            const truncated       = $('truncated');
+            const statusEl        = $('status');
+
+            let lastRows = [];
+            let lastCols = [];
+
+            function setStatus(msg, cls) {
+                statusEl.textContent = msg || '';
+                statusEl.className = 'rdg-status' + (cls ? ' rdg-status-' + cls : '');
+            }
+
+            function getSelectedTypes() {
+                const inputs = root.querySelectorAll('input[data-type]:checked');
+                const out = [];
+                for (let i = 0; i < inputs.length; i++) out.push(inputs[i].dataset.type);
+                return out;
+            }
+
+            function readOptions() {
+                const intMinEl  = $('int-min');
+                const intMaxEl  = $('int-max');
+                const floatMinEl  = $('float-min');
+                const floatMaxEl  = $('float-max');
+                const floatDecEl  = $('float-decimals');
+                const dateFromEl  = $('date-from');
+                const dateToEl    = $('date-to');
+                const pwdLenEl    = $('pwd-len');
+                const pwdSymEl    = $('pwd-symbols');
+                const ipVersionEl = root.querySelector('input[name="{{ $id }}-ip-v"]:checked');
+
+                return {
+                    intMin: intMinEl && intMinEl.value !== '' ? parseInt(intMinEl.value, 10) : 0,
+                    intMax: intMaxEl && intMaxEl.value !== '' ? parseInt(intMaxEl.value, 10) : 10000,
+                    floatMin: floatMinEl && floatMinEl.value !== '' ? parseFloat(floatMinEl.value) : 0,
+                    floatMax: floatMaxEl && floatMaxEl.value !== '' ? parseFloat(floatMaxEl.value) : 1000,
+                    floatDecimals: floatDecEl && floatDecEl.value !== '' ? parseInt(floatDecEl.value, 10) : 2,
+                    dateFrom: dateFromEl && dateFromEl.value ? new Date(dateFromEl.value).getTime() : 0,
+                    dateTo:   dateToEl && dateToEl.value ? new Date(dateToEl.value).getTime() : Date.now(),
+                    pwdLen: pwdLenEl && pwdLenEl.value !== '' ? parseInt(pwdLenEl.value, 10) : 12,
+                    pwdSymbols: pwdSymEl ? pwdSymEl.checked : true,
+                    ipVersion: ipVersionEl ? ipVersionEl.value : 'v4'
+                };
+            }
+
+            function getSelectedFormat() {
+                const el = root.querySelector('input[name="{{ $id }}-format"]:checked');
+                return el ? el.value : 'csv';
+            }
+
+            function refreshTypeOptions() {
+                const selected = getSelectedTypes();
+                const panels = root.querySelectorAll('.rdg-type-opts');
+                for (let i = 0; i < panels.length; i++) {
+                    const el = panels[i];
+                    const type = el.dataset.for;
+                    el.hidden = !selected.includes(type);
+                }
+            }
+
+            qtySlider.addEventListener('input', function() {
+                qtyVal.textContent = qtySlider.value;
+            });
+
+            const typeInputs = root.querySelectorAll('input[data-type]');
+            for (let i = 0; i < typeInputs.length; i++) {
+                typeInputs[i].addEventListener('change', refreshTypeOptions);
+            }
+
+            genBtn.addEventListener('click', function() {
+                const selectedTypes = getSelectedTypes();
+                if (selectedTypes.length === 0) {
+                    setStatus('{{ i18n "rdg_error_no_types" }}', 'err');
+                    return;
+                }
+                const qty = parseInt(qtySlider.value, 10) || 100;
+                const seedStr = seedInput.value.trim();
+                const hasSeed = seedStr.length > 0;
+                const seedNum = hashSeed(hasSeed ? seedStr : String(Date.now()));
+                const rand = mulberry32(seedNum);
+                const options = readOptions();
+
+                const t0 = (typeof performance !== 'undefined' && performance.now)
+                    ? performance.now()
+                    : Date.now();
+
+                lastRows = generateRows({ selectedTypes: selectedTypes, qty: qty, rand: rand, options: options, hasSeed: hasSeed });
+                lastCols = selectedTypes.slice();
+
+                const elapsed = ((typeof performance !== 'undefined' && performance.now)
+                    ? performance.now()
+                    : Date.now()) - t0;
+
+                renderTable(lastRows, lastCols);
+                copyBtn.disabled = false;
+                downloadBtn.disabled = false;
+
+                const seedDisplay = hasSeed
+                    ? ('{{ i18n "rdg_output_seeded_with" }}' + seedStr.slice(0, 8) + '{{ i18n "rdg_output_ellipsis" }}{{ i18n "rdg_output_separator" }}')
+                    : '{{ i18n "rdg_seed_unset" }}';
+                setStatus(
+                    '{{ i18n "rdg_status_generated" }} ' + qty + ' {{ i18n "rdg_status_rows" }} · ' +
+                    seedDisplay + ' · ' + elapsed.toFixed(0) + 'ms',
+                    'ok'
+                );
+            });
+
+            function renderTable(rows, columns) {
+                thead.innerHTML = '<tr>' +
+                    columns.map(function(c) { return '<th>' + escapeHTML(c) + '</th>'; }).join('') +
+                    '</tr>';
+                const PREVIEW = 50;
+                const preview = rows.slice(0, PREVIEW);
+                let html = '';
+                for (let i = 0; i < preview.length; i++) {
+                    const row = preview[i];
+                    html += '<tr>';
+                    for (let j = 0; j < columns.length; j++) {
+                        html += '<td>' + escapeHTML(row[columns[j]]) + '</td>';
+                    }
+                    html += '</tr>';
+                }
+                tbody.innerHTML = html;
+                truncated.hidden = rows.length <= PREVIEW;
+
+                const approxBytes = JSON.stringify(rows).length;
+                const approxKB = (approxBytes / 1024).toFixed(1);
+                statsBox.innerHTML =
+                    '<span class="rdg-stat">📊 ' + rows.length + ' {{ i18n "rdg_stat_rows" }}</span>' +
+                    '<span class="rdg-stat">📋 ' + columns.length + ' {{ i18n "rdg_output_columns" }}</span>' +
+                    '<span class="rdg-stat">📦 ~' + approxKB + ' {{ i18n "rdg_stat_kb" }}</span>';
+                outputSection.hidden = false;
+            }
+
+            copyBtn.addEventListener('click', async function() {
+                if (lastRows.length === 0) return;
+                const fmt = getSelectedFormat();
+                const text = fmt === 'csv'
+                    ? toCSV(lastRows, lastCols)
+                    : (fmt === 'json' ? toJSON(lastRows) : toTSV(lastRows, lastCols));
+                const ok = await copyToClipboard(text);
+                setStatus(ok ? '{{ i18n "rdg_status_copied" }}' : '{{ i18n "rdg_status_copy_failed" }}',
+                          ok ? 'ok' : 'err');
+            });
+
+            downloadBtn.addEventListener('click', function() {
+                if (lastRows.length === 0) return;
+                const fmt = getSelectedFormat();
+                const ext = fmt === 'csv' ? 'csv' : (fmt === 'json' ? 'json' : 'txt');
+                const mime = fmt === 'csv' ? 'text/csv'
+                    : (fmt === 'json' ? 'application/json' : 'text/plain');
+                const text = fmt === 'csv'
+                    ? toCSV(lastRows, lastCols)
+                    : (fmt === 'json' ? toJSON(lastRows) : toTSV(lastRows, lastCols));
+                const fname = 'random-data-' + Date.now() + '.' + ext;
+                downloadFile(fname, text, mime);
+                setStatus('{{ i18n "rdg_status_downloaded" }} ' + fname, 'ok');
+            });
+
+            clearBtn.addEventListener('click', function() {
+                lastRows = [];
+                lastCols = [];
+                outputSection.hidden = true;
+                copyBtn.disabled = true;
+                downloadBtn.disabled = true;
+                tbody.innerHTML = '';
+                thead.innerHTML = '';
+                statsBox.innerHTML = '';
+                setStatus('');
+            });
+
+            // Initialize dynamic option panels (default-checked types in HTML)
+            refreshTypeOptions();
+
+            // Privacy wedge (verifiable in DevTools → Network)
+            console.log('[rdg] ' + '{{ i18n "rdg_privacy_notice" }}');
+        })();
+    </script>
+</div>

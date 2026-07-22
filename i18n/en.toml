@@ -1285,3 +1285,104 @@ other = "Sample size exceeds list length, auto-adjusted to"
 
 [rs_error_items_available]
 other = "(available items)"
+
+# Random Data Generator (A1) — 49 keys
+# en: full English copy. zh: see i18n/zh.toml.
+[rdg_title]
+other = "Random Data Generator"
+[rdg_intro]
+other = "Generate realistic fake data for testing — names, emails, addresses, UUIDs, and more. Up to 1,000 rows, seedable, 100% client-side."
+[rdg_label_data_types]
+other = "Data Types"
+[rdg_label_quantity]
+other = "Rows"
+[rdg_label_seed]
+other = "Seed (optional)"
+[rdg_hint_seed]
+other = "empty for fresh randomness"
+[rdg_seed_placeholder]
+other = "e.g. test-fixture-001"
+[rdg_label_format]
+other = "Output Format"
+[rdg_btn_generate]
+other = "Generate"
+[rdg_btn_copy]
+other = "Copy"
+[rdg_btn_download]
+other = "Download"
+[rdg_btn_clear]
+other = "Clear"
+[rdg_type_name]
+other = "Name"
+[rdg_type_email]
+other = "Email"
+[rdg_type_address]
+other = "Address"
+[rdg_type_phone]
+other = "Phone"
+[rdg_type_date]
+other = "Date"
+[rdg_type_int]
+other = "Integer"
+[rdg_type_float]
+other = "Float"
+[rdg_type_uuid]
+other = "UUID"
+[rdg_type_password]
+other = "Password"
+[rdg_type_hexcolor]
+other = "Hex Color"
+[rdg_type_ip]
+other = "IP Address"
+[rdg_int_min]
+other = "Min"
+[rdg_int_max]
+other = "Max"
+[rdg_float_min]
+other = "Min"
+[rdg_float_max]
+other = "Max"
+[rdg_float_decimals]
+other = "Decimals"
+[rdg_date_from]
+other = "From"
+[rdg_date_to]
+other = "To"
+[rdg_pwd_len]
+other = "Length"
+[rdg_pwd_symbols]
+other = "Include Symbols"
+[rdg_preview_title]
+other = "Preview"
+[rdg_truncated_hint]
+other = "(Showing first 50 rows in preview — download or copy for full dataset)"
+[rdg_stat_rows]
+other = "rows"
+[rdg_stat_columns]
+other = "columns"
+[rdg_stat_kb]
+other = "KB"
+[rdg_error_no_types]
+other = "Please select at least one data type."
+[rdg_status_generated]
+other = "Generated"
+[rdg_status_rows]
+other = "rows"
+[rdg_status_copied]
+other = "Copied to clipboard"
+[rdg_status_copy_failed]
+other = "Copy failed"
+[rdg_status_downloaded]
+other = "Downloaded as"
+[rdg_privacy_notice]
+other = "Privacy: 100% client-side. Open DevTools → Network to verify 0 requests."
+[rdg_output_columns]
+other = "Columns"
+[rdg_output_seeded_with]
+other = "(seed: "
+[rdg_output_separator]
+other = ")"
+[rdg_output_ellipsis]
+other = "…"
+[rdg_seed_unset]
+other = "(auto)"
