@@ -1,26 +1,15 @@
 ---
-title: "PDF 合并与拆分 — 免费、隐私、客户端处理"
-description: "在线合并和拆分 PDF 文件 — 免费、无水印、无需注册。文件完全保留在你的浏览器中。100% 客户端处理,无限制,开源。"
+title: "PDF 合并与拆分 — 免费、私密、客户端"
+description: "在线合并和拆分 PDF 文件 — 免费、无水印、无需注册。文件始终在您的浏览器中处理。"
 slug: pdf-merge-split
 date: 2026-07-22
 draft: false
-categories:
-    - "文档工具"
-    - "PDF 工具"
-    - "效率工具"
-tags:
-    - "pdf 合并"
-    - "pdf 拆分"
-    - "pdf 组合"
-    - "客户端"
-    - "无需上传"
-    - "无水印"
-    - "免费"
-    - "无需注册"
-    - "浏览器端"
-    - "pdf-lib"
 ---
 
-(完整内容由 content agent 后续填充)
+> **English version:** [PDF Merge & Split](/en/tools/pdf-merge-split/)
+
+本文档的完整中文版正在准备中。如需使用工具,请访问英文版。
+
+---
 
 {{< pdf-merge-split >}}
