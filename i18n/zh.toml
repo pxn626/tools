@@ -2081,3 +2081,166 @@ other = "rand_a(12 位)"
 
 [uv7_dec_rand_b]
 other = "rand_b(62 位)"
+
+# Password Generator — pg_* keys
+[pg_title]
+other = "密码生成器"
+
+[pg_intro]
+other = "三种模式:加密级随机、可发音音节、EFF Diceware 密码短语 — 在浏览器本地生成,使用 crypto.getRandomValues(),绝不外传。"
+
+[pg_mode_strong]
+other = "随机强密码"
+
+[pg_mode_pronounceable]
+other = "可发音密码"
+
+[pg_mode_passphrase]
+other = "密码短语"
+
+[pg_preset_wifi]
+other = "WiFi 预设 (20 位,ASCII 安全)"
+
+[pg_preset_pin]
+other = "PIN 码 (4-12 位数字)"
+
+[pg_preset_master]
+other = "主密码 (7 词密码短语)"
+
+[pg_preset_reset]
+other = "恢复默认"
+
+[pg_setting_length]
+other = "长度"
+
+[pg_setting_uppercase]
+other = "大写字母 (A-Z)"
+
+[pg_setting_lowercase]
+other = "小写字母 (a-z)"
+
+[pg_setting_digits]
+other = "数字 (0-9)"
+
+[pg_setting_symbols]
+other = "符号"
+
+[pg_setting_excl_lookalike]
+other = "排除易混淆字符 (0/O, 1/l/I)"
+
+[pg_setting_excl_ambiguous]
+other = "排除歧义符号 ({}[](), 等)"
+
+[pg_setting_at_least_one]
+other = "每种选中字符类至少一个"
+
+[pg_setting_custom_symbols]
+other = "自定义符号集"
+
+[pg_setting_bulk_count]
+other = "生成数量"
+
+[pg_setting_capitalize]
+other = "首字母大写"
+
+[pg_setting_separator]
+other = "分隔符"
+
+[pg_setting_append_number]
+other = "追加随机数字"
+
+[pg_setting_word_count]
+other = "词数"
+
+[pg_btn_generate]
+other = "生成密码"
+
+[pg_btn_reroll]
+other = "重新生成"
+
+[pg_btn_copy_all]
+other = "全部复制"
+
+[pg_btn_export]
+other = "导出为…"
+
+[pg_btn_export_go]
+other = "下载"
+
+[pg_placeholder]
+other = "点击生成密码。密码留在你的浏览器里,绝不会上传。"
+
+[pg_entropy_label]
+other = "熵"
+
+[pg_crack_time_label]
+other = "破解时间"
+
+[pg_strength_label]
+other = "强度"
+
+[pg_strength_weak]
+other = "弱"
+
+[pg_strength_medium]
+other = "一般"
+
+[pg_strength_strong]
+other = "强"
+
+[pg_strength_excellent]
+other = "极强"
+
+[pg_strength_quantum]
+other = "量子安全"
+
+[pg_mode_panel_strong_help]
+other = "每个字符从所选字符池独立均匀采样。最适合:账户密码、加密密钥。"
+
+[pg_mode_panel_pron_help]
+other = "CV 音节生成器 — 易于输入和记忆。最适合:设备密码、主密码短语。"
+
+[pg_mode_panel_pass_help]
+other = "从 EFF 7776 词 Diceware 词表随机抽取 4-7 个词。最适合:主密码、恢复短语。"
+
+[pg_label_offline_badge]
+other = "100% 客户端"
+
+[pg_label_no_tracking_badge]
+other = "无追踪"
+
+[pg_label_no_signup_badge]
+other = "无需注册"
+
+[pg_msg_generated]
+other = "已生成 {n} 条密码。"
+
+[pg_msg_copied_all]
+other = "所有密码已复制到剪贴板。"
+
+[pg_msg_copied_one]
+other = "密码已复制到剪贴板。"
+
+[pg_msg_exported]
+other = "下载已开始。"
+
+[pg_msg_no_export_data]
+other = "请先生成密码,然后再导出。"
+
+[pg_err_no_crypto]
+other = "此浏览器不支持 crypto.getRandomValues — 无法安全生成密码。"
+
+[pg_err_empty_pool]
+other = "请至少启用一种字符类(大写、小写、数字或符号)。"
+
+[pg_err_load_wordlist]
+other = "加载 EFF Diceware 词表失败,请检查网络连接。"
+
+[pg_err_bad_range]
+other = "数值超出允许范围。"
+
+[pg_err_copy_failed]
+other = "复制失败 — 浏览器可能不支持剪贴板访问。"
+
+[pg_sep_random]
+other = "随机"

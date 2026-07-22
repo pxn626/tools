@@ -1637,3 +1637,166 @@ other = "rand_a (12-bit)"
 
 [uv7_dec_rand_b]
 other = "rand_b (62-bit)"
+
+# Password Generator — pg_* keys
+[pg_title]
+other = "Password Generator"
+
+[pg_intro]
+other = "Three modes for every use case. Cryptographically random, pronounceable syllables, or EFF Diceware passphrases — generated locally in your browser with crypto.getRandomValues()."
+
+[pg_mode_strong]
+other = "Strong Random"
+
+[pg_mode_pronounceable]
+other = "Pronounceable"
+
+[pg_mode_passphrase]
+other = "Passphrase"
+
+[pg_preset_wifi]
+other = "WiFi preset (20 chars, ASCII-safe)"
+
+[pg_preset_pin]
+other = "PIN code (4-12 digits)"
+
+[pg_preset_master]
+other = "Master password (7-word passphrase)"
+
+[pg_preset_reset]
+other = "Reset defaults"
+
+[pg_setting_length]
+other = "Length"
+
+[pg_setting_uppercase]
+other = "Uppercase (A-Z)"
+
+[pg_setting_lowercase]
+other = "Lowercase (a-z)"
+
+[pg_setting_digits]
+other = "Digits (0-9)"
+
+[pg_setting_symbols]
+other = "Symbols"
+
+[pg_setting_excl_lookalike]
+other = "Exclude look-alike (0/O, 1/l/I)"
+
+[pg_setting_excl_ambiguous]
+other = "Exclude ambiguous ({}[](), etc.)"
+
+[pg_setting_at_least_one]
+other = "At least one of each selected class"
+
+[pg_setting_custom_symbols]
+other = "Custom symbol set"
+
+[pg_setting_bulk_count]
+other = "How many to generate"
+
+[pg_setting_capitalize]
+other = "Capitalize first letter"
+
+[pg_setting_separator]
+other = "Separator"
+
+[pg_setting_append_number]
+other = "Append random number"
+
+[pg_setting_word_count]
+other = "Word count"
+
+[pg_btn_generate]
+other = "Generate passwords"
+
+[pg_btn_reroll]
+other = "Re-roll"
+
+[pg_btn_copy_all]
+other = "Copy all"
+
+[pg_btn_export]
+other = "Export as…"
+
+[pg_btn_export_go]
+other = "Download"
+
+[pg_placeholder]
+other = "Click Generate to create passwords. Output stays in your browser — never uploaded."
+
+[pg_entropy_label]
+other = "Entropy"
+
+[pg_crack_time_label]
+other = "Crack time"
+
+[pg_strength_label]
+other = "Strength"
+
+[pg_strength_weak]
+other = "Weak"
+
+[pg_strength_medium]
+other = "Medium"
+
+[pg_strength_strong]
+other = "Strong"
+
+[pg_strength_excellent]
+other = "Excellent"
+
+[pg_strength_quantum]
+other = "Quantum-safe"
+
+[pg_mode_panel_strong_help]
+other = "Each character is sampled independently from your selected pool. Best for: account passwords, encryption keys."
+
+[pg_mode_panel_pron_help]
+other = "CV-syllable generator — easier to type and remember. Best for: device passwords, master phrases."
+
+[pg_mode_panel_pass_help]
+other = "4-7 random words from EFF's 7776-word Diceware list. Best for: master passwords, recovery phrases."
+
+[pg_label_offline_badge]
+other = "100% Client-side"
+
+[pg_label_no_tracking_badge]
+other = "No Tracking"
+
+[pg_label_no_signup_badge]
+other = "No Signup"
+
+[pg_msg_generated]
+other = "Generated {n} password(s)."
+
+[pg_msg_copied_all]
+other = "All passwords copied to clipboard."
+
+[pg_msg_copied_one]
+other = "Password copied to clipboard."
+
+[pg_msg_exported]
+other = "Download started."
+
+[pg_msg_no_export_data]
+other = "Generate passwords first, then export."
+
+[pg_err_no_crypto]
+other = "This browser lacks crypto.getRandomValues — passwords cannot be generated safely."
+
+[pg_err_empty_pool]
+other = "Enable at least one character class (uppercase, lowercase, digits, or symbols)."
+
+[pg_err_load_wordlist]
+other = "Failed to load the EFF Diceware word list. Check your network connection."
+
+[pg_err_bad_range]
+other = "Value out of allowed range."
+
+[pg_err_copy_failed]
+other = "Copy failed — your browser may not support clipboard access."
+
+[pg_sep_random]
+other = "Random"
